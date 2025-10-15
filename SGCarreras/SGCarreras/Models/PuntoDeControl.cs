@@ -2,7 +2,7 @@
 {
     public class PuntoDeControl
     {
-        public int  nmro { get; set; }
+        public int  id { get; set; }
 
         public double distancia { get; set; }
 
@@ -10,9 +10,9 @@
         public Carrera Carrera { get; set; }
         public PuntoDeControl() { }
 
-        public PuntoDeControl(int nmro, double distancia)
+        public PuntoDeControl(int id, double distancia)
         {
-            this.nmro = nmro;
+            this.id = id;
             this.distancia = distancia;
         }
     }

@@ -2,6 +2,7 @@
 {
     public class Registro
     {
+        public int id { get; set; }
         public int numeroEnCarrera { get; set; }
 
         public int posicionEnCarrera { get; set; }
@@ -17,8 +18,9 @@
 
         public Registro() { }
 
-        public Registro(int numeroEnCarrera, int posicionEnCarrera, DateTime horaDeFinalizacion)
+        public Registro(int id, int numeroEnCarrera, int posicionEnCarrera, DateTime horaDeFinalizacion)
         {
+            this.id = id;
             this.numeroEnCarrera = numeroEnCarrera;
             this.posicionEnCarrera = posicionEnCarrera;
             this.horaDeFinalizacion = horaDeFinalizacion;

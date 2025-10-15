@@ -2,6 +2,7 @@
 {
     public class TiempoParcial
     {
+        public int id { get; set; }
         public int tiempo { get; set; }
 
 
@@ -12,9 +13,10 @@
 
         public TiempoParcial() { }
 
-        public TiempoParcial(int tiempo)
+        public TiempoParcial(int tiempo, int id)
         {
             this.tiempo = tiempo;
+            this.id = id;
         }
     }
 }

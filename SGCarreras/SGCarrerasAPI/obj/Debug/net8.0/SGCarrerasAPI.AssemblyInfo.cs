@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SGCarrerasAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c7bf8df03ab9c35baacc78e4549bd4fdabcb00d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("SGCarrerasAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SGCarrerasAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

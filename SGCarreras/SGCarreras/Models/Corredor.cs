@@ -2,7 +2,7 @@
 
 namespace SGCarreras.Models
 {
-    public class Corredor
+    public class Corredor : Usuario
     {
         public SexoEnum sexo { get; set; }
         string nacionalidad { get; set; }
