@@ -1,0 +1,26 @@
+﻿namespace SGCarreras.Models
+{
+    public class TiempoParcial
+    {
+        public int id { get; set; }
+        public int tiempo { get; set; }
+
+
+        //Relaciones Tiempo de:
+
+        public PuntoDeControl PuntoControl { get; set; }
+        public Registro Registro { get; set; }
+
+        public TiempoParcial() { }
+
+        public TiempoParcial(int tiempo, int id)
+        {
+            this.tiempo = tiempo;
+            this.id = id;
+        }
+    }
+}
+
+
+
+    
