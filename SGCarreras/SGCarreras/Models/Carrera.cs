@@ -16,6 +16,12 @@ namespace SGCarreras.Models
         public double kmTotales { get; set; }
 
 
+        //Relaciones
+
+        public List<Registro> registros { get; set; } = new();
+        public List<PuntoDeControl> ptosDeControl { get; set; } = new();
+
+
         public Carrera() { }
 
         public Carrera(string id, string nombre, string ubicacion, EstadoEnum estado, double kmTotales)

@@ -1,34 +1,42 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\",
+  "WorkspaceRootPath": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\desktop\\scool\\.net\\proyectos\\sgcarreras\\sgcarreras\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\desktop\\scool\\.net\\proyectos\\sgcarreras\\sgcarreras\\models\\carrera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\models\\carrera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\carrera.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\desktop\\scool\\.net\\proyectos\\sgcarreras\\sgcarreras\\models\\corredor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\models\\puntodecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\puntodecontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\models\\corredor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\corredor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\desktop\\scool\\.net\\proyectos\\sgcarreras\\sgcarreras\\models\\estado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\estado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\desktop\\scool\\.net\\proyectos\\sgcarreras\\sgcarreras\\models\\sexo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\sexo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\desktop\\scool\\.net\\proyectos\\sgcarreras\\sgcarreras\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\desktop\\scool\\.net\\proyectos\\sgcarreras\\sgcarreras\\models\\administradoor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\models\\administradoor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\administradoor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\models\\registro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\registro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\models\\tiiempoparcial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\models\\tiiempoparcial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|c:\\users\\perepupengue\\documents\\github\\sistema-gestor-de-carreras\\sgcarreras\\sgcarreras\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D876CBE-A5D2-4787-B455-1DD02322CB64}|SGCarreras\\SGCarreras.csproj|solutionrelative:sgcarreras\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,98 +46,121 @@
       "DocumentGroups": [
         {
           "DockedWidth": 307,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 1,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Estado.cs",
-              "DocumentMoniker": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Estado.cs",
-              "RelativeDocumentMoniker": "SGCarreras\\Models\\Estado.cs",
-              "ToolTip": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Estado.cs",
-              "RelativeToolTip": "SGCarreras\\Models\\Estado.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAeAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Program.cs",
+              "RelativeDocumentMoniker": "SGCarreras\\Program.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Program.cs",
+              "RelativeToolTip": "SGCarreras\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-14T02:12:08.771Z",
+              "WhenOpened": "2025-10-15T03:59:43.163Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Registro.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Registro.cs",
+              "RelativeDocumentMoniker": "SGCarreras\\Models\\Registro.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Registro.cs",
+              "RelativeToolTip": "SGCarreras\\Models\\Registro.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T02:56:40.162Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TiiempoParcial.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\TiiempoParcial.cs",
+              "RelativeDocumentMoniker": "SGCarreras\\Models\\TiiempoParcial.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\TiiempoParcial.cs",
+              "RelativeToolTip": "SGCarreras\\Models\\TiiempoParcial.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T02:55:23.33Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PuntoDeControl.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\PuntoDeControl.cs",
+              "RelativeDocumentMoniker": "SGCarreras\\Models\\PuntoDeControl.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\PuntoDeControl.cs",
+              "RelativeToolTip": "SGCarreras\\Models\\PuntoDeControl.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T02:20:02.441Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Carrera.cs",
-              "DocumentMoniker": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Carrera.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Carrera.cs",
               "RelativeDocumentMoniker": "SGCarreras\\Models\\Carrera.cs",
-              "ToolTip": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Carrera.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Carrera.cs",
               "RelativeToolTip": "SGCarreras\\Models\\Carrera.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAxwBoAAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-14T02:09:17.725Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Sexo.cs",
-              "DocumentMoniker": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Sexo.cs",
-              "RelativeDocumentMoniker": "SGCarreras\\Models\\Sexo.cs",
-              "ToolTip": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Sexo.cs",
-              "RelativeToolTip": "SGCarreras\\Models\\Sexo.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-14T01:42:44.926Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Corredor.cs",
-              "DocumentMoniker": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Corredor.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Corredor.cs",
               "RelativeDocumentMoniker": "SGCarreras\\Models\\Corredor.cs",
-              "ToolTip": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Corredor.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Corredor.cs",
               "RelativeToolTip": "SGCarreras\\Models\\Corredor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-14T01:39:34.965Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-14T01:39:34.965Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "Administradoor.cs",
-              "DocumentMoniker": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Administradoor.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Administradoor.cs",
               "RelativeDocumentMoniker": "SGCarreras\\Models\\Administradoor.cs",
-              "ToolTip": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Administradoor.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Administradoor.cs",
               "RelativeToolTip": "SGCarreras\\Models\\Administradoor.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-14T01:35:50.059Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Usuario.cs",
-              "RelativeDocumentMoniker": "SGCarreras\\Models\\Usuario.cs",
-              "ToolTip": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Models\\Usuario.cs",
-              "RelativeToolTip": "SGCarreras\\Models\\Usuario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-14T01:33:40.094Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-14T01:35:50.059Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "SGCarreras\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "SGCarreras\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Usuario.cs",
+              "RelativeDocumentMoniker": "SGCarreras\\Models\\Usuario.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Models\\Usuario.cs",
+              "RelativeToolTip": "SGCarreras\\Models\\Usuario.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-14T01:25:37.659Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-14T01:33:40.094Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "SGCarreras\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "SGCarreras\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T01:25:37.659Z"
             }
           ]
         }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\SGCarreras.csproj": {}
+    "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\SGCarreras.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\SGCarreras.csproj": {
+    "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\SGCarreras.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
+        "projectUniqueName": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
         "projectName": "SGCarreras",
-        "projectPath": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
+        "projectPath": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
         "packagesPath": "C:\\Users\\Perepupengue\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\obj\\",
+        "outputPath": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -53,6 +53,10 @@
             "Microsoft.EntityFrameworkCore.InMemory": {
               "target": "Package",
               "version": "[9.0.9, )"
+            },
+            "System.Data.SQLite": {
+              "target": "Package",
+              "version": "[2.0.2, )"
             }
           },
           "imports": [

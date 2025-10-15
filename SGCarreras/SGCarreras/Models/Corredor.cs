@@ -7,6 +7,9 @@ namespace SGCarreras.Models
         public SexoEnum sexo { get; set; }
         string nacionalidad { get; set; }
 
+        //Relaciones
+        public List<Registro> registros { get; set; } = new();
+
         public Corredor() { }
 
         public Corredor(SexoEnum sexo, string nacionalidad)

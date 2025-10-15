@@ -212,6 +212,15 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "System.Data.SQLite/2.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {}
+        }
+      },
       "System.Diagnostics.DiagnosticSource/9.0.9": {
         "type": "package",
         "compile": {
@@ -581,6 +590,20 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "System.Data.SQLite/2.0.2": {
+      "sha512": "yAwxkraZf1PazyLg1sqMAlh4KEtaa2L8zieLicd9oWBybrb3SoPph+WVIyUTFWwtTVhNX/jNsDew6tbB8bw2xQ==",
+      "type": "package",
+      "path": "system.data.sqlite/2.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net471/System.Data.SQLite.dll",
+        "lib/netstandard2.0/System.Data.SQLite.dll",
+        "lib/netstandard2.1/System.Data.SQLite.dll",
+        "system.data.sqlite.2.0.2.nupkg.sha512",
+        "system.data.sqlite.nuspec"
+      ]
+    },
     "System.Diagnostics.DiagnosticSource/9.0.9": {
       "sha512": "8hy61dsFYYSDjT9iTAfygGMU3A0EAnG69x5FUXeKsCjMhBmtTBt4UMUEW3ipprFoorOW6Jw/7hDMjXtlrsOvVQ==",
       "type": "package",
@@ -611,7 +634,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "Microsoft.EntityFrameworkCore.InMemory >= 9.0.9"
+      "Microsoft.EntityFrameworkCore.InMemory >= 9.0.9",
+      "System.Data.SQLite >= 2.0.2"
     ]
   },
   "packageFolders": {
@@ -621,11 +645,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
+      "projectUniqueName": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
       "projectName": "SGCarreras",
-      "projectPath": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
+      "projectPath": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\SGCarreras.csproj",
       "packagesPath": "C:\\Users\\Perepupengue\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Perepupengue\\Desktop\\Scool\\.net\\proyectos\\SGCarreras\\SGCarreras\\obj\\",
+      "outputPath": "C:\\Users\\Perepupengue\\Documents\\GitHub\\Sistema-Gestor-De-Carreras\\SGCarreras\\SGCarreras\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -667,6 +691,10 @@
           "Microsoft.EntityFrameworkCore.InMemory": {
             "target": "Package",
             "version": "[9.0.9, )"
+          },
+          "System.Data.SQLite": {
+            "target": "Package",
+            "version": "[2.0.2, )"
           }
         },
         "imports": [
