@@ -1,8 +1,13 @@
-﻿namespace SGCarreras.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SGCarreras.Models
 {
     public class Usuario
     {
-        public string id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
 
         public string nombreCompleto { get; set; }
 
@@ -11,9 +16,8 @@
      
         public Usuario() { }
 
-        public Usuario(string id, string nombreCompleto, string cedula)
+        public Usuario( string nombreCompleto, string cedula)
         {
-            this.id = id;
             this.nombreCompleto = nombreCompleto;
             this.cedula = cedula;
         }

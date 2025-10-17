@@ -1,14 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SGCarreras.Data;
+using System;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SGCarrerasContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SGCarrerasContext") ?? throw new InvalidOperationException("Connection string 'SGCarrerasContext' not found.")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("SGCarrerasContext") ?? throw new InvalidOperationException("Connection string 'SGCarrerasContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddRazorPages();
+
+//builder.Services.AddDbContext<AppDbContext>(options =>
+  //  options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<SGCarrerasContext>();
+    dbContext.Database.Migrate(); // <-- aplica migraciones pendientes
+}
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

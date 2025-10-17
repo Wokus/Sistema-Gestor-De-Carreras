@@ -15,5 +15,6 @@ namespace SGCarreras.Data
         }
 
         public DbSet<SGCarreras.Models.Corredor> Corredor { get; set; } = default!;
+        public DbSet<SGCarreras.Models.Carrera> Carrera { get; set; } = default!;
     }
 }
