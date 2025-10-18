@@ -1,7 +1,12 @@
-﻿namespace SGCarreras.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SGCarreras.Models
 {
     public class Registro
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         public int numeroEnCarrera { get; set; }
 
@@ -10,10 +15,15 @@
         public DateTime horaDeFinalizacion { get; set; }
 
         //Releishon Taim
+        public int CorredorId { get; set; }
+        public int CarreraId { get; set; }
 
+        [ForeignKey("CorredorId")]
         public Corredor Corredor { get; set; }
+
+        [ForeignKey("CarreraId")]
         public Carrera Carrera { get; set; }
-        public List<TiempoParcial> TiemposParciales { get; set; } = new();
+        public ICollection<TiempoParcial> TiemposParciales { get; set; } 
 
 
         public Registro() { }

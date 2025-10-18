@@ -8,7 +8,7 @@ namespace SGCarreras.Models
         string nacionalidad { get; set; }
 
         //Relaciones
-        public List<Registro> registros { get; set; } = new();
+        public ICollection<Registro> registros { get; set; }
 
         public Corredor() { }
 

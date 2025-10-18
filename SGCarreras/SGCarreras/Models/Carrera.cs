@@ -1,11 +1,15 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.X509Certificates;
 using static SGCarreras.Models.Estado;
 
 namespace SGCarreras.Models
 {
     public class Carrera
     {
-        public string id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
 
         public string nombre { get; set; }
 
@@ -18,13 +22,13 @@ namespace SGCarreras.Models
 
         //Relaciones
 
-        public List<Registro> registros { get; set; } = new();
-        public List<PuntoDeControl> ptosDeControl { get; set; } = new();
+        public ICollection<Registro> registros { get; set; }
+        public ICollection<PuntoDeControl> ptosDeControl { get; set; }
 
 
         public Carrera() { }
 
-        public Carrera(string id, string nombre, string ubicacion, EstadoEnum estado, double kmTotales)
+        public Carrera(int id, string nombre, string ubicacion, EstadoEnum estado, double kmTotales)
         {
             this.id = id;
             this.nombre = nombre;
