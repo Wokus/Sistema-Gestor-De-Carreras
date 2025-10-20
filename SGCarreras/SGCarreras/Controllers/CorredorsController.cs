@@ -27,7 +27,7 @@ namespace SGCarreras.Controllers
         }
 
         // GET: Corredors/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -68,15 +68,25 @@ namespace SGCarreras.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(corredor); // EF Core generará Id automáticamente
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(corredor);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // 🔸 Agrega el error al ModelState para que aparezca en la vista
+                    ModelState.AddModelError(string.Empty, $"Error al guardar: {ex.Message}");
+                }
             }
+
+            // 🔸 Si llega aquí, algo falló. Vuelve a mostrar la vista con los errores
             return View(corredor);
         }
 
         // GET: Corredors/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -127,7 +137,7 @@ namespace SGCarreras.Controllers
         }
 
         // GET: Corredors/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -147,7 +157,7 @@ namespace SGCarreras.Controllers
         // POST: Corredors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var corredor = await _context.Corredor.FindAsync(id);
             if (corredor != null)

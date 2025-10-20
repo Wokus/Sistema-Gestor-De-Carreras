@@ -18,9 +18,8 @@ namespace SGCarreras.Models
         public Carrera Carrera { get; set; }
         public PuntoDeControl() { }
 
-        public PuntoDeControl(int id, double distancia)
+        public PuntoDeControl( double distancia)
         {
-            this.id = id;
             this.distancia = distancia;
         }
     }

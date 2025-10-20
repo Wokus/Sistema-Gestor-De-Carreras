@@ -28,9 +28,8 @@ namespace SGCarreras.Models
 
         public Registro() { }
 
-        public Registro(int id, int numeroEnCarrera, int posicionEnCarrera, DateTime horaDeFinalizacion)
+        public Registro(int numeroEnCarrera, int posicionEnCarrera, DateTime horaDeFinalizacion)
         {
-            this.id = id;
             this.numeroEnCarrera = numeroEnCarrera;
             this.posicionEnCarrera = posicionEnCarrera;
             this.horaDeFinalizacion = horaDeFinalizacion;

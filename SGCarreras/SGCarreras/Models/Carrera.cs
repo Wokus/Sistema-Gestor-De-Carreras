@@ -22,15 +22,14 @@ namespace SGCarreras.Models
 
         //Relaciones
 
-        public ICollection<Registro> registros { get; set; }
-        public ICollection<PuntoDeControl> ptosDeControl { get; set; }
+        public ICollection<Registro> registros { get; set; } = new List<Registro>();
+        public ICollection<PuntoDeControl> ptosDeControl { get; set; } = new List<PuntoDeControl>();
 
 
         public Carrera() { }
 
-        public Carrera(int id, string nombre, string ubicacion, EstadoEnum estado, double kmTotales)
+        public Carrera(string nombre, string ubicacion, EstadoEnum estado, double kmTotales)
         {
-            this.id = id;
             this.nombre = nombre;
             this.ubicacion = ubicacion;
             this.estado = estado;  

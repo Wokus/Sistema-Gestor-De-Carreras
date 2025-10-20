@@ -23,10 +23,9 @@ namespace SGCarreras.Models
 
         public TiempoParcial() { }
 
-        public TiempoParcial(int tiempo, int id)
+        public TiempoParcial(int tiempo)
         {
             this.tiempo = tiempo;
-            this.id = id;
         }
     }
 }
