@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SGCarreras.Models;
 
+
 namespace SGCarreras.Controllers
 {
     public class HomeController : Controller
