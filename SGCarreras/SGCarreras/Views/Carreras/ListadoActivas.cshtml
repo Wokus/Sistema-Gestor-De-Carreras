@@ -1,0 +1,29 @@
+﻿@model IEnumerable<SGCarreras.Models.Carrera>
+
+<h2>Listado de Carreras Activas</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Kilómetros Totales</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.nombre</td>
+                <td>@item.ubicacion</td>
+                <td>@item.kmTotales</td>
+                <td>@item.estado.ToString()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.id">Detalles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

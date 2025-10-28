@@ -165,5 +165,33 @@ namespace SGCarreras.Controllers
         {
             return _context.Carrera.Any(e => e.id == id);
         }
+
+        // Listado de Carreras Activas
+        public async Task<IActionResult> ListadoActivas()
+        {
+            var carrerasActivas = await _context.Carrera
+                .Where(c => c.estado == EstadoEnum.Activo)
+                .ToListAsync();
+            return View(carrerasActivas);
+        }
+
+        // Listado de Carreras En Espera
+        public async Task<IActionResult> ListadoEnEspera()
+        {
+            var carrerasEnEspera = await _context.Carrera
+                .Where(c => c.estado == EstadoEnum.En_espera)
+                .ToListAsync();
+            return View(carrerasEnEspera);
+        }
+
+        // Listado de Carreras Finalizadas
+        public async Task<IActionResult> ListadoFinalizadas()
+        {
+            var carrerasFinalizadas = await _context.Carrera
+                .Where(c => c.estado == EstadoEnum.Finalizada)
+                .ToListAsync();
+            return View(carrerasFinalizadas);
+        }
+
     }
 }
