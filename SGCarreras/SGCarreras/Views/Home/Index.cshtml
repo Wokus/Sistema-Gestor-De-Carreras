@@ -2,27 +2,65 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner text-center">
+            <div class="carousel-item active">
+                <img src="https://recorremaldonado.com/wp-content/uploads/2024/12/PUNTAOK1-1024x806.jpg" class="d-block w-100" alt="Carreras">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Gestión de Carreras Deportivas</h5>
+                    <p>Administrá y consultá eventos deportivos en la región.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://recorremaldonado.com/wp-content/uploads/2024/12/LABARRAOK-1024x806.jpg" class="d-block w-100" alt="Atletas">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Experiencia para Atletas</h5>
+                    <p>Manejo fácil y rápido para preinscripciones y resultados.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://recorremaldonado.com/wp-content/uploads/2024/12/maldonadook-1-1024x806.jpg" class="d-block w-100" alt="Organizadores">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Soluciones para Organizadores</h5>
+                    <p>Plataforma integral para optimizar la gestión de eventos.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
 </div>
-<a class="btn btn-primary" asp-controller="Corredors" asp-action="Index">
-    Corredoor momento bro
-</a>
 
-<a class="btn btn-primary" asp-controller="Carreras" asp-action="Index">
-    Carreras
-</a>
+<div class="text-center mt-5 mb-5">
+    <a class="btn btn-primary" asp-controller="Corredors" asp-action="Index">
+        Corredoor momento bro
+    </a>
 
-<a class="btn btn-primary" asp-controller="Carreras" asp-action="ListadoActivas">
-    Carreras Activas
-</a>
+    <a class="btn btn-primary" asp-controller="Carreras" asp-action="Index">
+        Carreras
+    </a>
 
-<a class="btn btn-primary" asp-controller="Carreras" asp-action="ListadoEnEspera">
-    Carreras En Espera
-</a>
+    <a class="btn btn-primary" asp-controller="Carreras" asp-action="ListadoActivas">
+        Carreras Activas
+    </a>
 
-<a class="btn btn-primary" asp-controller="Carreras" asp-action="ListadoFinalizadas">
-    Carreras Finalizadas
-</a>
+    <a class="btn btn-primary" asp-controller="Carreras" asp-action="ListadoEnEspera">
+        Carreras En Espera
+    </a>
 
+    <a class="btn btn-primary" asp-controller="Carreras" asp-action="ListadoFinalizadas">
+        Carreras Finalizadas
+    </a>
+</div>

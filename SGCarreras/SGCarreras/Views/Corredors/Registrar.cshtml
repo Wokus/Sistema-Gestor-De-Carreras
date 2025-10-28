@@ -4,51 +4,62 @@
     ViewData["Title"] = "Registrar";
 }
 
-<h1>Registrar</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow rounded-4">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4">Registrarse</h2>
 
-<h4>Corredor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Registrar">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @if (ViewBag.Message != null)
-            {
-                <div class="form-group" style="color: green; ">@ViewBag.Message</div> 
-            }
+                    <form asp-action="Registrar" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                        @if (ViewBag.Message != null)
+                        {
+                            <div class="alert alert-success" role="alert">@ViewBag.Message</div>
+                        }
 
-            <div class="form-group">
-                <label asp-for="nombreCompleto" class="control-label"></label>
-                <input asp-for="nombreCompleto" class="form-control" />
-                <span asp-validation-for="nombreCompleto" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="nombreCompleto" class="form-label">Nombre Completo</label>
+                            <input asp-for="nombreCompleto" class="form-control" placeholder="Ingrese su nombre completo" />
+                            <span asp-validation-for="nombreCompleto" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="cedula" class="form-label">Cedula</label>
+                            <input asp-for="cedula" class="form-control" placeholder="Ingrese su cédula" />
+                            <span asp-validation-for="cedula" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="contra" class="form-label">Contraseña</label>
+                            <input asp-for="contra" type="password" class="form-control" placeholder="Ingrese una contraseña segura" />
+                            <span asp-validation-for="contra" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="mail" class="form-label">Email</label>
+                            <input asp-for="mail" type="email" class="form-control" placeholder="Ingrese su email" />
+                            <span asp-validation-for="mail" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Crear cuenta</button>
+                    </form>
+
+                    <hr class="my-4" />
+
+                    <p class="text-center mb-0">
+                        ¿Ya tienes cuenta?
+                        <a asp-action="LogIn" class="fw-semibold">Ingresar aquí</a>
+                    </p>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="cedula" class="control-label"></label>
-                <input asp-for="cedula" class="form-control" />
-                <span asp-validation-for="cedula" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="contra" class="control-label"></label>
-                <input asp-for="contra" class="form-control" />
-                <span asp-validation-for="contra" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="mail" class="control-label"></label>
-                <input asp-for="mail" class="form-control" />
-                <span asp-validation-for="mail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    Already have an account? <a asp-action="LogIn">Go Tor Login</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

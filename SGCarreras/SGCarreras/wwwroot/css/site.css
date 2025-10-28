@@ -20,3 +20,69 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Contenedor del carousel con margen lateral para controles */
+#carouselExampleIndicators {
+    max-width: 600px;
+    margin: 3rem auto; /* separa un poco de arriba y abajo */
+    height: 320px;
+    position: relative;
+    padding: 0 3rem; /* espacio a los lados para controles */
+    box-sizing: border-box;
+}
+
+/* Control del carousel fuera de la imagen, a los lados */
+.carousel-control-prev,
+.carousel-control-next {
+    top: 50%;
+    width: 3rem;
+    height: 3rem;
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    position: absolute;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Flecha Prev a la izquierda fuera del contenido */
+.carousel-control-prev {
+    left: 0;
+}
+
+/* Flecha Next a la derecha fuera del contenido */
+.carousel-control-next {
+    right: 0;
+}
+
+/* Íconos de flechas más visibles */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 1.5rem 1.5rem;
+}
+
+/* Imagen ocupa todo, altura fija, escala cubriendo */
+#carouselExampleIndicators .carousel-item img {
+    height: 320px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Texto centrado y visible con fondo semitransparente */
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 0.3rem;
+    bottom: 20px; /* distancia desde abajo */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+}
+
+/* Indicadores centrados debajo del carousel */
+.carousel-indicators {
+    bottom: -30px;
+}

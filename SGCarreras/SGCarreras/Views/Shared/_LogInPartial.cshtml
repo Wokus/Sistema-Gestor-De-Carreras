@@ -1,30 +1,31 @@
-﻿ @if(Context.User.Identity.Name != null)
- {
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
 
-    <form asp-controller="Corredors" asp-action="LogOut" method="post" id="logoutForm" class= "navbar-right">
+@if (Context.User?.Identity?.Name != null)
+{
+    <form asp-controller="Corredors" asp-action="LogOut" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-            Hello @Context.User.Identity.Name!
+                Hola @Context.User.Identity.Name!
             </li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log off</button>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">Cerrar Sesión</button>
             </li>
-            </ul>
+        </ul>
     </form>
-
-
-
-
-
-
-
-
-
 }
-else {
-<ul class="nav navbar-nav navbar-right">
-        <li><a class="nav-link text-dark" asp-controller="Corredors" asp-action="Registrar">Registrar</a></li>
-        <li><a class="nav-link text-dark" asp-controller="Corredors" asp-action="LogIn">Log in</a></li>
-</ul>
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @if (!(currentController == "Corredors" && currentAction == "Registrar"))
+        {
+            <li><a class="nav-link text-dark" asp-controller="Corredors" asp-action="Registrar">Registrarse</a></li>
+        }
+        @if (!(currentController == "Corredors" && currentAction == "LogIn"))
+        {
+            <li><a class="nav-link text-dark" asp-controller="Corredors" asp-action="LogIn">Iniciar Sesión</a></li>
+        }
+    </ul>
 }
-
