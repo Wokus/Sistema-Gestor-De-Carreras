@@ -1,14 +1,27 @@
-﻿@{
+﻿@using System.Threading;
+@using System.Security.Claims;
+@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
+@{
+    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    int userId = 0;
+    int.TryParse(userIdString, out userId);
+
+    var email = User.FindFirstValue(ClaimTypes.Email);
+    var nombre = User.FindFirstValue(ClaimTypes.Name);
+    var rol = User.FindFirstValue(ClaimTypes.Role);
+}
+
 @if (Context.User?.Identity?.Name != null)
 {
+
     <form asp-controller="Corredors" asp-action="LogOut" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                Hola @Context.User.Identity.Name!
+                <a class="btn btn-link navbar-btn navbar-link" asp-controller="Corredors" asp-action="Details" asp-route-id="@userId"> @Context.User.Identity.Name!</a>
             </li>
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Cerrar Sesión</button>
