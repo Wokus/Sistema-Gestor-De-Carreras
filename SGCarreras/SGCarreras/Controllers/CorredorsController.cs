@@ -150,7 +150,9 @@ namespace SGCarreras.Controllers
 
                         var claims = new List<Claim>
                     {
-                    new Claim (ClaimTypes.Name, corre.Mail),
+                    new Claim (ClaimTypes.Email, corre.Mail),
+                    new Claim (ClaimTypes.Name, corre.NombreCompleto),
+                    new Claim (ClaimTypes.NameIdentifier, corre.Id.ToString()),
                     new Claim(ClaimTypes.Role, "Corredor"),
                     };
 
