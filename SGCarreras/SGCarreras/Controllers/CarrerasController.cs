@@ -66,7 +66,7 @@ namespace SGCarreras.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,nombre,ubicacion,estado,kmTotales")] Carrera carrera)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Ubicacion,Estado,KmTotales,Fecha")] Carrera carrera)
         {
             if (ModelState.IsValid)
             {
@@ -77,39 +77,9 @@ namespace SGCarreras.Controllers
             return View(carrera);
         }
 
-        // GET: Carreras/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var carrera = await _context.Carrera.FindAsync(id);
-            if (carrera == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.EstadoList = Enum.GetValues(typeof(EstadoEnum))
-                                    .Cast<EstadoEnum>()
-                                    .Select(s => new SelectListItem
-                                    {
-                                        Value = s.ToString(),
-                                        Text = s.ToString(),
-                                        Selected = s == carrera.Estado
-                                    }).ToList();
-
-            return View(carrera);
-        }
-
-
-        // POST: Carreras/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,nombre,ubicacion,estado,kmTotales")] Carrera carrera)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Ubicacion,Estado,KmTotales,Fecha")] Carrera carrera)
         {
             if (id != carrera.Id)
             {
@@ -138,6 +108,33 @@ namespace SGCarreras.Controllers
             }
             return View(carrera);
         }
+
+        // GET: Carreras/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var carrera = await _context.Carrera.FindAsync(id);
+            if (carrera == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.EstadoList = Enum.GetValues(typeof(EstadoEnum))
+                                        .Cast<EstadoEnum>()
+                                        .Select(s => new SelectListItem
+                                        {
+                                            Value = s.ToString(),
+                                            Text = s.ToString(),
+                                            Selected = s == carrera.Estado
+                                        }).ToList();
+
+            return View(carrera);
+        }
+
 
         // GET: Carreras/Delete/5
         public async Task<IActionResult> Delete(int? id)

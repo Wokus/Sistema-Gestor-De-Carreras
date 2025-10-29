@@ -22,6 +22,7 @@
                     <th>Nombre</th>
                     <th>Ubicación</th>
                     <th>Kilómetros Totales</th>
+                    <th>Fecha y Hora</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -33,6 +34,7 @@
                         <td class="fw-semibold">@item.Nombre</td>
                         <td>@item.Ubicacion</td>
                         <td>@string.Format("{0:N2}", item.KmTotales)</td>
+                        <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
                         <td>
                             <span class="badge @GetEstadoBadgeClass(item.Estado)">
                                 @item.Estado.ToString()

@@ -25,6 +25,11 @@ namespace SGCarreras.Models
         [Range(0, double.MaxValue, ErrorMessage = "Los kilómetros totales deben ser un valor positivo.")]
         public double KmTotales { get; set; }
 
+        [Required(ErrorMessage = "La fecha es obligatoria.")]
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha y Hora")]
+        public DateTime Fecha { get; set; }
+
         // Relaciones
 
         public ICollection<Registro> Registros { get; set; } = [];
@@ -33,7 +38,7 @@ namespace SGCarreras.Models
 
         public Carrera() { }
 
-        public Carrera(string nombre, string ubicacion, EstadoEnum estado, double kmTotales)
+        public Carrera(string nombre, string ubicacion, EstadoEnum estado, double kmTotales, DateTime fecha)
         {
             Nombre = nombre;
             Ubicacion = ubicacion;
@@ -41,6 +46,7 @@ namespace SGCarreras.Models
             KmTotales = kmTotales;
             Registros = [];
             PuntosDeControl = [];
+            Fecha = fecha;
         }
     }
 }

@@ -9,6 +9,7 @@
             <th>Ubicación</th>
             <th>Kilómetros Totales</th>
             <th>Estado</th>
+            <th>Fecha y Hora</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -19,8 +20,8 @@
                 <td>@item.Nombre</td>
                 <td>@item.Ubicacion</td>
                 <td>@item.KmTotales</td>
-                <td>@item.
-                    .ToString()</td>
+                <td>@item.Estado.ToString()</td>
+                <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
                 </td>
