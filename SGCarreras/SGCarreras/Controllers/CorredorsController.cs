@@ -68,7 +68,7 @@ namespace SGCarreras.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("sexo,nombreCompleto,cedula")] Corredor corredor)
+        public async Task<IActionResult> Create([Bind("Sexo,NombreCompleto,Cedula")] Corredor corredor)
         {
             if (ModelState.IsValid)
             {
@@ -98,7 +98,7 @@ namespace SGCarreras.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registrar([Bind("sexo,nombreCompleto,cedula,contra,mail")] Corredor corredor)
+        public async Task<IActionResult> Registrar([Bind("Sexo,NombreCompleto,Cedula,Contra,Mail")] Corredor corredor)
         {
             if (ModelState.IsValid)
             {
@@ -134,7 +134,7 @@ namespace SGCarreras.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogIn([Bind("mail,contra")] CorredorLogIn corredorLogIn)
+        public async Task<IActionResult> LogIn([Bind("Mail,Contra")] CorredorLogIn corredorLogIn)
         {
             if (ModelState.IsValid)
             {
@@ -227,7 +227,7 @@ namespace SGCarreras.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("sexo,id,nombreCompleto,cedula")] Corredor corredor)
+        public async Task<IActionResult> Edit(int id, [Bind("Sexo,Id,NombreCompleto,Cedula")] Corredor corredor)
         {
             if (id != corredor.Id)
             {
