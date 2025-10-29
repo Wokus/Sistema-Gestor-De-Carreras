@@ -204,5 +204,30 @@ namespace SGCarreras.Controllers
             return View(carrerasFinalizadas);
         }
 
+        public IActionResult Calendarios(string filtro = "Todas")
+        {
+            IEnumerable<Carrera> carreras;
+
+            switch (filtro)
+            {
+                case "Activas":
+                    carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.Activo).ToList();
+                    break;
+                case "EnEspera":
+                    carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.En_espera).ToList();
+                    break;
+                case "Finalizadas":
+                    carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.Finalizada).ToList();
+                    break;
+                default:
+                    carreras = _context.Carrera.ToList();
+                    break;
+            }
+
+            ViewBag.FiltroActual = filtro;
+            return View(carreras);
+        }
+
+
     }
 }
