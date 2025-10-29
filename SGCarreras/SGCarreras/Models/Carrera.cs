@@ -23,7 +23,7 @@ namespace SGCarreras.Models
         //Relaciones
 
         public ICollection<Registro> registros { get; set; } = new List<Registro>();
-        public ICollection<PuntoDeControl> ptosDeControl { get; set; } = new List<PuntoDeControl>();
+        public ICollection<PuntoDeControl> PuntosDeControl { get; set; }
 
 
         public Carrera() { }
