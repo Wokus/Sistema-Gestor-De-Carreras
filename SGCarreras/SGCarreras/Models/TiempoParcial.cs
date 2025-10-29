@@ -7,29 +7,26 @@ namespace SGCarreras.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
-        public int tiempo { get; set; }
-
+        public int Id { get; set; }
+        public int Tiempo { get; set; }
 
         //Relaciones Tiempo de:
         public int PuntoControlId { get; set; }
         public int RegistroId { get; set; }
 
+        [Required]
         [ForeignKey("PuntoControlId")]
-        public PuntoDeControl PuntoControl { get; set; }
+        public PuntoDeControl? PuntoControl { get; set; }
 
+        [Required]
         [ForeignKey("RegistroId")]
-        public Registro Registro { get; set; }
+        public Registro? Registro { get; set; }
 
         public TiempoParcial() { }
 
         public TiempoParcial(int tiempo)
         {
-            this.tiempo = tiempo;
+            this.Tiempo = tiempo;
         }
     }
 }
-
-
-
-    

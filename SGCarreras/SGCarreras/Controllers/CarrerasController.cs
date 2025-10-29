@@ -36,7 +36,7 @@ namespace SGCarreras.Controllers
             }
 
             var carrera = await _context.Carrera
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (carrera == null)
             {
                 return NotFound();
@@ -90,8 +90,19 @@ namespace SGCarreras.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.EstadoList = Enum.GetValues(typeof(EstadoEnum))
+                                    .Cast<EstadoEnum>()
+                                    .Select(s => new SelectListItem
+                                    {
+                                        Value = s.ToString(),
+                                        Text = s.ToString(),
+                                        Selected = s == carrera.Estado
+                                    }).ToList();
+
             return View(carrera);
         }
+
 
         // POST: Carreras/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -100,7 +111,7 @@ namespace SGCarreras.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,nombre,ubicacion,estado,kmTotales")] Carrera carrera)
         {
-            if (id != carrera.id)
+            if (id != carrera.Id)
             {
                 return NotFound();
             }
@@ -114,7 +125,7 @@ namespace SGCarreras.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CarreraExists(carrera.id))
+                    if (!CarreraExists(carrera.Id))
                     {
                         return NotFound();
                     }
@@ -137,7 +148,7 @@ namespace SGCarreras.Controllers
             }
 
             var carrera = await _context.Carrera
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (carrera == null)
             {
                 return NotFound();
@@ -163,14 +174,14 @@ namespace SGCarreras.Controllers
 
         private bool CarreraExists(int id)
         {
-            return _context.Carrera.Any(e => e.id == id);
+            return _context.Carrera.Any(e => e.Id == id);
         }
 
         // Listado de Carreras Activas
         public async Task<IActionResult> ListadoActivas()
         {
             var carrerasActivas = await _context.Carrera
-                .Where(c => c.estado == EstadoEnum.Activo)
+                .Where(c => c.Estado == EstadoEnum.Activo)
                 .ToListAsync();
             return View(carrerasActivas);
         }
@@ -179,7 +190,7 @@ namespace SGCarreras.Controllers
         public async Task<IActionResult> ListadoEnEspera()
         {
             var carrerasEnEspera = await _context.Carrera
-                .Where(c => c.estado == EstadoEnum.En_espera)
+                .Where(c => c.Estado == EstadoEnum.En_espera)
                 .ToListAsync();
             return View(carrerasEnEspera);
         }
@@ -188,7 +199,7 @@ namespace SGCarreras.Controllers
         public async Task<IActionResult> ListadoFinalizadas()
         {
             var carrerasFinalizadas = await _context.Carrera
-                .Where(c => c.estado == EstadoEnum.Finalizada)
+                .Where(c => c.Estado == EstadoEnum.Finalizada)
                 .ToListAsync();
             return View(carrerasFinalizadas);
         }

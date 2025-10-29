@@ -3,14 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SGCarreras.Models.ViewModels
 {
-    [Index(nameof(mail), IsUnique = true)]
+    [Index(nameof(Mail), IsUnique = true)]
     public class CorredorLogIn
     {
 
         [EmailAddress]
-        public string mail { get; set; }
-        public string contra { get; set; }
+        public string Mail { get; set; } = string.Empty;
+        public string Contra { get; set; } = string.Empty;
 
-      
     }
 }

@@ -5,39 +5,34 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGCarreras.Models
 {
-    [Index(nameof(mail), IsUnique = true)]
+    [Index(nameof(Mail), IsUnique = true)]
     public class Usuario
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public string nombreCompleto { get; set; }
+        public string NombreCompleto { get; set; } = string.Empty;
 
-        public string cedula { get; set; }
+        public string Cedula { get; set; } = string.Empty;
 
-        public string contra { get; set; }
+        public string Contra { get; set; } = string.Empty;
 
         [EmailAddress]
-        public string mail { get; set; }
+        public string Mail { get; set; } = string.Empty;
         public Usuario() { }
 
         public Usuario( string nombreCompleto, string cedula, string mail, string contra)
         {
-            this.nombreCompleto = nombreCompleto;
-            this.cedula = cedula;
-            this.contra = contra;
-            this.mail = mail;
+            this.NombreCompleto = nombreCompleto;
+            this.Cedula = cedula;
+            this.Contra = contra;
+            this.Mail = mail;
         }
         public Usuario( string mail, string contra)
         {
-           
-            this.contra = contra;
-            this.mail = mail;
+            this.Contra = contra;
+            this.Mail = mail;
         }
     }
 }
-
-
-
-    

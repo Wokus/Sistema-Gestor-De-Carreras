@@ -16,12 +16,12 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.nombre</td>
-                <td>@item.ubicacion</td>
-                <td>@item.kmTotales</td>
-                <td>@item.estado.ToString()</td>
+                <td>@item.Nombre</td>
+                <td>@item.Ubicacion</td>
+                <td>@item.KmTotales</td>
+                <td>@item.Estado.ToString()</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.id">Detalles</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
                 </td>
             </tr>
         }

@@ -39,7 +39,7 @@ namespace SGCarreras.Controllers
             }
 
             var corredor = await _context.Corredor
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (corredor == null)
             {
                 return NotFound();
@@ -108,7 +108,7 @@ namespace SGCarreras.Controllers
                     await _context.SaveChangesAsync();
 
 
-                    ViewBag.Message = $"{corredor.nombreCompleto} / {corredor.mail}, Registrado correcramente.";
+                    ViewBag.Message = $"{corredor.NombreCompleto} / {corredor.Mail}, Registrado correcramente.";
                     ModelState.Clear();
 
 
@@ -139,18 +139,18 @@ namespace SGCarreras.Controllers
             if (ModelState.IsValid)
             {
                 Corredor corredor = new Corredor();
-                corredor.contra = corredorLogIn.contra;
-                corredor.mail = corredorLogIn.mail;
+                corredor.Contra = corredorLogIn.Contra;
+                corredor.Mail = corredorLogIn.Mail;
 
                 try
                 {
-                    var corre = _context.Corredor.Where(x => x.mail == corredor.mail && x.contra == corredor.contra).FirstOrDefault();
+                    var corre = _context.Corredor.Where(x => x.Mail == corredor.Mail && x.Contra == corredor.Contra).FirstOrDefault();
                     if (corre != null)
                     {
 
                         var claims = new List<Claim>
                     {
-                    new Claim (ClaimTypes.Name, corre.mail),
+                    new Claim (ClaimTypes.Name, corre.Mail),
                     new Claim(ClaimTypes.Role, "Corredor"),
                     };
 
@@ -227,7 +227,7 @@ namespace SGCarreras.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("sexo,id,nombreCompleto,cedula")] Corredor corredor)
         {
-            if (id != corredor.id)
+            if (id != corredor.Id)
             {
                 return NotFound();
             }
@@ -241,7 +241,7 @@ namespace SGCarreras.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CorredorExists(corredor.id))
+                    if (!CorredorExists(corredor.Id))
                     {
                         return NotFound();
                     }
@@ -264,7 +264,7 @@ namespace SGCarreras.Controllers
             }
 
             var corredor = await _context.Corredor
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (corredor == null)
             {
                 return NotFound();
@@ -290,7 +290,7 @@ namespace SGCarreras.Controllers
 
         private bool CorredorExists(int id)
         {
-            return _context.Corredor.Any(e => e.id == id);
+            return _context.Corredor.Any(e => e.Id == id);
         }
     }
 }

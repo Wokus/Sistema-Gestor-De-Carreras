@@ -13,26 +13,26 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="nombre" class="control-label"></label>
-                <input asp-for="nombre" class="form-control" />
-                <span asp-validation-for="nombre" class="text-danger"></span>
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ubicacion" class="control-label"></label>
-                <input asp-for="ubicacion" class="form-control" />
-                <span asp-validation-for="ubicacion" class="text-danger"></span>
+                <label asp-for="Ubicacion" class="control-label"></label>
+                <input asp-for="Ubicacion" class="form-control" />
+                <span asp-validation-for="Ubicacion" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="estado" class="control-label"></label>
-                <select asp-for="estado" class="form-control" asp-items="ViewBag.EstadoList">
+                <label asp-for="Estado" class="control-label"></label>
+                <select asp-for="Estado" class="form-control" asp-items="ViewBag.EstadoList">
                     <option value="">-- Seleccione --</option>
                 </select>
-                <span asp-validation-for="estado" class="text-danger"></span>
+                <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="kmTotales" class="control-label"></label>
-                <input asp-for="kmTotales" class="form-control" />
-                <span asp-validation-for="kmTotales" class="text-danger"></span>
+                <label asp-for="KmTotales" class="control-label"></label>
+                <input asp-for="KmTotales" class="form-control" />
+                <span asp-validation-for="KmTotales" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

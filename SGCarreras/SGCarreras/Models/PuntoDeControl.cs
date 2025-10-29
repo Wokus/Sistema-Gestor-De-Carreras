@@ -7,24 +7,20 @@ namespace SGCarreras.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int  id { get; set; }
-
-        public double distancia { get; set; }
+        public int id { get; set; }
+        public double Distancia { get; set; }
 
         //Relacioneison
         public int CarreraId { get; set; }
 
+        [Required]
         [ForeignKey("CarreraId")]
-        public Carrera Carrera { get; set; }
+        public Carrera? Carrera { get; set; }
         public PuntoDeControl() { }
 
         public PuntoDeControl( double distancia)
         {
-            this.distancia = distancia;
+            this.Distancia = distancia;
         }
     }
 }
-
-
-
-    

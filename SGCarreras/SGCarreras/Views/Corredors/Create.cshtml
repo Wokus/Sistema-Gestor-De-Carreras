@@ -13,23 +13,23 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="sexo" class="control-label"></label>
+                <label asp-for="Sexo" class="control-label"></label>
 
-                <select asp-for="sexo" class="form-control" asp-items="ViewBag.SexoList">
+                <select asp-for="Sexo" class="form-control" asp-items="ViewBag.SexoList">
                     <option value="">-- Seleccione --</option>
                 </select>
 
-                <span asp-validation-for="sexo" class="text-danger"></span>
+                <span asp-validation-for="Sexo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="nombreCompleto" class="control-label"></label>
-                <input asp-for="nombreCompleto" class="form-control" />
-                <span asp-validation-for="nombreCompleto" class="text-danger"></span>
+                <label asp-for="NombreCompleto" class="control-label"></label>
+                <input asp-for="NombreCompleto" class="form-control" />
+                <span asp-validation-for="NombreCompleto" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="cedula" class="control-label"></label>
-                <input asp-for="cedula" class="form-control" />
-                <span asp-validation-for="cedula" class="text-danger"></span>
+                <label asp-for="Cedula" class="control-label"></label>
+                <input asp-for="Cedula" class="form-control" />
+                <span asp-validation-for="Cedula" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

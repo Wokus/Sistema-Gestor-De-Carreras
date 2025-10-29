@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography.X509Certificates;
 using static SGCarreras.Models.Estado;
 
 namespace SGCarreras.Models
@@ -9,35 +9,38 @@ namespace SGCarreras.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public string nombre { get; set; }
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El nombre no puede exceder los 100 caracteres.")]
+        public string Nombre { get; set; } = string.Empty;
 
-        public string ubicacion { get; set; }
+        [Required(ErrorMessage = "La ubicación es obligatoria.")]
+        [StringLength(150, ErrorMessage = "La ubicación no puede exceder los 150 caracteres.")]
+        public string Ubicacion { get; set; } = string.Empty;
 
-        public EstadoEnum estado { get; set; }
+        [Required(ErrorMessage = "El estado es obligatorio.")]
+        public EstadoEnum Estado { get; set; }
 
-        public double kmTotales { get; set; }
+        [Range(0, double.MaxValue, ErrorMessage = "Los kilómetros totales deben ser un valor positivo.")]
+        public double KmTotales { get; set; }
 
+        // Relaciones
 
-        //Relaciones
+        public ICollection<Registro> Registros { get; set; } = [];
 
-        public ICollection<Registro> registros { get; set; } = new List<Registro>();
-        public ICollection<PuntoDeControl> PuntosDeControl { get; set; }
-
+        public ICollection<PuntoDeControl> PuntosDeControl { get; set; } = [];
 
         public Carrera() { }
 
         public Carrera(string nombre, string ubicacion, EstadoEnum estado, double kmTotales)
         {
-            this.nombre = nombre;
-            this.ubicacion = ubicacion;
-            this.estado = estado;  
-            this.kmTotales = kmTotales;
+            Nombre = nombre;
+            Ubicacion = ubicacion;
+            Estado = estado;
+            KmTotales = kmTotales;
+            Registros = [];
+            PuntosDeControl = [];
         }
     }
 }
-
-
-
-    

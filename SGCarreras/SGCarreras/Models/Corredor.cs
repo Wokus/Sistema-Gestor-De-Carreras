@@ -4,22 +4,18 @@ namespace SGCarreras.Models
 {
     public class Corredor : Usuario
     {
-        public SexoEnum sexo { get; set; }
-        string nacionalidad { get; set; }
+        public SexoEnum Sexo { get; set; }
+        public string Nacionalidad { get; set; } = string.Empty;
 
         //Relaciones
-        public ICollection<Registro> registros { get; set; } = new List<Registro>();
+        public ICollection<Registro> registros { get; set; } = [];
 
         public Corredor() { }
 
         public Corredor(SexoEnum sexo, string nacionalidad)
         {
-            this.sexo = sexo;
-            this.nacionalidad = nacionalidad;
+            Sexo = sexo;
+            Nacionalidad = nacionalidad;
         }
     }
 }
-
-
-
-    
