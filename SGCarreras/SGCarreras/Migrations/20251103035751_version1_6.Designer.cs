@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SGCarreras.Data;
 
@@ -10,9 +11,11 @@ using SGCarreras.Data;
 namespace SGCarreras.Migrations
 {
     [DbContext(typeof(SGCarrerasContext))]
-    partial class SGCarrerasContextModelSnapshot : ModelSnapshot
+    [Migration("20251103035751_version1_6")]
+    partial class version1_6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -152,9 +155,6 @@ namespace SGCarreras.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PosicionEnCarrera")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("confirmado")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

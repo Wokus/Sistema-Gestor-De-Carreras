@@ -14,6 +14,8 @@ namespace SGCarreras.Models
 
         public DateTime HoraDeFinalizacion { get; set; }
 
+        public bool confirmado { get; set; }
+
         //Releishon Taim
         public int CorredorId { get; set; }
         public int CarreraId { get; set; }

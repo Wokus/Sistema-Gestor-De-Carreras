@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SGCarreras.Data;
 using SGCarreras.Models;
+using SGCarreras.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using SGCarreras.Models.ViewModels;
+using static SGCarreras.Models.Estado;
 using static SGCarreras.Models.Sexo;
 
 namespace SGCarreras.Controllers
@@ -31,22 +32,44 @@ namespace SGCarreras.Controllers
         }
 
         // GET: Corredors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string filtro = "Todas")
         {
             if (id == null)
             {
                 return NotFound();
             }
-
             var corredor = await _context.Corredor
-                .FirstOrDefaultAsync(m => m.Id == id);
+                        .Include(m => m.registros)
+                            .ThenInclude(r => r.Carrera)
+                            .FirstOrDefaultAsync(m => m.Id == id);
             if (corredor == null)
             {
                 return NotFound();
             }
+            List<Carrera> carrerasDeUsuario = new List<Carrera>();
+
+            foreach (var item in corredor.registros)
+            {
+                carrerasDeUsuario.Add(item.Carrera);
+            }
+
+            ViewBag.FiltroActual = filtro;
+
 
             return View(corredor);
         }
+
+       
+
+
+
+
+
+
+
+
+
+
 
         // GET: Corredors/Create
         public IActionResult Create()
@@ -294,5 +317,8 @@ namespace SGCarreras.Controllers
         {
             return _context.Corredor.Any(e => e.Id == id);
         }
+
+
+        
     }
 }

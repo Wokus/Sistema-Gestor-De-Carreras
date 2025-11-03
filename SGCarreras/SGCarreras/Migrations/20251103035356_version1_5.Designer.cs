@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SGCarreras.Data;
 
@@ -10,42 +11,14 @@ using SGCarreras.Data;
 namespace SGCarreras.Migrations
 {
     [DbContext(typeof(SGCarrerasContext))]
-    partial class SGCarrerasContextModelSnapshot : ModelSnapshot
+    [Migration("20251103035356_version1_5")]
+    partial class version1_5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
-
-            modelBuilder.Entity("SGCarreras.Models.Administradoor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Cedula")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Contra")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Mail")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NombreCompleto")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Mail")
-                        .IsUnique();
-
-                    b.ToTable("Administrador");
-                });
 
             modelBuilder.Entity("SGCarreras.Models.Carrera", b =>
                 {
@@ -152,9 +125,6 @@ namespace SGCarreras.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PosicionEnCarrera")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("confirmado")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
