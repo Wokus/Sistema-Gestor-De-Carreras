@@ -1,4 +1,21 @@
-﻿<!DOCTYPE html>
+﻿@using System.Threading;
+@using System.Security.Claims;
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+@{
+    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    int userId = 0;
+    int.TryParse(userIdString, out userId);
+
+    var email = User.FindFirstValue(ClaimTypes.Email);
+    var nombre = User.FindFirstValue(ClaimTypes.Name);
+    var rol = User.FindFirstValue(ClaimTypes.Role);
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,7 +42,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Carreras" asp-action="Calendarios">Calendarios</a>
                         </li>
+
+                        @await Html.PartialAsync("_AdministradorPartial")
                     </ul>
+                   
+          
+                        
+              
+
                     @await Html.PartialAsync("_LogInPartial")
                 </div>
             </div>

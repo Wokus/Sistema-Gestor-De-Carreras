@@ -161,23 +161,23 @@ namespace SGCarreras.Controllers
         {
             if (ModelState.IsValid)
             {
-                Corredor corredor = new Corredor();
-                corredor.Contra = corredorLogIn.Contra;
-                corredor.Mail = corredorLogIn.Mail;
+                Usuario usr = new Usuario();
+                usr.Contra = corredorLogIn.Contra;
+                usr.Mail = corredorLogIn.Mail;
 
                 try
                 {
-                    var corre = _context.Corredor.Where(x => x.Mail == corredor.Mail && x.Contra == corredor.Contra).FirstOrDefault();
+                    var corre = _context.Corredor.Where(x => x.Mail == usr.Mail && x.Contra == usr.Contra).FirstOrDefault();
                     if (corre != null)
                     {
 
                         var claims = new List<Claim>
-                    {
-                    new Claim (ClaimTypes.Email, corre.Mail),
-                    new Claim (ClaimTypes.Name, corre.NombreCompleto),
-                    new Claim (ClaimTypes.NameIdentifier, corre.Id.ToString()),
-                    new Claim(ClaimTypes.Role, "Corredor"),
-                    };
+                        {
+                        new Claim (ClaimTypes.Email, corre.Mail),
+                        new Claim (ClaimTypes.Name, corre.NombreCompleto),
+                        new Claim (ClaimTypes.NameIdentifier, corre.Id.ToString()),
+                        new Claim(ClaimTypes.Role, "Corredor"),
+                        };
 
                         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
@@ -186,9 +186,28 @@ namespace SGCarreras.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Mail o Contraseña incorrecta/s");
-                    }
+                        var admin = _context.Administrador.Where(x => x.Mail == usr.Mail && x.Contra == usr.Contra).FirstOrDefault();
 
+                        if (admin != null) {
+                            var claims = new List<Claim>
+                            {
+                            new Claim (ClaimTypes.Email, admin.Mail),
+                            new Claim (ClaimTypes.Name, admin.NombreCompleto),
+                            new Claim (ClaimTypes.NameIdentifier, admin.Id.ToString()),
+                            new Claim(ClaimTypes.Role, "Administrador"),
+                            };
+
+                            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                            return RedirectToAction("Index", "Home");
+
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Mail o Contraseña incorrecta/s");
+                        }                            
+                    }
                 }
                 catch (Exception ex)
                 {
