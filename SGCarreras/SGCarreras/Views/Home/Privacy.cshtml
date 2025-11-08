@@ -1,6 +1,163 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de Privacidad";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container-fluid px-4 py-5">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-primary text-center mb-2">@ViewData["Title"]</h1>
+            <p class="lead text-center text-muted mb-5">En SGCarreras nos comprometemos a proteger tu privacidad y datos personales</p>
+
+            <div class="privacy-content">
+                <div class="privacy-section mb-5">
+                    <h2 class="h3 fw-bold border-bottom pb-2 mb-4">📋 Información que Recopilamos</h2>
+                    <p class="mb-3">Recopilamos la siguiente información para brindarte nuestros servicios:</p>
+                    <ul class="list-unstyled ms-4">
+                        <li class="mb-2">• <strong>Información personal:</strong> nombre completo, email, cédula de identidad</li>
+                        <li class="mb-2">• <strong>Datos deportivos:</strong> registros en carreras, tiempos</li>
+                        <li class="mb-2">• <strong>Información de contacto:</strong> dirección, teléfono para emergencias</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section mb-5">
+                    <h2 class="h3 fw-bold border-bottom pb-2 mb-4">🔒 Uso de la Información</h2>
+                    <p class="mb-3">Utilizamos tu información exclusivamente para:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled ms-3">
+                                <li class="mb-2">• Gestionar inscripciones a carreras</li>
+                                <li class="mb-2">• Publicar resultados oficiales</li>
+                                <li class="mb-2">• Emitir certificados de participación</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled ms-3">
+                                <li class="mb-2">• Comunicar eventos futuros</li>
+                                <li class="mb-2">• Mejorar nuestros servicios</li>
+                                <li class="mb-2">• Cumplir obligaciones legales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="privacy-section mb-5">
+                    <h2 class="h3 fw-bold border-bottom pb-2 mb-4">🤝 Compartición de Datos</h2>
+                    <p class="mb-3">Tu información personal está protegida y solo se comparte en estos casos:</p>
+                    <div class="bg-light p-4 rounded">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <div class="h5 text-primary">Organizadores</div>
+                                <small class="text-muted">Solo datos necesarios para tu participación</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="h5 text-primary">Resultados Públicos</div>
+                                <small class="text-muted">Nombre y tiempo en rankings</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="h5 text-primary">Requerimientos Legales</div>
+                                <small class="text-muted">Cuando la ley lo exija</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="privacy-section mb-5">
+                    <h2 class="h3 fw-bold border-bottom pb-2 mb-4">🛡️ Seguridad de Datos</h2>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <p class="mb-3">Implementamos las siguientes medidas de seguridad:</p>
+                            <ul class="list-unstyled ms-3">
+                                <li class="mb-2">• <strong>Encriptación SSL</strong> en todas las comunicaciones</li>
+                                <li class="mb-2">• <strong>Accesos restringidos</strong> con autenticación múltiple</li>
+                                <li class="mb-2">• <strong>Copias de seguridad</strong> diarias y encriptadas</li>
+                                <li class="mb-2">• <strong>Auditorías regulares</strong> de seguridad</li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="bg-primary text-white p-4 rounded text-center">
+                                <h5 class="fw-bold">Tus datos están seguros</h5>
+                                <p class="small mb-0">Cumplimos con los estándares más altos de protección de datos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="privacy-section">
+                    <h2 class="h3 fw-bold border-bottom pb-2 mb-4">❓ Contacto</h2>
+                    <div class="bg-gradient-primary text-white p-5 rounded text-center">
+                        <h4 class="fw-bold mb-3">¿Tienes preguntas sobre privacidad?</h4>
+                        <p class="mb-4">Estamos aquí para ayudarte y resolver cualquier duda</p>
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 mb-3">
+                                <i class="fas fa-envelope fa-2x mb-2"></i>
+                                <div>privacidad@sgcarreras.com</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <i class="fas fa-phone fa-2x mb-2"></i>
+                                <div>+598 1234 5678</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <i class="fas fa-clock fa-2x mb-2"></i>
+                                <div>Lun-Vie 9:00-18:00</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-muted mt-3"><small>Última actualización: @DateTime.Now.ToString("dd 'de' MMMM 'de' yyyy")</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .privacy-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .privacy-section {
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #007bff;
+    }
+
+        .privacy-section:nth-child(even) {
+            background: #ffffff;
+            border-left-color: #28a745;
+        }
+
+        .privacy-section:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    }
+
+    .table th {
+        background-color: #007bff !important;
+        color: white;
+        border: none;
+    }
+
+    .fas {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+    }
+
+    .fa-envelope::before {
+        content: "📧";
+    }
+
+    .fa-phone::before {
+        content: "📞";
+    }
+
+    .fa-clock::before {
+        content: "🕒";
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

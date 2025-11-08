@@ -20,6 +20,13 @@
 
         <ul class="navbar-nav flex-grow-1">
             <li class="nav-item">
+
+            <a class="nav-link text-dark" asp-controller="Corredors" asp-action="Index" asp-route-id="@userId">Corredores</a>
+                </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Carreras" asp-action="Index" asp-route-id="@userId">Carreras</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-dark" asp-controller="Carreras" asp-action="CalendariosAdmin"> Calendario(Admin)</a>
             </li>
             <li class="nav-item">
