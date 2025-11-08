@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SGCarreras.Models.Carrera>
+@using static SGCarreras.Models.Estado;
+@{
+    ViewData["Title"] = "Admin-Shenanigans";
+    string filtro = ViewBag.FiltroActual as string ?? "Todas";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center fw-bold text-primary">Calendarios de Carreras</h2>
+
+    <div class="btn-group mb-4 d-flex justify-content-center" role="group" aria-label="Filtros de carreras">
+        <a class="btn btn-outline-primary @(filtro == "Todas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Todas">Todas</a>
+        <a class="btn btn-outline-primary @(filtro == "Activas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Activas">Activas</a>
+        <a class="btn btn-outline-primary @(filtro == "EnEspera" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="EnEspera">En Espera</a>
+        <a class="btn btn-outline-primary @(filtro == "Finalizadas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Finalizadas">Finalizadas</a>
+    </div>
+
+    <div class="table-responsive shadow rounded">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Kilómetros Totales</th>
+                    <th>Fecha y Hora</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@item.Nombre</td>
+                        <td>@item.Ubicacion</td>
+                        <td>@string.Format("{0:N2}", item.KmTotales)</td>
+                        <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="badge @GetEstadoBadgeClass(item.Estado)">
+                                @item.Estado.ToString()
+                            </span>
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Ver Detalles</a>
+                        </td>
+                        <td>
+                        @if (item.Estado == EstadoEnum.En_espera)
+                        {
+                            <a asp-action="Registros" asp-route-id="@item.Id" class="btn btn-sm btn-info">Ver Registros</a>
+                        }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@functions {
+    private string GetEstadoBadgeClass(SGCarreras.Models.Estado.EstadoEnum estado)
+    {
+        return estado switch
+        {
+            SGCarreras.Models.Estado.EstadoEnum.Activo => "bg-success",
+            SGCarreras.Models.Estado.EstadoEnum.En_espera => "bg-warning text-dark",
+            SGCarreras.Models.Estado.EstadoEnum.Finalizada => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+}

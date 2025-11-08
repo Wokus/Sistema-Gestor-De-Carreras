@@ -6,6 +6,7 @@ using SGCarreras.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using static SGCarreras.Models.Estado;
 using static SGCarreras.Models.Sexo;
@@ -225,6 +226,63 @@ namespace SGCarreras.Controllers
             return View(carreras);
         }
 
+        public IActionResult CalendariosAdmin(string filtro = "Todas")
+        {
+            IEnumerable<Carrera> carreras;
+            if (corroborarRol("Administrador") == true)
+            {
+                switch (filtro)
+                {
+                    case "Activas":
+                        carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.Activo).ToList();
+                        break;
+                    case "EnEspera":
+                        carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.En_espera).ToList();
+                        break;
+                    case "Finalizadas":
+                        carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.Finalizada).ToList();
+                        break;
+                    default:
+                        carreras = _context.Carrera.ToList();
+                        break;
+                }
+
+                ViewBag.FiltroActual = filtro;
+                return View("AdminShenanigans/CalendariosAdmin", carreras);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+     
+        }
+        public async Task<IActionResult> Registros(int? id)
+        {
+            var carrera = await _context.Carrera
+                .Include(m => m.Registros.Where(r => r.confirmado == false))
+                .ThenInclude(r => r.Corredor)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (carrera == null)
+            {
+                return NotFound();
+            }
+
+
+            return View("AdminShenanigans/ListadoRegistro", carrera.Registros);
+        }
+        private bool corroborarRol(string rol)
+        {
+            var rolToken = User.FindFirstValue(ClaimTypes.Role);
+            if (rolToken != null && rolToken == rol)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
 
     }
 }

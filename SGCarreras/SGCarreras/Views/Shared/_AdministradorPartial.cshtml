@@ -18,19 +18,16 @@
 @if (rol != null && rol == "Administrador")
 {
 
-    <form asp-controller="Corredors" asp-action="LogOut" method="post" id="logoutForm" class="navbar-right">
-
         <ul class="navbar-nav flex-grow-1">
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Corredors" asp-action="Details" asp-route-id="@userId"> Admin OPT 1</a>
+                <a class="nav-link text-dark" asp-controller="Carreras" asp-action="CalendariosAdmin"> Calendario(Admin)</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Corredors" asp-action="Details" asp-route-id="@userId"> Admin OPT 2</a>
+                <a class="nav-link text-dark" asp-controller="Carreras" asp-action="CalendarioAdmin" asp-route-id="@userId"> Admin OPT 2</a>
             </li>
 
         </ul>
       
-    </form>
 }
 else
 {
