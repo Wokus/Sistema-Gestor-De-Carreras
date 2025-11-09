@@ -17,5 +17,6 @@ namespace SGCarreras.Data
         public DbSet<Administradoor> Administrador { get; set; }
         public DbSet<SGCarreras.Models.Carrera> Carrera { get; set; } = default!;
         public DbSet<SGCarreras.Models.PuntoDeControl> PuntosDeControl { get; set; } = default!;
+        public DbSet<SGCarreras.Models.Registro> Registro { get; set; } = default!;
     }
 }
