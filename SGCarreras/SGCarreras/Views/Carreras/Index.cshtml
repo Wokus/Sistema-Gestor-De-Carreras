@@ -1,60 +1,377 @@
 ﻿@model IEnumerable<SGCarreras.Models.Carrera>
+@using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Carreras";
+    var rol = User?.FindFirstValue(ClaimTypes.Role);
 }
 
-<h1>Index</h1>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold text-primary">
+                <i class="fas fa-flag-checkered me-3"></i>
+                Gestión de Carreras
+            </h1>
+            <p class="lead text-muted">Administra y visualiza todas las carreras registradas</p>
+        </div>
+        @if (rol == "Administrador")
+        {
+            <a asp-action="Create" class="btn btn-success btn-lg">
+                <i class="fas fa-plus-circle me-2"></i>Nueva Carrera
+            </a>
+        }
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ubicacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado
-                )
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fecha)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.KmTotales)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ubicacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fecha)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.KmTotales)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-            </td>
-        </tr>
+    <!-- Estadísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="fw-bold">@Model.Count()</h4>
+                            <p class="mb-0">Total Carreras</p>
+                        </div>
+                        <i class="fas fa-flag-checkered fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="fw-bold">@Model.Count(c => c.Estado.ToString() == "Activa")</h4>
+                            <p class="mb-0">Activas</p>
+                        </div>
+                        <i class="fas fa-play-circle fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="fw-bold">@Model.Count(c => c.Estado.ToString() == "Planificada")</h4>
+                            <p class="mb-0">Planificadas</p>
+                        </div>
+                        <i class="fas fa-clock fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="fw-bold">@Model.Sum(c => c.KmTotales).ToString("F1")</h4>
+                            <p class="mb-0">Km Totales</p>
+                        </div>
+                        <i class="fas fa-route fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Carreras -->
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-light">
+            <h4 class="card-title mb-0">
+                <i class="fas fa-list me-2"></i>
+                Lista de Carreras
+            </h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>
+                                <i class="fas fa-signature me-1"></i>
+                                @Html.DisplayNameFor(model => model.Nombre)
+                            </th>
+                            <th>
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                @Html.DisplayNameFor(model => model.Ubicacion)
+                            </th>
+                            <th>
+                                <i class="fas fa-flag me-1"></i>
+                                Estado
+                            </th>
+                            <th>
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                @Html.DisplayNameFor(model => model.Fecha)
+                            </th>
+                            <th>
+                                <i class="fas fa-route me-1"></i>
+                                Distancia
+                            </th>
+                            <th>
+                                <i class="fas fa-map-pin me-1"></i>
+                                Puntos Control
+                            </th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-primary">@item.Nombre</div>
+                                    <small class="text-muted">ID: @item.Id</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                        <span>@item.Ubicacion</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @{
+                                        var estadoBadgeClass = item.Estado.ToString() == "Activa" ? "bg-success" :
+                                        item.Estado.ToString() == "Cancelada" ? "bg-danger" :
+                                        item.Estado.ToString() == "Planificada" ? "bg-warning" : "bg-secondary";
+                                    }
+                                    <span class="badge @estadoBadgeClass">@item.Estado</span>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@item.Fecha.ToString("dd/MM/yyyy")</div>
+                                    <small class="text-muted">@item.Fecha.ToString("HH:mm")</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-route text-info me-2"></i>
+                                        <span class="fw-bold">@item.KmTotales km</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (item.PuntosDeControl != null && item.PuntosDeControl.Any())
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-info"
+                                                data-bs-toggle="popover"
+                                                data-bs-title="Puntos de Control"
+                                                data-bs-content="@string.Join(" km, ", item.PuntosDeControl.Select(p => p.Distancia)) km"
+                                                data-bs-placement="left">
+                                            <i class="fas fa-map-pin me-1"></i>
+                                            @item.PuntosDeControl.Count puntos
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Sin puntos</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="btn btn-outline-primary btn-sm"
+                                           data-bs-toggle="tooltip" title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @if (rol == "Administrador")
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.Id"
+                                               class="btn btn-outline-warning btn-sm"
+                                               data-bs-toggle="tooltip" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id"
+                                               class="btn btn-outline-danger btn-sm"
+                                               data-bs-toggle="tooltip" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Adicional -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-0 bg-light">
+                <div class="card-body">
+                    <h6 class="fw-bold text-primary">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Información de la Tabla
+                    </h6>
+                    <p class="small text-muted mb-0">
+                        Esta tabla muestra todas las carreras registradas en el sistema.
+                        Puedes ver detalles, editar o eliminar carreras según tus permisos.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 bg-light">
+                <div class="card-body">
+                    <h6 class="fw-bold text-success">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Tip Rápido
+                    </h6>
+                    <p class="small text-muted mb-0">
+                        Haz clic en el botón de puntos de control para ver los detalles de cada segmento de la carrera.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Inicializar tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+
+            // Inicializar popovers para puntos de control
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl)
+            })
+
+            // Mejorar la visualización de los popovers
+            $('[data-bs-toggle="popover"]').on('shown.bs.popover', function () {
+                var popover = bootstrap.Popover.getInstance(this);
+                $(popover.tip).addClass('popover-custom');
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+
+    .bg-primary, .bg-success, .bg-warning, .bg-info {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%) !important;
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success) 100%) !important;
+    }
+
+    .bg-warning {
+        background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, var(--bs-info) 0%, var(--bs-info) 100%) !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 0.375rem;
+        margin: 0 2px;
+    }
+
+    .popover-custom {
+        border: 2px solid #007bff;
+        border-radius: 10px;
+    }
+
+        .popover-custom .popover-header {
+            background: #007bff;
+            color: white;
+            border-bottom: 1px solid #0056b3;
+        }
+
+    .fas {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+    }
+
+    /* Fallbacks para iconos */
+    .fa-flag-checkered::before {
+        content: "🏁";
+    }
+
+    .fa-plus-circle::before {
+        content: "➕";
+    }
+
+    .fa-list::before {
+        content: "📋";
+    }
+
+    .fa-signature::before {
+        content: "📝";
+    }
+
+    .fa-map-marker-alt::before {
+        content: "📍";
+    }
+
+    .fa-flag::before {
+        content: "🚩";
+    }
+
+    .fa-calendar-alt::before {
+        content: "📅";
+    }
+
+    .fa-route::before {
+        content: "🛣️";
+    }
+
+    .fa-map-pin::before {
+        content: "📌";
+    }
+
+    .fa-eye::before {
+        content: "👁️";
+    }
+
+    .fa-edit::before {
+        content: "✏️";
+    }
+
+    .fa-trash::before {
+        content: "🗑️";
+    }
+
+    .fa-info-circle::before {
+        content: "ℹ️";
+    }
+
+    .fa-lightbulb::before {
+        content: "💡";
+    }
+
+    .fa-play-circle::before {
+        content: "▶️";
+    }
+
+    .fa-clock::before {
+        content: "⏰";
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

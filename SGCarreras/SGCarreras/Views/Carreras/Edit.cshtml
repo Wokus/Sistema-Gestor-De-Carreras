@@ -1,62 +1,184 @@
 ﻿@model SGCarreras.Models.Carrera
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Carrera";
 }
 
-<h1>Edit</h1>
-
-<h4>Carrera</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ubicacion" class="control-label"></label>
-                <input asp-for="Ubicacion" class="form-control" />
-                <span asp-validation-for="Ubicacion" class="text-danger"></span>
-
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <select asp-for="Estado" class="form-control" asp-items="ViewBag.EstadoList">
-                    <option value="">-- Seleccione --</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Fecha" class="control-label"></label>
-                <input asp-for="Fecha" type="datetime-local" class="form-control"
-                       value="@(Model.Fecha.ToString("yyyy-MM-ddTHH:mm"))" />
-                <span asp-validation-for="Fecha" class="text-danger"></span>
-            </div>
-            <div id="puntos-control-container">
-                <h3>Puntos de Control</h3>
-                @Html.EditorFor(model => model.PuntosDeControl)
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary">Editar Carrera</h1>
+                    <p class="lead text-muted mb-0">Modifica la información de la carrera</p>
+                </div>
+                <div>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver a Detalles
+                    </a>
+                </div>
             </div>
 
-            <button type="button" id="agregar-punto" class="btn btn-secondary">Agregar Punto de Control</button>
-            <div class="form-group">
-                <label asp-for="KmTotales" class="control-label"></label>
-                <input asp-for="KmTotales" class="form-control" />
-                <span asp-validation-for="KmTotales" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+            <form asp-action="Edit" class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-lg mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="card-title mb-0">
+                                    <i class="fas fa-edit me-2"></i>
+                                    Información Básica
+                                </h4>
+                            </div>
+                            <div class="card-body p-4">
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                                <input type="hidden" asp-for="Id" />
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Nombre" class="form-label fw-semibold">Nombre de la Carrera</label>
+                                            <input asp-for="Nombre" class="form-control form-control-lg" placeholder="Ingrese el nombre de la carrera" />
+                                            <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Ubicacion" class="form-label fw-semibold">Ubicación</label>
+                                            <input asp-for="Ubicacion" class="form-control form-control-lg" placeholder="Ingrese la ubicación" />
+                                            <span asp-validation-for="Ubicacion" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Estado" class="form-label fw-semibold">Estado</label>
+                                            <select asp-for="Estado" class="form-select form-select-lg" asp-items="ViewBag.EstadoList">
+                                                <option value="">-- Seleccione un estado --</option>
+                                            </select>
+                                            <span asp-validation-for="Estado" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Fecha" class="form-label fw-semibold">Fecha y Hora</label>
+                                            <input asp-for="Fecha" type="datetime-local" class="form-control form-control-lg"
+                                                   value="@(Model.Fecha.ToString("yyyy-MM-ddTHH:mm"))" />
+                                            <span asp-validation-for="Fecha" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label asp-for="KmTotales" class="form-label fw-semibold">Distancia Total (km)</label>
+                                            <input asp-for="KmTotales" class="form-control form-control-lg" placeholder="Ej: 10.5" />
+                                            <span asp-validation-for="KmTotales" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <!-- Card de Acciones -->
+                        <div class="card border-0 shadow-lg mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="card-title mb-0">
+                                    <i class="fas fa-save me-2"></i>
+                                    Acciones
+                                </h4>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                                    </button>
+                                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-lg">
+                                        <i class="fas fa-times me-2"></i>Cancelar
+                                    </a>
+                                    <a asp-action="Index" class="btn btn-outline-primary btn-lg">
+                                        <i class="fas fa-list me-2"></i>Volver al Listado
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card de Información Rápida -->
+                        <div class="card border-0 shadow-lg">
+                            <div class="card-header bg-info text-white">
+                                <h4 class="card-title mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Información Actual
+                                </h4>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-3">
+                                    <small class="text-muted">Nombre Actual:</small>
+                                    <div class="fw-bold text-dark">@Model.Nombre</div>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">Ubicación:</small>
+                                    <div class="fw-bold">@Model.Ubicacion</div>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">Estado:</small>
+                                    <div>
+                                        @{
+                                            var estadoBadgeClass = Model.Estado.ToString() == "Activa" ? "bg-success" :
+                                            Model.Estado.ToString() == "Cancelada" ? "bg-danger" : "bg-warning";
+                                        }
+                                        <span class="badge @estadoBadgeClass">@Model.Estado</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted">Distancia:</small>
+                                    <div class="fw-bold">@Model.KmTotales km</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Puntos de Control -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-lg">
+                            <div class="card-header bg-warning text-white">
+                                <h4 class="card-title mb-0">
+                                    <i class="fas fa-route me-2"></i>
+                                    Puntos de Control
+                                </h4>
+                            </div>
+                            <div class="card-body p-4">
+                                <div id="puntos-control-container">
+                                    <h5 class="mb-3">Gestionar Puntos de Control</h5>
+                                    @Html.EditorFor(model => model.PuntosDeControl)
+
+                                    @if (Model.PuntosDeControl == null || !Model.PuntosDeControl.Any())
+                                    {
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No hay puntos de control definidos. Agregue puntos para dividir la carrera.
+                                        </div>
+                                    }
+                                </div>
+
+                                <button type="button" id="agregar-punto" class="btn btn-success mt-3">
+                                    <i class="fas fa-plus me-2"></i>Agregar Punto de Control
+                                </button>
+
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-lightbulb me-1"></i>
+                                        Los puntos de control dividen la carrera en segmentos para mejor organización.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -64,27 +186,151 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        $(document).ready(function () {
+            // Agregar punto de control
+            $("#agregar-punto").click(function () {
+                var newIndex = Date.now();
 
-        $("#agregar-punto").click(function () {
+                var nuevoPuntoHtml = `
+                    <div class="punto-control-item card border mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold">Distancia (km)</label>
+                                        <input type="number" step="0.1" name="PuntosDeControl[${newIndex}].distancia"
+                                               class="form-control" placeholder="Distancia desde el inicio" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="hidden" name="PuntosDeControl.Index" value="${newIndex}" />
+                                    <input type="hidden" name="PuntosDeControl[${newIndex}].id" value="0" />
+                                    <button type="button" class="btn btn-danger btn-sm eliminar-punto w-100">
+                                        <i class="fas fa-trash me-1"></i>Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
 
-            var newIndex = Date.now();
+                $("#puntos-control-container").append(nuevoPuntoHtml);
+            });
 
-            var nuevoPuntoHtml = `
-                <div class="punto-control-item border p-2 my-2">
-                    <input type="hidden" name="PuntosDeControl.Index" value="${newIndex}" />
-                    <input type="hidden" name="PuntosDeControl[${newIndex}].id" value="0" />
+            // Eliminar punto de control
+            $(document).on('click', '.eliminar-punto', function () {
+                $(this).closest('.punto-control-item').fadeOut(300, function() {
+                    $(this).remove();
+                });
+            });
 
-                    <label for="PuntosDeControl_${newIndex}__distancia">Distancia</label>
-                    <input type="number" name="PuntosDeControl[${newIndex}].distancia" class="form-control" />
-                    <button type="button" class="btn btn-danger btn-sm eliminar-punto">Eliminar</button>
-                </div>
-            `;
-
-            $("#puntos-control-container").append(nuevoPuntoHtml);
-        });
-
-        $(document).on('click', '.eliminar-punto', function () {
-            $(this).closest('.punto-control-item').remove();
+            // Validación de formulario
+            $('.needs-validation').on('submit', function (e) {
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                $(this).addClass('was-validated');
+            });
         });
     </script>
 }
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+
+    .form-control-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .punto-control-item {
+        background: #f8f9fa;
+        border-left: 4px solid #ffc107 !important;
+    }
+
+    .bg-primary, .bg-success, .bg-info, .bg-warning {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%) !important;
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success) 100%) !important;
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, var(--bs-info) 0%, var(--bs-info) 100%) !important;
+    }
+
+    .bg-warning {
+        background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
+    }
+
+    .fas {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+    }
+
+    /* Fallbacks para iconos */
+    .fa-edit::before {
+        content: "✏️";
+    }
+
+    .fa-arrow-left::before {
+        content: "⬅️";
+    }
+
+    .fa-save::before {
+        content: "💾";
+    }
+
+    .fa-times::before {
+        content: "❌";
+    }
+
+    .fa-list::before {
+        content: "📋";
+    }
+
+    .fa-info-circle::before {
+        content: "ℹ️";
+    }
+
+    .fa-route::before {
+        content: "🛣️";
+    }
+
+    .fa-plus::before {
+        content: "➕";
+    }
+
+    .fa-trash::before {
+        content: "🗑️";
+    }
+
+    .fa-lightbulb::before {
+        content: "💡";
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

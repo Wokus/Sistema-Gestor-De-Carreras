@@ -1,55 +1,417 @@
 ﻿@model SGCarreras.Models.Carrera
+@using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Nueva Carrera";
+    var rol = User?.FindFirstValue(ClaimTypes.Role);
 }
 
-<h1>Create</h1>
-
-<h4>Carrera</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+@if (rol != "Administrador")
+{
+    <div class="container-fluid py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+                        <h2 class="text-danger fw-bold">Acceso Denegado</h2>
+                        <p class="lead text-muted mb-4">No tienes permisos para crear nuevas carreras.</p>
+                        <a asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Ubicacion" class="control-label"></label>
-                <input asp-for="Ubicacion" class="form-control" />
-                <span asp-validation-for="Ubicacion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <select asp-for="Estado" class="form-control" asp-items="ViewBag.EstadoList">
-                    <option value="">-- Seleccione --</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="KmTotales" class="control-label"></label>
-                <input asp-for="KmTotales" class="form-control" />
-                <span asp-validation-for="KmTotales" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Fecha" class="control-label"></label>
-                <input asp-for="Fecha" type="datetime-local" class="form-control" />
-                <span asp-validation-for="Fecha" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-5 fw-bold text-success">
+                            <i class="fas fa-plus-circle me-3"></i>
+                            Crear Nueva Carrera
+                        </h1>
+                        <p class="lead text-muted">Completa la información para registrar una nueva carrera</p>
+                    </div>
+                    <div>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                        </a>
+                    </div>
+                </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+                <form asp-action="Create" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-lg mb-4">
+                                <div class="card-header bg-success text-white">
+                                    <h4 class="card-title mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Información de la Carrera
+                                    </h4>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Nombre" class="form-label fw-semibold">
+                                                    <i class="fas fa-signature text-primary me-1"></i>
+                                                    Nombre de la Carrera
+                                                </label>
+                                                <input asp-for="Nombre" class="form-control form-control-lg"
+                                                       placeholder="Ej: Maratón Ciudad 2024" required />
+                                                <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                                <div class="form-text">Nombre descriptivo de la carrera</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Ubicacion" class="form-label fw-semibold">
+                                                    <i class="fas fa-map-marker-alt text-danger me-1"></i>
+                                                    Ubicación
+                                                </label>
+                                                <input asp-for="Ubicacion" class="form-control form-control-lg"
+                                                       placeholder="Ej: Parque Central, Montevideo" required />
+                                                <span asp-validation-for="Ubicacion" class="text-danger small"></span>
+                                                <div class="form-text">Lugar donde se realizará la carrera</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Estado" class="form-label fw-semibold">
+                                                    <i class="fas fa-flag-checkered text-warning me-1"></i>
+                                                    Estado
+                                                </label>
+                                                <select asp-for="Estado" class="form-select form-select-lg" asp-items="ViewBag.EstadoList" required>
+                                                    <option value="">-- Seleccione un estado --</option>
+                                                </select>
+                                                <span asp-validation-for="Estado" class="text-danger small"></span>
+                                                <div class="form-text">Estado actual de la carrera</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="KmTotales" class="form-label fw-semibold">
+                                                    <i class="fas fa-route text-info me-1"></i>
+                                                    Distancia Total (km)
+                                                </label>
+                                                <input asp-for="KmTotales" class="form-control form-control-lg"
+                                                       placeholder="Ej: 10.5" step="0.1" min="0" required />
+                                                <span asp-validation-for="KmTotales" class="text-danger small"></span>
+                                                <div class="form-text">Distancia total en kilómetros</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label asp-for="Fecha" class="form-label fw-semibold">
+                                                    <i class="fas fa-calendar-alt text-success me-1"></i>
+                                                    Fecha y Hora
+                                                </label>
+                                                <input asp-for="Fecha" type="datetime-local" class="form-control form-control-lg" required />
+                                                <span asp-validation-for="Fecha" class="text-danger small"></span>
+                                                <div class="form-text">Fecha y hora de inicio de la carrera</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Puntos de Control -->
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-header bg-warning text-white">
+                                    <h4 class="card-title mb-0">
+                                        <i class="fas fa-route me-2"></i>
+                                        Puntos de Control (Opcional)
+                                    </h4>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div id="puntos-control-container">
+                                        <div class="alert alert-info border-0">
+                                            <div class="d-flex">
+                                                <i class="fas fa-lightbulb fa-2x me-3 text-info"></i>
+                                                <div>
+                                                    <h6 class="alert-heading fw-bold">Puntos de Control</h6>
+                                                    <p class="mb-0">Puedes agregar puntos de control para dividir la carrera en segmentos. Esto ayuda en la organización y seguimiento de los corredores.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @Html.EditorFor(model => model.PuntosDeControl)
+                                    </div>
+
+                                    <button type="button" id="agregar-punto" class="btn btn-outline-success mt-3">
+                                        <i class="fas fa-plus me-2"></i>Agregar Punto de Control
+                                    </button>
+
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Ejemplo: Punto a 5km, Punto a 10km, etc.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <!-- Card de Acciones -->
+                            <div class="card border-0 shadow-lg mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h4 class="card-title mb-0">
+                                        <i class="fas fa-rocket me-2"></i>
+                                        Acciones
+                                    </h4>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-success btn-lg">
+                                            <i class="fas fa-plus-circle me-2"></i>Crear Carrera
+                                        </button>
+                                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                            <i class="fas fa-times me-2"></i>Cancelar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card de Guía -->
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-header bg-info text-white">
+                                    <h4 class="card-title mb-0">
+                                        <i class="fas fa-question-circle me-2"></i>
+                                        Guía Rápida
+                                    </h4>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold text-primary">
+                                            <i class="fas fa-check-circle me-2"></i>
+                                            Campos Requeridos
+                                        </h6>
+                                        <ul class="list-unstyled small text-muted ms-3">
+                                            <li>• Nombre de la carrera</li>
+                                            <li>• Ubicación</li>
+                                            <li>• Estado</li>
+                                            <li>• Distancia</li>
+                                            <li>• Fecha y hora</li>
+                                        </ul>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold text-success">
+                                            <i class="fas fa-lightbulb me-2"></i>
+                                            Recomendaciones
+                                        </h6>
+                                        <ul class="list-unstyled small text-muted ms-3">
+                                            <li>• Usa nombres descriptivos</li>
+                                            <li>• Verifica la ubicación</li>
+                                            <li>• Planifica con anticipación</li>
+                                        </ul>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-trophy fa-2x text-warning"></i>
+                                        <p class="small text-muted mt-2 mb-0">¡Crea carreras exitosas!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <script>
+            $(document).ready(function () {
+                // Agregar punto de control
+                $("#agregar-punto").click(function () {
+                    var newIndex = Date.now();
+
+                    var nuevoPuntoHtml = `
+                        <div class="punto-control-item card border mb-3">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label class="form-label fw-semibold">Distancia (km)</label>
+                                            <input type="number" step="0.1" name="PuntosDeControl[${newIndex}].distancia"
+                                                   class="form-control" placeholder="Distancia desde el inicio" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="hidden" name="PuntosDeControl.Index" value="${newIndex}" />
+                                        <input type="hidden" name="PuntosDeControl[${newIndex}].id" value="0" />
+                                        <button type="button" class="btn btn-danger btn-sm eliminar-punto w-100">
+                                            <i class="fas fa-trash me-1"></i>Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    $("#puntos-control-container").append(nuevoPuntoHtml);
+                });
+
+                // Eliminar punto de control
+                $(document).on('click', '.eliminar-punto', function () {
+                    $(this).closest('.punto-control-item').fadeOut(300, function() {
+                        $(this).remove();
+                    });
+                });
+
+                // Validación de formulario
+                $('.needs-validation').on('submit', function (e) {
+                    if (!this.checkValidity()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    $(this).addClass('was-validated');
+                });
+
+                // Establecer fecha mínima como hoy
+                var now = new Date();
+                var minDate = now.toISOString().slice(0, 16);
+                $('#Fecha').attr('min', minDate);
+            });
+        </script>
+    }
+
+    <style>
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+            }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #28a745;
+                box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.25);
+            }
+
+        .form-control-lg {
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .punto-control-item {
+            background: #f8f9fa;
+            border-left: 4px solid #ffc107 !important;
+        }
+
+        .bg-primary, .bg-success, .bg-info, .bg-warning {
+            background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%) !important;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success) 100%) !important;
+        }
+
+        .bg-info {
+            background: linear-gradient(135deg, var(--bs-info) 0%, var(--bs-info) 100%) !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
+        }
+
+        .fas {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        /* Fallbacks para iconos */
+        .fa-plus-circle::before {
+            content: "➕";
+        }
+
+        .fa-arrow-left::before {
+            content: "⬅️";
+        }
+
+        .fa-info-circle::before {
+            content: "ℹ️";
+        }
+
+        .fa-signature::before {
+            content: "📝";
+        }
+
+        .fa-map-marker-alt::before {
+            content: "📍";
+        }
+
+        .fa-flag-checkered::before {
+            content: "🏁";
+        }
+
+        .fa-route::before {
+            content: "🛣️";
+        }
+
+        .fa-calendar-alt::before {
+            content: "📅";
+        }
+
+        .fa-plus::before {
+            content: "➕";
+        }
+
+        .fa-trash::before {
+            content: "🗑️";
+        }
+
+        .fa-lightbulb::before {
+            content: "💡";
+        }
+
+        .fa-rocket::before {
+            content: "🚀";
+        }
+
+        .fa-times::before {
+            content: "❌";
+        }
+
+        .fa-question-circle::before {
+            content: "❓";
+        }
+
+        .fa-check-circle::before {
+            content: "✅";
+        }
+
+        .fa-trophy::before {
+            content: "🏆";
+        }
+
+        .fa-exclamation-triangle::before {
+            content: "⚠️";
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 }

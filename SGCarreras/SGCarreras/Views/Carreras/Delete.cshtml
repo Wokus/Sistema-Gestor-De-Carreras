@@ -1,47 +1,313 @@
 ﻿@model SGCarreras.Models.Carrera
+@using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Carrera";
+    var rol = User?.FindFirstValue(ClaimTypes.Role);
 }
 
-<h1>Delete</h1>
+@if (rol != "Administrador")
+{
+    <div class="container-fluid py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+                        <h2 class="text-danger fw-bold">Acceso Denegado</h2>
+                        <p class="lead text-muted mb-4">No tienes permisos para acceder a esta página.</p>
+                        <a asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold text-danger">
+                        <i class="fas fa-exclamation-triangle me-3"></i>
+                        Eliminar Carrera
+                    </h1>
+                    <p class="lead text-muted">Esta acción no se puede deshacer</p>
+                </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Carrera</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ubicacion
-            )
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ubicacion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado
-            )
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.KmTotales)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.KmTotales)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+                <!-- Información de la Carrera -->
+                <div class="card border-0 shadow-lg mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-trash-alt me-2"></i>
+                            Confirmar Eliminación
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="alert alert-warning border-0">
+                            <div class="d-flex">
+                                <i class="fas fa-exclamation-circle fa-2x me-3 text-warning"></i>
+                                <div>
+                                    <h5 class="alert-heading fw-bold">¡Atención!</h5>
+                                    <p class="mb-0">Estás a punto de eliminar permanentemente esta carrera. Todos los datos asociados se perderán.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjetas de Información -->
+                        <div class="row mb-4">
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-0 bg-primary text-white h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-signature fa-2x mb-3"></i>
+                                        <h6 class="card-title">Nombre</h6>
+                                        <p class="card-text small">@Model.Nombre</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-0 bg-success text-white h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+                                        <h6 class="card-title">Ubicación</h6>
+                                        <p class="card-text small">@Model.Ubicacion</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-0 bg-info text-white h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-flag-checkered fa-2x mb-3"></i>
+                                        <h6 class="card-title">Estado</h6>
+                                        <p class="card-text small">@Model.Estado</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-0 bg-warning text-white h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-route fa-2x mb-3"></i>
+                                        <h6 class="card-title">Distancia</h6>
+                                        <p class="card-text small">@Model.KmTotales km</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detalles Expandidos -->
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h5 class="fw-bold text-dark mb-3">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    Detalles de la Carrera a Eliminar
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <dl class="row">
+                                            <dt class="col-sm-4 text-muted">Nombre:</dt>
+                                            <dd class="col-sm-8 fw-bold text-dark">@Model.Nombre</dd>
+
+                                            <dt class="col-sm-4 text-muted">Ubicación:</dt>
+                                            <dd class="col-sm-8">
+                                                <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                                @Model.Ubicacion
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <dl class="row">
+                                            <dt class="col-sm-4 text-muted">Estado:</dt>
+                                            <dd class="col-sm-8">
+                                                @{
+                                                    var estadoBadgeClass = Model.Estado.ToString() == "Activa" ? "bg-success" :
+                                                    Model.Estado.ToString() == "Cancelada" ? "bg-danger" : "bg-warning";
+                                                }
+                                                <span class="badge @estadoBadgeClass text-white">@Model.Estado</span>
+                                            </dd>
+
+                                            <dt class="col-sm-4 text-muted">Distancia:</dt>
+                                            <dd class="col-sm-8">
+                                                <i class="fas fa-route text-info me-2"></i>
+                                                <span class="fw-bold">@Model.KmTotales km</span>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+
+                                <!-- Información Adicional -->
+                                @if (Model.Fecha != default(DateTime))
+                                {
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="border-top pt-3">
+                                                <small class="text-muted">Fecha programada:</small>
+                                                <div class="fw-semibold">@Model.Fecha.ToString("dd/MM/yyyy HH:mm")</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Eliminación -->
+                <form asp-action="Delete" class="card border-0 shadow-lg">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                                    <label class="form-check-label fw-semibold" for="confirmDelete">
+                                        Confirmo que deseo eliminar permanentemente esta carrera
+                                    </label>
+                                </div>
+                                <div class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Esta acción eliminará todos los registros asociados a esta carrera.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="hidden" asp-for="Id" />
+                                <div class="d-grid gap-2">
+                                    <button type="submit" id="deleteButton" class="btn btn-danger btn-lg" disabled>
+                                        <i class="fas fa-trash-alt me-2"></i>Eliminar Permanentemente
+                                    </button>
+                                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-lg">
+                                        <i class="fas fa-times me-2"></i>Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Enlace de navegación -->
+                <div class="text-center mt-4">
+                    <a asp-action="Index" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Listado de Carreras
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                // Habilitar/deshabilitar botón de eliminación
+                $('#confirmDelete').change(function () {
+                    $('#deleteButton').prop('disabled', !this.checked);
+                });
+
+                // Confirmación adicional al enviar
+                $('form').on('submit', function (e) {
+                    if (!confirm('¿Estás completamente seguro de que deseas eliminar esta carrera? Esta acción es irreversible.')) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Efecto visual en el botón de eliminar
+                $('#deleteButton').hover(
+                    function () {
+                        if (!$(this).prop('disabled')) {
+                            $(this).addClass('btn-danger-dark');
+                        }
+                    },
+                    function () {
+                        $(this).removeClass('btn-danger-dark');
+                    }
+                );
+            });
+        </script>
+    }
+
+    <style>
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+            }
+
+        .bg-primary, .bg-success, .bg-info, .bg-warning {
+            background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%) !important;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success) 100%) !important;
+        }
+
+        .bg-info {
+            background: linear-gradient(135deg, var(--bs-info) 0%, var(--bs-info) 100%) !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
+        }
+
+        .btn-danger-dark {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+            transform: scale(1.05);
+        }
+
+        .form-check-input:checked {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .fas {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+        }
+
+        /* Fallbacks para iconos */
+        .fa-exclamation-triangle::before {
+            content: "⚠️";
+        }
+
+        .fa-arrow-left::before {
+            content: "⬅️";
+        }
+
+        .fa-trash-alt::before {
+            content: "🗑️";
+        }
+
+        .fa-exclamation-circle::before {
+            content: "⚠️";
+        }
+
+        .fa-signature::before {
+            content: "📝";
+        }
+
+        .fa-map-marker-alt::before {
+            content: "📍";
+        }
+
+        .fa-flag-checkered::before {
+            content: "🏁";
+        }
+
+        .fa-route::before {
+            content: "🛣️";
+        }
+
+        .fa-info-circle::before {
+            content: "ℹ️";
+        }
+
+        .fa-times::before {
+            content: "❌";
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+}

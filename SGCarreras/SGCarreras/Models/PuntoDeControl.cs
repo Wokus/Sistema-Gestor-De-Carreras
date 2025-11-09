@@ -13,7 +13,6 @@ namespace SGCarreras.Models
         //Relacioneison
         public int CarreraId { get; set; }
 
-        [Required]
         [ForeignKey("CarreraId")]
         public Carrera? Carrera { get; set; }
         public PuntoDeControl() { }

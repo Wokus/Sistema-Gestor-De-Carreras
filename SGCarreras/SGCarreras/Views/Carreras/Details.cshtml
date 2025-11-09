@@ -1,46 +1,335 @@
 ﻿@model SGCarreras.Models.Carrera
+@using System.Threading;
+@using System.Security.Claims;
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de la Carrera";
 }
 
-<h1>Details</h1>
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 
-<div>
-    <h4>Carrera</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ubicacion
-            )
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ubicacion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado
-            )
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado
-            )
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.KmTotales
-            )
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.KmTotales)
-        </dd>
-    </dl>
+    // Obtener el referer (página anterior) para saber de dónde vino el usuario
+    var referer = Context.Request.Headers["Referer"].ToString();
+    var vieneDeCalendarios = referer.Contains("Calendarios");
+    var vieneDeCarreras = referer.Contains("Carreras") || referer.Contains("Index");
+
+    // Si no podemos determinar de dónde viene, asumimos Calendarios para usuarios normales
+    var esAdministrador = User?.FindFirstValue(ClaimTypes.Role) == "Administrador";
+    var accionVolver = esAdministrador || vieneDeCarreras ? "Index" : "Calendarios";
+    var textoVolver = esAdministrador || vieneDeCarreras ? "Volver al Listado" : "Volver al Calendario";
+
+    var userIdString = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+    int userId = 0;
+    int.TryParse(userIdString, out userId);
+
+    var email = User?.FindFirstValue(ClaimTypes.Email);
+    var nombre = User?.FindFirstValue(ClaimTypes.Name);
+    var rol = User?.FindFirstValue(ClaimTypes.Role);
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Header de la Carrera -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary">@Model.Nombre</h1>
+                    <p class="lead text-muted mb-0">Detalles completos de la carrera</p>
+                </div>
+                <div class="text-end">
+                    @if (rol != null && rol == "Administrador")
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit me-2"></i>Editar Carrera
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Tarjetas de Información Rápida -->
+            <div class="row mb-5">
+                <div class="col-md-3 mb-3">
+                    <div class="card border-0 bg-primary text-white h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+                            <h5 class="card-title">Ubicación</h5>
+                            <p class="card-text fs-6">@Model?.Ubicacion</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card border-0 bg-success text-white h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-flag-checkered fa-2x mb-3"></i>
+                            <h5 class="card-title">Estado</h5>
+                            <p class="card-text fs-6">@Model?.Estado</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card border-0 bg-info text-white h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-route fa-2x mb-3"></i>
+                            <h5 class="card-title">Distancia</h5>
+                            <p class="card-text fs-6">@Model?.KmTotales km</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card border-0 bg-warning text-white h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-running fa-2x mb-3"></i>
+                            <h5 class="card-title">Participantes</h5>
+                            <p class="card-text fs-6">@(Model?.Registros?.Count ?? 0) corredores</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles Expandidos -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-header bg-light">
+                            <h3 class="card-title mb-0">
+                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                Información Detallada
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4 text-muted">Nombre:</dt>
+                                        <dd class="col-sm-8 fs-5 fw-bold text-dark">@Model?.Nombre</dd>
+
+                                        <dt class="col-sm-4 text-muted">Ubicación:</dt>
+                                        <dd class="col-sm-8">
+                                            <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                            @Model?.Ubicacion
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4 text-muted">Estado:</dt>
+                                        <dd class="col-sm-8">
+                                            @{
+                                                var estadoBadgeClass = Model?.Estado.ToString() == "Activa" ? "bg-success" :
+                                                Model?.Estado.ToString() == "Cancelada" ? "bg-danger" : "bg-warning";
+                                            }
+                                            <span class="badge @estadoBadgeClass text-white fs-6">@Model?.Estado</span>
+                                        </dd>
+
+                                        <dt class="col-sm-4 text-muted">Distancia:</dt>
+                                        <dd class="col-sm-8">
+                                            <i class="fas fa-route text-info me-2"></i>
+                                            <span class="fw-bold">@Model?.KmTotales km</span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+
+                            <!-- Información Adicional (puedes expandir según tu modelo) -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="border-top pt-3">
+                                        <h5 class="text-primary mb-3">
+                                            <i class="fas fa-calendar-alt me-2"></i>
+                                            Información Adicional
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <small class="text-muted">Fecha de Creación:</small>
+                                                <div class="fw-semibold">@Model?.Fecha.ToString("dd/MM/yyyy HH:mm")</div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <small class="text-muted">Última Actualización:</small>
+                                                <div class="fw-semibold">@DateTime.Now.ToString("dd/MM/yyyy")</div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <small class="text-muted">Categorías:</small>
+                                                <div class="fw-semibold">Abiertas</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Botón Volver - Simple pero efectivo -->
+                        @if (rol == "Administrador")
+                        {
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Calendarios" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Calendario
+                            </a>
+                        }
+
+                        @if (rol != null && rol == "Administrador")
+                        {
+                            <div>
+                                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning me-2">
+                                    <i class="fas fa-edit me-2"></i>Editar
+                                </a>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-users me-2"></i>Gestionar Participantes
+                                </a>
+                            </div>
+                        }
+                        else if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <a href="#" class="btn btn-success btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Inscribirse en esta Carrera
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Participantes (Opcional) -->
+            @if (Model?.Registros?.Any() == true)
+            {
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h4 class="card-title mb-0">
+                                    <i class="fas fa-list-ol text-primary me-2"></i>
+                                    Participantes Registrados
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Corredor</th>
+                                                <th>Categoría</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var registro in Model.Registros.Take(5))
+                                            {
+                                                <tr>
+                                                    <td>@registro.Id</td>
+                                                    <td>@(registro.Corredor?.NombreCompleto ?? "N/A")</td>
+                                                    <td><span class="badge bg-info">General</span></td>
+                                                    <td><span class="badge bg-success">Inscrito</span></td>
+                                                    <td>
+                                                        <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (Model.Registros.Count > 5)
+                                {
+                                    <div class="text-center mt-3">
+                                        <a href="#" class="btn btn-outline-secondary">Ver todos los participantes (@Model.Registros.Count)</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .bg-primary, .bg-success, .bg-info, .bg-warning {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%) !important;
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success) 100%) !important;
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, var(--bs-info) 0%, var(--bs-info) 100%) !important;
+    }
+
+    .bg-warning {
+        background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
+    }
+
+    .fas {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+    }
+
+    /* Fallbacks para iconos */
+    .fa-edit::before {
+        content: "✏️";
+    }
+
+    .fa-arrow-left::before {
+        content: "⬅️";
+    }
+
+    .fa-map-marker-alt::before {
+        content: "📍";
+    }
+
+    .fa-flag-checkered::before {
+        content: "🏁";
+    }
+
+    .fa-route::before {
+        content: "🛣️";
+    }
+
+    .fa-running::before {
+        content: "🏃";
+    }
+
+    .fa-info-circle::before {
+        content: "ℹ️";
+    }
+
+    .fa-calendar-alt::before {
+        content: "📅";
+    }
+
+    .fa-users::before {
+        content: "👥";
+    }
+
+    .fa-user-plus::before {
+        content: "➕";
+    }
+
+    .fa-list-ol::before {
+        content: "📋";
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
