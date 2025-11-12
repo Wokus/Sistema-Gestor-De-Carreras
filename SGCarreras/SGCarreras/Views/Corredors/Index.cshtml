@@ -1,47 +1,457 @@
 ﻿@model IEnumerable<SGCarreras.Models.Corredor>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gestión de Corredores";
+
+    // Contadores usando el enum correcto
+    var totalCorredores = Model?.Count() ?? 0;
+    var totalHombres = Model?.Count(c => c.Sexo != null && c.Sexo.ToString().ToLower().Contains("hombre")) ?? 0;
+    var totalMujeres = Model?.Count(c => c.Sexo != null && c.Sexo.ToString().ToLower().Contains("mujer")) ?? 0;
+
+    // Para nacionalidad, verificamos si existe la propiedad
+    var nacionalidadesCount = 0;
+    try
+    {
+        nacionalidadesCount = Model?.Select(c => c.Nacionalidad)?.Distinct()?.Count() ?? 0;
+    }
+    catch
+    {
+        // Si la propiedad Nacionalidad no existe, mostramos 0
+        nacionalidadesCount = 0;
+    }
 }
 
-<h1>Index</h1>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold text-primary mb-2">Gestión de Corredores</h1>
+            <p class="lead text-muted">Administra los corredores registrados en el sistema</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Nuevo Corredor
+            </a>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Sexo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreCompleto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cedula)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sexo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreCompleto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cedula)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+    <!-- Estadísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-primary text-white">
+                <div class="card-body text-center py-3">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h5 class="card-title mb-1">Total Corredores</h5>
+                    <p class="card-text fs-4 fw-bold mb-0">@totalCorredores</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-success text-white">
+                <div class="card-body text-center py-3">
+                    <i class="fas fa-male fa-2x mb-2"></i>
+                    <h5 class="card-title mb-1">Hombres</h5>
+                    <p class="card-text fs-4 fw-bold mb-0">@totalHombres</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-info text-white">
+                <div class="card-body text-center py-3">
+                    <i class="fas fa-female fa-2x mb-2"></i>
+                    <h5 class="card-title mb-1">Mujeres</h5>
+                    <p class="card-text fs-4 fw-bold mb-0">@totalMujeres</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-warning text-white">
+                <div class="card-body text-center py-3">
+                    <i class="fas fa-flag fa-2x mb-2"></i>
+                    <h5 class="card-title mb-1">Nacionalidades</h5>
+                    <p class="card-text fs-4 fw-bold mb-0">@nacionalidadesCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Corredores -->
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-light py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-list-alt text-primary me-2"></i>
+                    Lista de Corredores
+                </h4>
+                <div class="d-flex gap-2">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar corredor..." style="max-width: 250px;">
+                    <button class="btn btn-outline-secondary" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0" id="corredoresTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-4">
+                                <i class="fas fa-user me-2"></i>Nombre Completo
+                            </th>
+                            <th>
+                                <i class="fas fa-id-card me-2"></i>Cédula
+                            </th>
+                            <th>
+                                <i class="fas fa-venus-mars me-2"></i>Sexo
+                            </th>
+                            <th>
+                                <i class="fas fa-flag me-2"></i>Nacionalidad
+                            </th>
+                            <th>
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </th>
+                            <th class="text-center pe-4">
+                                <i class="fas fa-cogs me-2"></i>Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle bg-primary text-white me-3">
+                                            @{
+                                                var inicial = "?";
+                                                if (!string.IsNullOrEmpty(item.NombreCompleto))
+                                                {
+                                                    var partes = item.NombreCompleto.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                                    inicial = partes.Last().Substring(0, 1).ToUpper();
+                                                }
+                                            }
+                                            @inicial
+                                        </div>
+                                        <div>
+                                            <strong>@Html.DisplayFor(modelItem => item.NombreCompleto)</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@Html.DisplayFor(modelItem => item.Cedula)</span>
+                                </td>
+                                <td>
+                                    @{
+                                        var sexoBadgeClass = "bg-secondary";
+                                        var sexoIcon = "fa-genderless";
+                                        var sexoTexto = item.Sexo.ToString() ?? "No especificado";
+
+                                        if (item.Sexo != null)
+                                        {
+                                            var sexoStr = item.Sexo.ToString().ToLower();
+                                            if (sexoStr.Contains("hombre"))
+                                            {
+                                                sexoBadgeClass = "bg-info";
+                                                sexoIcon = "fa-mars";
+                                            }
+                                            else if (sexoStr.Contains("mujer"))
+                                            {
+                                                sexoBadgeClass = "bg-pink";
+                                                sexoIcon = "fa-venus";
+                                            }
+                                            else if (sexoStr.Contains("otro"))
+                                            {
+                                                sexoBadgeClass = "bg-secondary";
+                                                sexoIcon = "fa-genderless";
+                                            }
+                                        }
+                                    }
+                                    <span class="badge @sexoBadgeClass">
+                                        <i class="fas @sexoIcon me-1"></i>@sexoTexto
+                                    </span>
+                                </td>
+                                <td>
+                                    @{
+                                        var nacionalidadTexto = "No especificada";
+                                        try
+                                        {
+                                            nacionalidadTexto = item.Nacionalidad ?? "No especificada";
+                                        }
+                                        catch
+                                        {
+                                            nacionalidadTexto = "No especificada";
+                                        }
+                                    }
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-flag me-1"></i>@nacionalidadTexto
+                                    </span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">@Html.DisplayFor(modelItem => item.Mail)</small>
+                                </td>
+                                <td class="text-center pe-4">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm"
+                                           data-bs-toggle="tooltip" title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm"
+                                           data-bs-toggle="tooltip" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm"
+                                           data-bs-toggle="tooltip" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    Mostrando <strong>@totalCorredores</strong> corredores registrados
+                </small>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm" id="exportBtn">
+                        <i class="fas fa-download me-1"></i>Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .bg-primary, .bg-success, .bg-info, .bg-warning {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%) !important;
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success) 100%) !important;
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, var(--bs-info) 0%, var(--bs-info) 100%) !important;
+    }
+
+    .bg-warning {
+        background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
+    }
+
+    .bg-pink {
+        background: linear-gradient(135deg, #e83e8c 0%, #d91a72 100%) !important;
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,123,255,0.05) !important;
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+
+    .table-dark {
+        background: linear-gradient(135deg, #343a40 0%, #495057 100%) !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 5px !important;
+        margin: 0 2px;
+    }
+
+    #searchInput {
+        border-radius: 20px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        #searchInput:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+
+    .badge {
+        font-size: 0.75em;
+        padding: 0.5em 0.75em;
+    }
+
+    .fas {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+    }
+
+    /* Fallbacks para iconos */
+    .fa-user-plus::before {
+        content: "👤";
+    }
+
+    .fa-users::before {
+        content: "👥";
+    }
+
+    .fa-male::before, .fa-mars::before {
+        content: "♂";
+    }
+
+    .fa-female::before, .fa-venus::before {
+        content: "♀";
+    }
+
+    .fa-flag::before {
+        content: "🏁";
+    }
+
+    .fa-list-alt::before {
+        content: "📋";
+    }
+
+    .fa-user::before {
+        content: "👤";
+    }
+
+    .fa-id-card::before {
+        content: "🆔";
+    }
+
+    .fa-venus-mars::before {
+        content: "⚧";
+    }
+
+    .fa-envelope::before {
+        content: "📧";
+    }
+
+    .fa-cogs::before {
+        content: "⚙️";
+    }
+
+    .fa-eye::before {
+        content: "👁️";
+    }
+
+    .fa-edit::before {
+        content: "✏️";
+    }
+
+    .fa-trash::before {
+        content: "🗑️";
+    }
+
+    .fa-sync-alt::before {
+        content: "🔄";
+    }
+
+    .fa-download::before {
+        content: "📥";
+    }
+
+    .fa-genderless::before {
+        content: "⚪";
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Búsqueda en tiempo real
+            const searchInput = document.getElementById('searchInput');
+            const table = document.getElementById('corredoresTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName('td');
+                    let found = false;
+
+                    for (let j = 0; j < cells.length - 1; j++) { // Excluir columna de acciones
+                        const cellText = cells[j].textContent || cells[j].innerText;
+                        if (cellText.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    rows[i].style.display = found ? '' : 'none';
+                }
+            });
+
+            // Botón de refresh
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                this.classList.add('fa-spin');
+                setTimeout(() => {
+                    this.classList.remove('fa-spin');
+                }, 1000);
+
+                searchInput.value = '';
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].style.display = '';
+                }
+            });
+
+            // Botón de exportar (simulado)
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                const toast = document.createElement('div');
+                toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                toast.style.top = '20px';
+                toast.style.right = '20px';
+                toast.style.zIndex = '9999';
+                toast.innerHTML = `
+                    <i class="fas fa-check-circle me-2"></i>
+                    Lista de corredores exportada correctamente
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            });
+
+            // Efectos hover en tarjetas de estadísticas
+            const statCards = document.querySelectorAll('.card.border-0');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
 }
-    </tbody>
-</table>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

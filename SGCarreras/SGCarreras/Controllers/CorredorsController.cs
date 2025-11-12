@@ -91,7 +91,7 @@ namespace SGCarreras.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Sexo,NombreCompleto,Cedula")] Corredor corredor)
+        public async Task<IActionResult> Create([Bind("Sexo,NombreCompleto,Cedula, Contra, Mail")] Corredor corredor)
         {
             if (ModelState.IsValid)
             {
@@ -229,25 +229,6 @@ namespace SGCarreras.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // GET: Corredors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -269,7 +250,7 @@ namespace SGCarreras.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Sexo,Id,NombreCompleto,Cedula")] Corredor corredor)
+        public async Task<IActionResult> Edit(int id, [Bind("Sexo,Id,NombreCompleto,Cedula,Nacionalidad, Mail, Contra")] Corredor corredor)
         {
             if (id != corredor.Id)
             {

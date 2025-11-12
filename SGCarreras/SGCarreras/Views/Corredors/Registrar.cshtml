@@ -1,57 +1,182 @@
 ﻿@model SGCarreras.Models.Corredor
 
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Registrarse como Corredor";
 }
 
-<div class="container py-5">
+<div class="container-fluid py-5 bg-light">
     <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow rounded-4">
-                <div class="card-body p-4">
-                    <h2 class="card-title text-center mb-4">Registrarse</h2>
+        <div class="col-md-8 col-lg-6">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold text-primary mb-3">Únete a la Comunidad</h1>
+                <p class="lead text-muted">Regístrate y comienza tu journey deportivo</p>
+            </div>
 
-                    <form asp-action="Registrar" novalidate>
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white py-4 rounded-top-4">
+                    <div class="text-center">
+                        <i class="fas fa-running fa-3x mb-3"></i>
+                        <h2 class="card-title mb-0">Crear Cuenta de Corredor</h2>
+                    </div>
+                </div>
+                <div class="card-body p-5">
+                    <form asp-action="Registrar" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                         @if (ViewBag.Message != null)
                         {
-                            <div class="alert alert-success" role="alert">@ViewBag.Message</div>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                @ViewBag.Message
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
                         }
 
-                        <div class="mb-3">
-                            <label asp-for="NombreCompleto" class="form-label">Nombre Completo</label>
-                            <input asp-for="NombreCompleto" class="form-control" placeholder="Ingrese su nombre completo" />
-                            <span asp-validation-for="NombreCompleto" class="text-danger"></span>
+                        <!-- Información Personal -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label asp-for="NombreCompleto" class="form-label fw-semibold">
+                                        <i class="fas fa-user me-2 text-primary"></i>Nombre Completo
+                                    </label>
+                                    <input asp-for="NombreCompleto" class="form-control form-control-lg"
+                                           placeholder="Ej: Juan Pérez García" required />
+                                    <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label asp-for="Cedula" class="form-label fw-semibold">
+                                        <i class="fas fa-id-card me-2 text-primary"></i>Cédula
+                                    </label>
+                                    <input asp-for="Cedula" class="form-control form-control-lg"
+                                           placeholder="Ej: 12345678" required />
+                                    <span asp-validation-for="Cedula" class="text-danger small"></span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Cedula" class="form-label">Cedula</label>
-                            <input asp-for="Cedula" class="form-control" placeholder="Ingrese su cédula" />
-                            <span asp-validation-for="Cedula" class="text-danger"></span>
+                        <!-- Nacionalidad y Sexo -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-flag me-2 text-primary"></i>Nacionalidad
+                                    </label>
+                                    <select class="form-select form-select-lg" name="Nacionalidad" required>
+                                        <option value="">-- Seleccione nacionalidad --</option>
+                                        <option value="Uruguaya">Uruguaya</option>
+                                        <option value="Argentina">Argentina</option>
+                                        <option value="Brasileña">Brasileña</option>
+                                        <option value="Chilena">Chilena</option>
+                                        <option value="Paraguaya">Paraguaya</option>
+                                        <option value="Otra">Otra</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label asp-for="Sexo" class="form-label fw-semibold">
+                                        <i class="fas fa-venus-mars me-2 text-primary"></i>Sexo
+                                    </label>
+                                    <select asp-for="Sexo" class="form-select form-select-lg" required>
+                                        <option value="">-- Seleccione sexo --</option>
+                                        <option value="Hombre">Hombre</option>
+                                        <option value="Mujer">Mujer</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                    <span asp-validation-for="Sexo" class="text-danger small"></span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Contra" class="form-label">Contraseña</label>
-                            <input asp-for="Contra" type="password" class="form-control" placeholder="Ingrese una contraseña segura" />
-                            <span asp-validation-for="Contra" class="text-danger"></span>
+                        <!-- Información de Contacto -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Mail" class="form-label fw-semibold">
+                                <i class="fas fa-envelope me-2 text-primary"></i>Email
+                            </label>
+                            <input asp-for="Mail" type="email" class="form-control form-control-lg"
+                                   placeholder="ejemplo@correo.com" required />
+                            <span asp-validation-for="Mail" class="text-danger small"></span>
                         </div>
 
-                        <div class="mb-4">
-                            <label asp-for="Mail" class="form-label">Email</label>
-                            <input asp-for="Mail" type="email" class="form-control" placeholder="Ingrese su email" />
-                            <span asp-validation-for="Mail" class="text-danger"></span>
+                        <!-- Contraseñas -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label asp-for="Contra" class="form-label fw-semibold">
+                                        <i class="fas fa-lock me-2 text-primary"></i>Contraseña
+                                    </label>
+                                    <input asp-for="Contra" type="password" class="form-control form-control-lg"
+                                           placeholder="Mínimo 8 caracteres" required
+                                           pattern=".{8,}" />
+                                    <div class="form-text">
+                                        <small id="password-strength"></small>
+                                    </div>
+                                    <span asp-validation-for="Contra" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-lock me-2 text-primary"></i>Confirmar Contraseña
+                                    </label>
+                                    <input type="password" class="form-control form-control-lg"
+                                           id="ConfirmarContra" placeholder="Repita su contraseña" required />
+                                    <div class="form-text">
+                                        <small id="password-match"></small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Crear cuenta</button>
+                        <!-- Términos y Condiciones -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="terminos" required>
+                            <label class="form-check-label" for="terminos">
+                                Acepto los <a href="#" class="text-primary">términos y condiciones</a>
+                                y la <a href="#" class="text-primary">política de privacidad</a>
+                            </label>
+                        </div>
+
+                        <!-- Botón de Registro -->
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 mb-4">
+                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                        </button>
+
+                        <!-- Enlace de Login -->
+                        <div class="text-center">
+                            <p class="mb-0">
+                                ¿Ya tienes cuenta?
+                                <a asp-action="LogIn" class="fw-bold text-primary text-decoration-none">
+                                    Ingresar aquí
+                                </a>
+                            </p>
+                        </div>
                     </form>
+                </div>
+            </div>
 
-                    <hr class="my-4" />
-
-                    <p class="text-center mb-0">
-                        ¿Ya tienes cuenta?
-                        <a asp-action="LogIn" class="fw-semibold">Ingresar aquí</a>
-                    </p>
+            <!-- Información Adicional -->
+            <div class="row mt-4 text-center">
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fas fa-shield-alt text-success me-2"></i>
+                        <small class="text-muted">Datos 100% seguros</small>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fas fa-bolt text-warning me-2"></i>
+                        <small class="text-muted">Registro rápido</small>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="fas fa-trophy text-primary me-2"></i>
+                        <small class="text-muted">Acceso a todas las carreras</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,4 +187,8 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="~/js/corredores.js"></script>
 }
+
+<link rel="stylesheet" href="~/css/corredores.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
