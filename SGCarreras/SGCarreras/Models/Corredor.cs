@@ -1,4 +1,5 @@
-﻿using static SGCarreras.Models.Sexo;
+﻿using System.Text.Json.Serialization;
+using static SGCarreras.Models.Sexo;
 
 namespace SGCarreras.Models
 {
@@ -8,6 +9,7 @@ namespace SGCarreras.Models
         public string Nacionalidad { get; set; } = string.Empty;
 
         //Relaciones
+        [JsonIgnore]
         public ICollection<Registro> registros { get; set; } = [];
 
         public Corredor() { }

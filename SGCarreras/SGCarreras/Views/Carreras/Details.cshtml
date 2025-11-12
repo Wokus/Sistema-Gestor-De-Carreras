@@ -1,6 +1,7 @@
 ﻿@model SGCarreras.Models.Carrera
 @using System.Threading;
 @using System.Security.Claims;
+@using static SGCarreras.Models.Estado
 
 @{
     ViewData["Title"] = "Detalles de la Carrera";
@@ -9,7 +10,8 @@
 @{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-
+    var HoraAvance = DateTime.Now;
+    var PuntoControl = 0;
     // Obtener el referer (página anterior) para saber de dónde vino el usuario
     var referer = Context.Request.Headers["Referer"].ToString();
     var vieneDeCalendarios = referer.Contains("Calendarios");
@@ -213,33 +215,17 @@
                                 </h4>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Corredor</th>
-                                                <th>Categoría</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var registro in Model.Registros.Take(5))
-                                            {
-                                                <tr>
-                                                    <td>@registro.Id</td>
-                                                    <td>@(registro.Corredor?.NombreCompleto ?? "N/A")</td>
-                                                    <td><span class="badge bg-info">General</span></td>
-                                                    <td><span class="badge bg-success">Inscrito</span></td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table table-striped align-middle text-center">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Corredor</th>
+                                            <th>Posición</th>
+                                            <th>Kilómetro</th>
+                                            <th>Último avance</th>
+                                        </tr>
+                                    </thead>
+                                  
+                                </table>
                                 @if (Model.Registros.Count > 5)
                                 {
                                     <div class="text-center mt-3">
@@ -253,7 +239,19 @@
             }
         </div>
     </div>
+   
 </div>
+<tbody id="tabla-corredores">
+    @foreach (var registro in Model.Registros)
+    {
+        <tr id="row-@registro.Corredor.Id">
+            <td>@registro.Corredor.NombreCompleto</td>
+            <td class="posicion">@registro.PosicionEnCarrera</td>
+            <td class="kilometro"> 0)</td>
+            <td class="tiempo"> "—"</td>
+        </tr>
+    }
+</tbody>
 
 <style>
     .card {
@@ -333,3 +331,81 @@
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<script>
+    window.carreraId = @Model.Id;
+</script>
+
+<!-- Incluir el script adaptado de SignalR debajo -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+<script>
+    //  Conexión global al Hub
+    if (!window.globalSignalRConnection) {
+        window.globalSignalRConnection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:7247/carrerasHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        window.carrerasActivas = new Set();
+
+        //  Evento recibido del servidor
+        window.globalSignalRConnection.on("CarreraActualizada", data => {
+            if (window.carreraId !== data.carreraId) return;
+
+            const tbody = document.getElementById("tabla-corredores");
+            let row = document.querySelector(`#row-${data.corredorId}`);
+
+            if (!row) {
+                row = document.createElement("tr");
+                row.id = `row-${data.corredorId}`;
+                row.innerHTML = `
+                    <td>${data.corredorNombre}</td>
+                    <td class="posicion">${data.pocisionCarrera}</td>
+                    <td class="kilometro">${data.kilometro.toFixed(1)}</td>
+                    <td class="tiempo">${new Date(data.tiempo).toLocaleTimeString()}</td>
+                `;
+                tbody.appendChild(row);
+            } else {
+                //  Actualizar las celdas dinámicamente
+                row.querySelector(".posicion").textContent = data.pocisionCarrera ?? "-";
+                row.querySelector(".kilometro").textContent = data.kilometro.toFixed(1);
+                row.querySelector(".tiempo").textContent = new Date(data.tiempo).toLocaleTimeString();
+
+                //  Efecto visual para mostrar que se actualizó
+                row.style.transition = "background-color 0.3s";
+                row.style.backgroundColor = "#e8f5e9";
+                setTimeout(() => row.style.backgroundColor = "", 500);
+            }
+        });
+
+        //  Iniciar conexión
+        window.globalSignalRConnection.start()
+            .then(() => console.log(" Conectado a SignalR (Carreras)"))
+            .catch(err => console.error(" Error de conexión SignalR:", err));
+    }
+
+    //  Cuando se carga la vista Details
+        document.addEventListener("DOMContentLoaded", () => {
+        const carreraId = document.getElementById("carreraId")?.value;
+        if (carreraId) {
+            conectarYUnirse(carreraId);
+        }
+    });
+
+        async function conectarYUnirse(carreraId) {
+        try {
+            // Si no está conectada, esperá a que conecte
+            if (window.globalSignalRConnection.state !== signalR.HubConnectionState.Connected) {
+                console.log(" Esperando conexión SignalR...");
+                await window.globalSignalRConnection.start();
+                console.log(" Conectado a SignalR (Carreras)");
+            }
+
+            // Una vez conectada, unirse al grupo
+            await window.globalSignalRConnection.invoke("UnirseACarrera", carreraId);
+            console.log(` Suscrito a Carrera-${carreraId}`);
+        } catch (err) {
+            console.error(" Error al unirse al grupo:", err);
+        }
+    }
+</script>

@@ -6,7 +6,9 @@ using SGCarreras.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using static SGCarreras.Models.Estado;
 using static SGCarreras.Models.Sexo;
@@ -16,15 +18,19 @@ namespace SGCarreras.Controllers
     public class CarrerasController : Controller
     {
         private readonly SGCarrerasContext _context;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public CarrerasController(SGCarrerasContext context)
+        public CarrerasController(SGCarrerasContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
+            _clientFactory = clientFactory;
         }
 
         // GET: Carreras
         public async Task<IActionResult> Index()
         {
+          //  await InicializarCarrerasActivasAsync(_clientFactory);
+
             var carreras = await _context.Carrera
                 .Include(c => c.PuntosDeControl)
                 .ToListAsync();
@@ -40,7 +46,8 @@ namespace SGCarreras.Controllers
             }
 
             var carrera = await _context.Carrera
-                .Include(c => c.PuntosDeControl)
+                .Include(m => m.Registros.Where(r => r.confirmado == true))
+                .ThenInclude(r => r.Corredor)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (carrera == null)
             {
@@ -443,6 +450,34 @@ namespace SGCarreras.Controllers
                 return false;
             }
             
+        }
+
+        public async Task InicializarCarrerasActivasAsync(IHttpClientFactory clientFactory)
+        {
+            var client = clientFactory.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:7247/api/Simulacion/importar"); // URL de la API
+
+            var carrera = await _context.Carrera
+            .Include(c => c.Registros.Where(r => r.confirmado == true))
+                .ThenInclude(r => r.Corredor)
+            .Include(c => c.PuntosDeControl) 
+            .ToListAsync();
+
+            var activas = carrera
+                .Where(c => c.Estado == EstadoEnum.Activo)
+                .ToList();
+
+            // 🔍 Serializamos para ver qué se está enviando
+            var json = JsonSerializer.Serialize(activas, new JsonSerializerOptions
+            {
+                WriteIndented = true // lo hace más legible
+            });
+
+            Console.WriteLine("===------------------------------------ JSON a enviar a la API ===-------------------------------------");
+            Console.WriteLine(json);
+            Console.WriteLine("===------------------------------------ JSON a enviar a la API ===-------------------------------------");
+            // 🚀 Enviar el JSON a la API
+            await client.PostAsJsonAsync("/api/Simulacion/importar", activas);
         }
 
     }
