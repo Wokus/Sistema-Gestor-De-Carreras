@@ -34,7 +34,7 @@ namespace apiCarreras.Controllers
 
             var json = JsonSerializer.Serialize(carreras, new JsonSerializerOptions
             {
-                WriteIndented = true // para hacerlo más legible
+                WriteIndented = true 
             });
 
             Console.WriteLine("=== JSON RECIBIDO ===");
@@ -47,11 +47,11 @@ namespace apiCarreras.Controllers
                 try
                 {
                     _simulador.IniciarSimulacion(carrera);
-                    Console.WriteLine($"✅ Simulación iniciada para carrera: {carrera.Nombre ?? "(sin nombre)"}");
+                    Console.WriteLine($" Simulación iniciada para carrera: {carrera.Nombre ?? "(sin nombre)"}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ Error al iniciar simulación para la carrera {carrera.Nombre ?? "(sin nombre)"}: {ex.Message}");
+                    Console.WriteLine($" Error al iniciar simulación para la carrera {carrera.Nombre ?? "(sin nombre)"}: {ex.Message}");
                     Console.WriteLine(ex.StackTrace);
                      return StatusCode(500, new
         {

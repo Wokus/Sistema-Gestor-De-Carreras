@@ -339,73 +339,19 @@
 <!-- Incluir el script adaptado de SignalR debajo -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 <script>
-    //  Conexión global al Hub
-    if (!window.globalSignalRConnection) {
-        window.globalSignalRConnection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7247/carrerasHub")
-            .configureLogging(signalR.LogLevel.Information)
-            .build();
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:7247/carrerasHub")
+        .build();
 
-        window.carrerasActivas = new Set();
-
-        //  Evento recibido del servidor
-        window.globalSignalRConnection.on("CarreraActualizada", data => {
-            if (window.carreraId !== data.carreraId) return;
-
-            const tbody = document.getElementById("tabla-corredores");
-            let row = document.querySelector(`#row-${data.corredorId}`);
-
-            if (!row) {
-                row = document.createElement("tr");
-                row.id = `row-${data.corredorId}`;
-                row.innerHTML = `
-                    <td>${data.corredorNombre}</td>
-                    <td class="posicion">${data.pocisionCarrera}</td>
-                    <td class="kilometro">${data.kilometro.toFixed(1)}</td>
-                    <td class="tiempo">${new Date(data.tiempo).toLocaleTimeString()}</td>
-                `;
-                tbody.appendChild(row);
-            } else {
-                //  Actualizar las celdas dinámicamente
-                row.querySelector(".posicion").textContent = data.pocisionCarrera ?? "-";
-                row.querySelector(".kilometro").textContent = data.kilometro.toFixed(1);
-                row.querySelector(".tiempo").textContent = new Date(data.tiempo).toLocaleTimeString();
-
-                //  Efecto visual para mostrar que se actualizó
-                row.style.transition = "background-color 0.3s";
-                row.style.backgroundColor = "#e8f5e9";
-                setTimeout(() => row.style.backgroundColor = "", 500);
-            }
-        });
-
-        //  Iniciar conexión
-        window.globalSignalRConnection.start()
-            .then(() => console.log(" Conectado a SignalR (Carreras)"))
-            .catch(err => console.error(" Error de conexión SignalR:", err));
-    }
-
-    //  Cuando se carga la vista Details
-        document.addEventListener("DOMContentLoaded", () => {
-        const carreraId = document.getElementById("carreraId")?.value;
-        if (carreraId) {
-            conectarYUnirse(carreraId);
-        }
+    connection.on("CarreraActualizada", (data) => {
+        console.log("Carrera actualizada:", data);
+        // Acá actualizás la vista, por ejemplo:
+        // document.querySelector(`#row-${data.corredorId} .kilometro`).textContent = data.kilometro;
     });
 
-        async function conectarYUnirse(carreraId) {
-        try {
-            // Si no está conectada, esperá a que conecte
-            if (window.globalSignalRConnection.state !== signalR.HubConnectionState.Connected) {
-                console.log(" Esperando conexión SignalR...");
-                await window.globalSignalRConnection.start();
-                console.log(" Conectado a SignalR (Carreras)");
-            }
-
-            // Una vez conectada, unirse al grupo
-            await window.globalSignalRConnection.invoke("UnirseACarrera", carreraId);
-            console.log(` Suscrito a Carrera-${carreraId}`);
-        } catch (err) {
-            console.error(" Error al unirse al grupo:", err);
-        }
-    }
+    // Conectarse y unirse al grupo
+    connection.start().then(() => {
+        const carreraId = @Model.Id; // ejemplo si estás en Razor
+        connection.invoke("UnirseACarrera", carreraId);
+    }).catch(err => console.error(err));
 </script>

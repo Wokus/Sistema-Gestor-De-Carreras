@@ -1,7 +1,8 @@
 ﻿using apiCarreras.DTOs;
+using apiCarreras.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
-using apiCarreras.Hubs;
+using System.Text.Json;
 
 namespace apiCarreras.Services
 {
@@ -35,27 +36,34 @@ namespace apiCarreras.Services
             {
                 try
                 {
-                    _logger.LogInformation("Iniciando simulación para {Nombre}", carrera.Nombre);
+                    Console.WriteLine("///////////////////////////// INFO DE CARRERAS /////////////////////////////");
+
+                    string json = JsonSerializer.Serialize(carrera);
+                    Console.WriteLine(json);
+                    Console.WriteLine("///////////////////////////// INFO DE CARRERAS /////////////////////////////");
                     Console.WriteLine($" Iniciando simulación para: {carrera.Nombre}");
 
-                    if (carrera.PtosDeControl == null || carrera.PtosDeControl.Count == 0)
+                    if (carrera.PuntosDeControl == null || carrera.PuntosDeControl.Count == 0)
                     {
-                        _logger.LogWarning("Carreraaaaa {Nombre} no tiene puntos de control", carrera.Nombre);
+                      
                         Console.WriteLine($" Carrera {carrera.Nombre} no tiene puntos de control");
                        
                     }
 
                     if (carrera.Registros == null || carrera.Registros.Count == 0)
                     {
-                        _logger.LogWarning("Carrera {Nombre} no tiene corredores", carrera.Nombre);
+                       
                         Console.WriteLine($" Carrera {carrera.Nombre} no tiene corredores");
                       
                     }
-                    _logger.LogWarning("Carreraaaaaaaaaaaaaaa");
+                   
                     // Reasignar números a los puntos de control
-                    var alrevez = carrera.PtosDeControl.AsEnumerable().Reverse().ToList();
-                    int token = carrera.PtosDeControl.Count;
-                    int token2 = 0;
+                    var alrevez = carrera.PuntosDeControl.AsEnumerable().Reverse().ToList();
+                    int token = carrera.PuntosDeControl.Count;
+                    Console.WriteLine(" --------------------------------------------------------------");
+                    Console.WriteLine($" Count de ptos " + token);
+                    Console.WriteLine(" --------------------------------------------------------------");
+                int token2 = 0;
 
                     foreach (var ptos in alrevez)
                     {
@@ -63,7 +71,7 @@ namespace apiCarreras.Services
                         token2++;
                     }
 
-                    carrera.PtosDeControl = alrevez.AsEnumerable().Reverse().ToList();
+                    carrera.PuntosDeControl = alrevez.AsEnumerable().Reverse().ToList();
 
 
                     _logger.LogInformation(" Entrando al bucle principal de simulación para {Nombre}", carrera.Nombre);
@@ -81,8 +89,10 @@ namespace apiCarreras.Services
                         registro.distancia = avance;
 
                         double kmtrsPunto = 0;
-                        foreach (var ptos in carrera.PtosDeControl)
+                        foreach (var ptos in carrera.PuntosDeControl)
                         {
+
+
                             if (ptos.Distancia < avance && registro.pntoControl < ptos.numeroEnCarrera)
                             {
                                 registro.pntoControl = ptos.numeroEnCarrera;
@@ -96,13 +106,11 @@ namespace apiCarreras.Services
                         var mensaje = $" {registro.Corredor.NombreCompleto} avanzó a {registro.distancia}m (Punto {registro.pntoControl}) en {carrera.Nombre}";
                         Console.WriteLine(mensaje);
 
-                        _logger.LogInformation(
-                            "Carrera {Nombre}: {Corredor} avanza, distancia {distancia}",
-                            carrera.Nombre,
-                            registro.Corredor.NombreCompleto,
-                            registro.distancia);
 
-                        // 🔥 Emitir actualización por SignalR
+                        // Emitir actualización por SignalR
+                       // Console.WriteLine("))))))))))))))))))))))))))))))))))))))))))))))=))))))))))))))))))))))))))))))))");
+                       // Console.WriteLine("LLEGO AL AWAIT ANTES");
+                        //Console.WriteLine("))))))))))))))))))))))))))))))))))))))))))))))=))))))))))))))))))))))))))))))))");
                         await _hubContext.Clients.Group($"Carrera-{carrera.Id}")
                             .SendAsync("CarreraActualizada", new
                             {

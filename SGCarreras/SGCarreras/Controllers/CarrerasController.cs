@@ -476,7 +476,7 @@ namespace SGCarreras.Controllers
             Console.WriteLine("===------------------------------------ JSON a enviar a la API ===-------------------------------------");
             Console.WriteLine(json);
             Console.WriteLine("===------------------------------------ JSON a enviar a la API ===-------------------------------------");
-            // 🚀 Enviar el JSON a la API
+
             await client.PostAsJsonAsync("/api/Simulacion/importar", activas);
         }
 
