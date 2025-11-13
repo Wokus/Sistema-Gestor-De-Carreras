@@ -6,19 +6,12 @@ using System.Text.Json;
 
 namespace apiCarreras.Services
 {
-    public class SimuladorService : ISimuladorService
+    public class SimuladorService(ILogger<SimuladorService> logger, IHubContext<CarrerasSimuladasHub> hubContext) : ISimuladorService
     {
         private readonly ConcurrentDictionary<int, CancellationTokenSource> _simulaciones = new();
-        private readonly ILogger<SimuladorService> _logger;
+        private readonly ILogger<SimuladorService> _logger = logger;
         private readonly Random _random = new();
-        private readonly IHubContext<CarrerasSimuladasHub> _hubContext;
-
-
-        public SimuladorService(ILogger<SimuladorService> logger, IHubContext<CarrerasSimuladasHub> hubContext)
-        {
-            _logger = logger;
-            _hubContext = hubContext;
-        }
+        private readonly IHubContext<CarrerasSimuladasHub> _hubContext = hubContext;
 
         public void IniciarSimulacion(CarreraDTO carrera)
         {
@@ -43,36 +36,34 @@ namespace apiCarreras.Services
                     Console.WriteLine("///////////////////////////// INFO DE CARRERAS /////////////////////////////");
                     Console.WriteLine($" Iniciando simulación para: {carrera.Nombre}");
 
+                    // Validaciones de null
                     if (carrera.PuntosDeControl == null || carrera.PuntosDeControl.Count == 0)
                     {
-                      
                         Console.WriteLine($" Carrera {carrera.Nombre} no tiene puntos de control");
-                       
+                        return;
                     }
 
                     if (carrera.Registros == null || carrera.Registros.Count == 0)
                     {
-                       
                         Console.WriteLine($" Carrera {carrera.Nombre} no tiene corredores");
-                      
+                        return;
                     }
-                   
+
                     // Reasignar números a los puntos de control
                     var alrevez = carrera.PuntosDeControl.AsEnumerable().Reverse().ToList();
                     int token = carrera.PuntosDeControl.Count;
                     Console.WriteLine(" --------------------------------------------------------------");
                     Console.WriteLine($" Count de ptos " + token);
                     Console.WriteLine(" --------------------------------------------------------------");
-                int token2 = 0;
+                    int token2 = 0;
 
                     foreach (var ptos in alrevez)
                     {
-                        ptos.numeroEnCarrera = token - token2;
+                        ptos.NumeroEnCarrera = token - token2;
                         token2++;
                     }
 
-                    carrera.PuntosDeControl = alrevez.AsEnumerable().Reverse().ToList();
-
+                    carrera.PuntosDeControl = [.. alrevez.AsEnumerable().Reverse()];
 
                     _logger.LogInformation(" Entrando al bucle principal de simulación para {Nombre}", carrera.Nombre);
 
@@ -82,35 +73,42 @@ namespace apiCarreras.Services
 
                         await Task.Delay(TimeSpan.FromSeconds(2), cts.Token);
 
+                        // Validar que los registros no sean null
+                        if (carrera.Registros == null || carrera.Registros.Count == 0)
+                        {
+                            _logger.LogWarning("No hay registros disponibles en la carrera {Nombre}", carrera.Nombre);
+                            continue;
+                        }
+
                         var index = _random.Next(carrera.Registros.Count);
                         var registro = carrera.Registros[index];
 
-                        int avance = _random.Next(registro.distancia, registro.distancia + 100);
-                        registro.distancia = avance;
+                        // Validar que el registro y el corredor no sean null
+                        if (registro?.Corredor == null)
+                        {
+                            _logger.LogWarning("Registro o corredor nulo en índice {Index}", index);
+                            continue;
+                        }
+
+                        int avance = _random.Next(registro.Distancia, registro.Distancia + 100);
+                        registro.Distancia = avance;
 
                         double kmtrsPunto = 0;
                         foreach (var ptos in carrera.PuntosDeControl)
                         {
-
-
-                            if (ptos.Distancia < avance && registro.pntoControl < ptos.numeroEnCarrera)
+                            if (ptos.Distancia < avance && registro.PuntoControl < ptos.NumeroEnCarrera)
                             {
-                                registro.pntoControl = ptos.numeroEnCarrera;
+                                registro.PuntoControl = ptos.NumeroEnCarrera;
                                 kmtrsPunto = ptos.Distancia;
                                 registro.HoraAvance = DateTime.UtcNow;
                                 break;
                             }
                         }
 
-                      
-                        var mensaje = $" {registro.Corredor.NombreCompleto} avanzó a {registro.distancia}m (Punto {registro.pntoControl}) en {carrera.Nombre}";
+                        var mensaje = $" {registro.Corredor.NombreCompleto} avanzó a {registro.Distancia}m (Punto {registro.PuntoControl}) en {carrera.Nombre}";
                         Console.WriteLine(mensaje);
 
-
                         // Emitir actualización por SignalR
-                       // Console.WriteLine("))))))))))))))))))))))))))))))))))))))))))))))=))))))))))))))))))))))))))))))))");
-                       // Console.WriteLine("LLEGO AL AWAIT ANTES");
-                        //Console.WriteLine("))))))))))))))))))))))))))))))))))))))))))))))=))))))))))))))))))))))))))))))))");
                         await _hubContext.Clients.Group($"Carrera-{carrera.Id}")
                             .SendAsync("CarreraActualizada", new
                             {
@@ -124,14 +122,21 @@ namespace apiCarreras.Services
                             });
                     }
                 }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation("Simulación de carrera {Nombre} cancelada", carrera.Nombre);
+                }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, " Error en la simulación de la carrera {Nombre}", carrera.Nombre);
                     Console.WriteLine($" Error en simulación de {carrera.Nombre}: {ex.Message}");
                 }
+                finally
+                {
+                    _simulaciones.TryRemove(carrera.Id, out _);
+                }
             }, cts.Token);
         }
-
 
         public void DetenerSimulacion(int carreraId)
         {
