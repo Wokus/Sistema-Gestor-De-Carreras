@@ -5,8 +5,8 @@
 
     // Contadores usando el enum correcto
     var totalCorredores = Model?.Count() ?? 0;
-    var totalHombres = Model?.Count(c => c.Sexo != null && c.Sexo.ToString().ToLower().Contains("hombre")) ?? 0;
-    var totalMujeres = Model?.Count(c => c.Sexo != null && c.Sexo.ToString().ToLower().Contains("mujer")) ?? 0;
+    var totalHombres = Model?.Count(c => c.Sexo.ToString().ToLower().Contains("hombre")) ?? 0;
+    var totalMujeres = Model?.Count(c => c.Sexo.ToString().ToLower().Contains("mujer")) ?? 0;
 
     // Para nacionalidad, verificamos si existe la propiedad
     var nacionalidadesCount = 0;
@@ -147,8 +147,6 @@
                                         var sexoIcon = "fa-genderless";
                                         var sexoTexto = item.Sexo.ToString() ?? "No especificado";
 
-                                        if (item.Sexo != null)
-                                        {
                                             var sexoStr = item.Sexo.ToString().ToLower();
                                             if (sexoStr.Contains("hombre"))
                                             {
@@ -165,7 +163,6 @@
                                                 sexoBadgeClass = "bg-secondary";
                                                 sexoIcon = "fa-genderless";
                                             }
-                                        }
                                     }
                                     <span class="badge @sexoBadgeClass">
                                         <i class="fas @sexoIcon me-1"></i>@sexoTexto

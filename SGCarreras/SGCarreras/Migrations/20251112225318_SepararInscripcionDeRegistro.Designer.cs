@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SGCarreras.Data;
 
@@ -10,9 +11,11 @@ using SGCarreras.Data;
 namespace SGCarreras.Migrations
 {
     [DbContext(typeof(SGCarrerasContext))]
-    partial class SGCarrerasContextModelSnapshot : ModelSnapshot
+    [Migration("20251112225318_SepararInscripcionDeRegistro")]
+    partial class SepararInscripcionDeRegistro
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -123,6 +126,9 @@ namespace SGCarreras.Migrations
                     b.Property<int>("CarreraId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("CorredorId")
                         .HasColumnType("INTEGER");
 
@@ -134,6 +140,9 @@ namespace SGCarreras.Migrations
 
                     b.Property<int>("NumeroCorredor")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("RegistroId")
                         .HasColumnType("INTEGER");

@@ -417,20 +417,7 @@ namespace SGCarreras.Controllers
             }
      
         }
-        public async Task<IActionResult> Registros(int? id)
-        {
-            var carrera = await _context.Carrera
-                .Include(m => m.Registros.Where(r => r.confirmado == false))
-                .ThenInclude(r => r.Corredor)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (carrera == null)
-            {
-                return NotFound();
-            }
 
-
-            return View("AdminShenanigans/ListadoRegistro", carrera.Registros);
-        }
         private bool corroborarRol(string rol)
         {
             var rolToken = User.FindFirstValue(ClaimTypes.Role);

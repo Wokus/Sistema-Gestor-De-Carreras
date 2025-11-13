@@ -71,8 +71,6 @@
                                             @{
                                                 var sexoBadgeClass = "bg-secondary";
                                                 var sexoIcon = "fa-genderless";
-                                                if (Model.Sexo != null)
-                                                {
                                                     if (Model.Sexo.ToString().ToLower().Contains("hombre"))
                                                     {
                                                         sexoBadgeClass = "bg-info";
@@ -83,7 +81,6 @@
                                                         sexoBadgeClass = "bg-pink";
                                                         sexoIcon = "fa-venus";
                                                     }
-                                                }
                                             }
                                             <span class="badge @sexoBadgeClass fs-6">
                                                 <i class="fas @sexoIcon me-1"></i>@Model.Sexo
@@ -180,29 +177,29 @@
                                 @foreach (var item in listaRegistros)
                                 {
                                     @if (
-                                                                    (item.Carrera.Estado == EstadoEnum.Activo && filtro == "Activas") ||
-                                                                    (item.Carrera.Estado == EstadoEnum.En_espera && filtro == "EnEspera") ||
-                                                                    (item.Carrera.Estado == EstadoEnum.Finalizada && filtro == "Finalizadas") ||
+                                                                    (item.Carrera?.Estado == EstadoEnum.Activo && filtro == "Activas") ||
+                                                                    (item.Carrera?.Estado == EstadoEnum.En_espera && filtro == "EnEspera") ||
+                                                                    (item.Carrera?.Estado == EstadoEnum.Finalizada && filtro == "Finalizadas") ||
                                                                     (filtro == "Todas")
                                                                     )
                                     {
                                         <tr>
                                             <td class="ps-4">
-                                                <div class="fw-semibold text-primary">@item.Carrera.Nombre</div>
+                                                <div class="fw-semibold text-primary">@item.Carrera?.Nombre</div>
                                             </td>
                                             <td>
                                                 <i class="fas fa-map-marker-alt text-muted me-1"></i>
-                                                @item.Carrera.Ubicacion
+                                                @item.Carrera?.Ubicacion
                                             </td>
                                             <td>
                                                 <span class="badge bg-info">
-                                                    <i class="fas fa-route me-1"></i>@string.Format("{0:N2} km", item.Carrera.KmTotales)
+                                                    <i class="fas fa-route me-1"></i>@string.Format("{0:N2} km", item.Carrera?.KmTotales)
                                                 </span>
                                             </td>
                                             <td>
                                                 <small class="text-muted">
                                                     <i class="fas fa-clock me-1"></i>
-                                                    @item.Carrera.Fecha.ToString("dd/MM/yyyy HH:mm")
+                                                    @item.Carrera?.Fecha.ToString("dd/MM/yyyy HH:mm")
                                                 </small>
                                             </td>
                                             <td>
@@ -224,9 +221,9 @@
                     </div>
 
                     @if (!listaRegistros.Any(r =>
-                                        (r.Carrera.Estado == EstadoEnum.Activo && filtro == "Activas") ||
-                                        (r.Carrera.Estado == EstadoEnum.En_espera && filtro == "EnEspera") ||
-                                        (r.Carrera.Estado == EstadoEnum.Finalizada && filtro == "Finalizadas") ||
+                                        (r.Carrera?.Estado == EstadoEnum.Activo && filtro == "Activas") ||
+                                        (r.Carrera?.Estado == EstadoEnum.En_espera && filtro == "EnEspera") ||
+                                        (r.Carrera?.Estado == EstadoEnum.Finalizada && filtro == "Finalizadas") ||
                                         (filtro == "Todas" && listaRegistros.Any())
                                         ))
                     {

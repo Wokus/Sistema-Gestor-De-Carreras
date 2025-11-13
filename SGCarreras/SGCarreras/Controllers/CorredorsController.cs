@@ -59,18 +59,6 @@ namespace SGCarreras.Controllers
             return View(corredor);
         }
 
-       
-
-
-
-
-
-
-
-
-
-
-
         // GET: Corredors/Create
         public IActionResult Create()
         {

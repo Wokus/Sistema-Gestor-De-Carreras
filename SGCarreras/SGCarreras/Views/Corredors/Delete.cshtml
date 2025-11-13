@@ -76,8 +76,7 @@
                                         <div>
                                             @{
                                                 var sexoBadgeClass = "bg-secondary";
-                                                if (Model.Sexo != null)
-                                                {
+
                                                     if (Model.Sexo.ToString().ToLower().Contains("hombre"))
                                                     {
                                                         sexoBadgeClass = "bg-info";
@@ -86,7 +85,6 @@
                                                     {
                                                         sexoBadgeClass = "bg-pink";
                                                     }
-                                                }
                                             }
                                             <span class="badge @sexoBadgeClass">@Model.Sexo</span>
                                         </div>

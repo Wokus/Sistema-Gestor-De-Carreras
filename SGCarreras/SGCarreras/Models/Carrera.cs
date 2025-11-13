@@ -30,11 +30,16 @@ namespace SGCarreras.Models
         [Display(Name = "Fecha y Hora")]
         public DateTime Fecha { get; set; }
 
-        // Relaciones
+        [Range(0, int.MaxValue, ErrorMessage = "El máximo de participantes debe ser un valor positivo.")]
+        [Display(Name = "Máximo de participantes")]
 
-        public ICollection<Registro> Registros { get; set; } = [];
+        // RELACIONES ACTUALIZADAS
+        public ICollection<Inscripcion> Inscripciones { get; set; } = [];
 
         public ICollection<PuntoDeControl> PuntosDeControl { get; set; } = [];
+
+        // La relación directa con Registros se elimina, ya que ahora 
+        // los Registros se acceden a través de Inscripciones → Registro
 
         public Carrera() { }
 
@@ -44,9 +49,16 @@ namespace SGCarreras.Models
             Ubicacion = ubicacion;
             Estado = estado;
             KmTotales = kmTotales;
-            Registros = [];
-            PuntosDeControl = [];
             Fecha = fecha;
+            Inscripciones = [];
+            PuntosDeControl = [];
         }
+
+        // PROPIEDADES CALCULADAS ÚTILES
+        [NotMapped]
+        [Display(Name = "Total de inscritos")]
+        public int TotalInscritosConfirmados =>
+            Inscripciones?.Count(i => i.Estado == EstadoInscripcion.Confirmada) ?? 0;
+
     }
 }

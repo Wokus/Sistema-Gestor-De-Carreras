@@ -82,7 +82,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-running fa-2x mb-3"></i>
                             <h5 class="card-title">Participantes</h5>
-                            <p class="card-text fs-6">@(Model?.Registros?.Count ?? 0) corredores</p>
+                            <p class="card-text fs-6">@(Model?.Inscripciones?.Count ?? 0) corredores</p>
                         </div>
                     </div>
                 </div>
@@ -185,7 +185,7 @@
                                 <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning me-2">
                                     <i class="fas fa-edit me-2"></i>Editar
                                 </a>
-                                <a href="#" class="btn btn-outline-primary">
+                                <a asp-action="GestionarParticipantes" asp-controller="Inscripcion" asp-route-carreraId="@Model?.Id" class="btn btn-outline-primary">
                                     <i class="fas fa-users me-2"></i>Gestionar Participantes
                                 </a>
                             </div>
@@ -201,7 +201,7 @@
             </div>
 
             <!-- Sección de Participantes (Opcional) -->
-            @if (Model?.Registros?.Any() == true)
+            @if (Model?.Inscripciones?.Any() == true)
             {
                 <div class="row mt-5">
                     <div class="col-12">
@@ -225,7 +225,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var registro in Model.Registros.Take(5))
+                                            @foreach (var registro in Model.Inscripciones.Take(5))
                                             {
                                                 <tr>
                                                     <td>@registro.Id</td>
@@ -240,10 +240,10 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                @if (Model.Registros.Count > 5)
+                                @if (Model.Inscripciones.Count > 5)
                                 {
                                     <div class="text-center mt-3">
-                                        <a href="#" class="btn btn-outline-secondary">Ver todos los participantes (@Model.Registros.Count)</a>
+                                        <a href="#" class="btn btn-outline-secondary">Ver todos los participantes (@Model.Inscripciones.Count)</a>
                                     </div>
                                 }
                             </div>

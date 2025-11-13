@@ -1,31 +1,50 @@
-﻿@model IEnumerable<SGCarreras.Models.Carrera>
+﻿@using System.Security.Claims
+@model IEnumerable<SGCarreras.Models.Carrera>
 
-<h2>Listado de Carreras En Espera</h2>
+@{
+    ViewData["Title"] = "Carreras en Espera - Inscripciones Abiertas";
+}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Ubicación</th>
-            <th>Kilómetros Totales</th>
-            <th>Estado</th>
-            <th>Fecha y Hora</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<h2 class="mb-4">Carreras en Espera - Inscripciones Abiertas</h2>
+
+<!-- DEBUG INFO - Quitar después -->
+<div class="alert alert-info">
+    <h6>Información de Debug:</h6>
+    <p>Total de carreras: @Model.Count()</p>
+    <p>Usuario autenticado: @User.Identity.IsAuthenticated</p>
+    <p>Rol: @User.FindFirst(ClaimTypes.Role)?.Value</p>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
             <tr>
-                <td>@item.Nombre</td>
-                <td>@item.Ubicacion</td>
-                <td>@item.KmTotales</td>
-                <td>@item.Estado.ToString()</td>
-                <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
-                </td>
+                <th>Nombre</th>
+                <th>Ubicación</th>
+                <th>Kilómetros Totales</th>
+                <th>Fecha y Hora</th>
+                <th>Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var carrera in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@carrera.Nombre</td>
+                    <td>@carrera.Ubicacion</td>
+                    <td>@carrera.KmTotales.ToString("N2") km</td>
+                    <td>@carrera.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@carrera.Id" class="btn btn-sm btn-info">Detalles</a>
+
+                        <!-- DEBUG - Verificar si el botón se renderiza -->
+                        <span style="border: 1px solid red; padding: 2px;">
+                            <a asp-action="Inscribirse" asp-route-carreraId="@carrera.Id"
+                               asp-controller="Inscripcion" class="btn btn-sm btn-success">Inscribirse</a>
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
