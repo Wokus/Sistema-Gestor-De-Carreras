@@ -46,7 +46,7 @@ namespace apiCarreras.Controllers
                
                 try
                 {
-                    _simulador.IniciarSimulacion(carrera);
+                    _simulador.IniciarSimulacion_ElectricBoogaloo(carrera);
                     Console.WriteLine($" Simulación iniciada para carrera: {carrera.Nombre ?? "(sin nombre)"}");
                 }
                 catch (Exception ex)

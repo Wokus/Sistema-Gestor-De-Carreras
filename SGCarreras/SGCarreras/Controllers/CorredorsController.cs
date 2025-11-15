@@ -91,7 +91,7 @@ namespace SGCarreras.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Sexo,NombreCompleto,Cedula")] Corredor corredor)
+        public async Task<IActionResult> Create([Bind("Sexo,NombreCompleto,Cedula")] Models.ViewModels.Corredor2 corredor)
         {
             if (ModelState.IsValid)
             {

@@ -11,5 +11,10 @@ namespace apiCarreras.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, $"Carrera-{carreraId}");
             await Clients.Caller.SendAsync("Conectado", $"Unido a carrera {carreraId}");
         }
+        public async Task UnirseACorredorCorriendoceUnaCarreraCarrerosa(int registroId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"Registro-{registroId}");
+            await Clients.Caller.SendAsync("Conectado", $"Unido al registro {registroId}, ahora, acose al corredor a gusto.");
+        }
     }
 }

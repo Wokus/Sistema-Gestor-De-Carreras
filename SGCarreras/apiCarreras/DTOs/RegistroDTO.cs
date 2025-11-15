@@ -11,9 +11,9 @@ namespace apiCarreras.DTOs
         public int distancia { get; set; }
         public int PosicionEnCarrera { get; set; }
 
-        public TimeSpan? Tiempo { get; set; }
+        public TimeSpan Tiempo { get; set; }
 
-        public DateTime? HoraAvance { get; set; } = DateTime.Now;
+        public DateTime HoraAvance { get; set; } = DateTime.Now;
 
         public int pntoControl { get; set; }
         public DateTime HoraDeFinalizacion { get; set; }

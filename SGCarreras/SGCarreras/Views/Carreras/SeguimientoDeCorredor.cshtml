@@ -1,0 +1,82 @@
+﻿@model SGCarreras.Models.ViewModels.CorredorActivo
+
+@{
+    ViewData["Title"] = "SeguimientoDeCorredor";
+    string nombreCarrera = Model.carreraNombre;
+    /*
+         carreraId = carrera.Id,
+                                    carreraNombre = carrera.Nombre,
+                                    corredorId = registro.Corredor.Id,
+                                    corredorNombre = registro.Corredor.NombreCompleto,
+                                    posicionCarrera = registro.PosicionEnCarrera,
+                                    tiempo = registro.HoraAvance,
+                                    kilometro = kmtrsPunto
+    */
+}
+
+<h1>
+    @nombreCarrera
+</h1>
+
+<div>
+    <h4>Corredor</h4>
+    <hr />
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.corredorNombre)
+        </dt>
+        <dd class="col-sm-10" id="corredorNombre">
+            @Html.DisplayFor(model => model.corredorNombre)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.nmroEnCarrera)
+        </dt>
+        <dd class="col-sm-10" id="nmroEnCarrera">
+            @Html.DisplayFor(model => model.nmroEnCarrera)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.kilometro)
+        </dt>
+        <dd class="col-sm-10" id="kilometro">
+            @Html.DisplayFor(model => model.kilometro)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.tiempo)
+        </dt>
+        <dd class="col-sm-10" id="tiempo">
+            @Html.DisplayFor(model => model.tiempo)
+        </dd>
+        
+
+      
+    </dl>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:7247/carrerasHub")
+        .build();
+
+    // Evento recibido desde el servidor
+    connection.on("CorredorActualizado", (data) => {
+        console.log("CorredorActualizado:", data);
+
+        if (data.corredorId !== @Model.corredorId) return;
+
+
+        document.getElementById("kilometro").textContent = data.kilometro;
+
+
+        document.getElementById("tiempo").textContent =
+            data.tiempo;
+    });
+
+    // Conectarse y unirse al grupo correspondiente
+    connection.start().then(() => {
+        connection.invoke("UnirseACorredorCorriendoceUnaCarreraCarrerosa", @Model.registroId);
+    }).catch(err => console.error(err));
+</script>

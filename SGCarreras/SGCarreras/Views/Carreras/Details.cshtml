@@ -241,17 +241,32 @@
     </div>
    
 </div>
-<tbody id="tabla-corredores">
-    @foreach (var registro in Model.Registros)
-    {
-        <tr id="row-@registro.Corredor.Id">
-            <td>@registro.Corredor.NombreCompleto</td>
-            <td class="posicion">@registro.PosicionEnCarrera</td>
-            <td class="kilometro"> 0)</td>
-            <td class="tiempo"> "—"</td>
+
+<table class="table table-striped align-middle text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Corredor</th>
+ 
+            <th>Acciones</th>
         </tr>
-    }
-</tbody>
+    </thead>
+
+    <tbody id="tabla-corredores">
+        @foreach (var registro in Model.Registros)
+        {
+            <tr id="row-@registro.Corredor.Id">
+                <td>@registro.Corredor.NombreCompleto</td>
+
+                <td>
+                    <a asp-action="SeguimientoDeCorredor" asp-route-id="@registro.Id" class="btn btn-sm btn-info">Seguir corredor</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
 
 <style>
     .card {
@@ -337,21 +352,46 @@
 </script>
 
 <!-- Incluir el script adaptado de SignalR debajo -->
+<!--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
 <script>
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("https://localhost:7247/carrerasHub")
         .build();
 
+    // Evento recibido desde el servidor
     connection.on("CarreraActualizada", (data) => {
-        console.log("Carrera actualizada:", data);
-        // Acá actualizás la vista, por ejemplo:
-        // document.querySelector(`#row-${data.corredorId} .kilometro`).textContent = data.kilometro;
+        console.log("CarreraActualizada:", data);
+
+        // data = { corredorId, posicion, kilometro, hora }
+
+        const fila = document.querySelector(`#row-${data.corredorId}`);
+
+        if (fila) {
+            // Actualizar valores existentes
+            fila.querySelector(".posicion").textContent = data.posicion;
+            fila.querySelector(".kilometro").textContent = data.kilometro;
+            fila.querySelector(".tiempo").textContent =
+                data.hora ? new Date(data.hora).toLocaleTimeString() : "—";
+        }
+        else {
+            // Crear nueva fila si no existe
+            const nuevaFila = `
+                <tr id="row-${data.corredorId}">
+                    <td>${data.nombre ?? "Corredor"}</td>
+                    <td class="posicion">${data.posicion}</td>
+                    <td class="kilometro">${data.kilometro}</td>
+                    <td class="tiempo">${new Date(data.hora).toLocaleTimeString()}</td>
+                </tr>
+            `;
+            document.querySelector("#tabla-corredores").insertAdjacentHTML("beforeend", nuevaFila);
+        }
     });
 
-    // Conectarse y unirse al grupo
+    // Conectarse y unirse al grupo correspondiente
     connection.start().then(() => {
-        const carreraId = @Model.Id; // ejemplo si estás en Razor
-        connection.invoke("UnirseACarrera", carreraId);
+        connection.invoke("UnirseACarrera", @Model.Id);
     }).catch(err => console.error(err));
 </script>
+-->
