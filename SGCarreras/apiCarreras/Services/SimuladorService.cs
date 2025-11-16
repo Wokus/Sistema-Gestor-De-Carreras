@@ -96,16 +96,16 @@ namespace apiCarreras.Services
                         double kmtrsPunto = 0;
                         foreach (var ptos in carrera.PuntosDeControl)
                         {
-                            if (ptos.Distancia < avance && registro.PuntoControl < ptos.NumeroEnCarrera)
+                            if (ptos.Distancia < avance && registro.pntoControl < ptos.NumeroEnCarrera)
                             {
-                                registro.PuntoControl = ptos.NumeroEnCarrera;
+                                registro.pntoControl = ptos.NumeroEnCarrera;
                                 kmtrsPunto = ptos.Distancia;
                                 registro.HoraAvance = DateTime.UtcNow;
                                 break;
                             }
                         }
 
-                        var mensaje = $" {registro.Corredor.NombreCompleto} avanzó a {registro.Distancia}m (Punto {registro.PuntoControl}) en {carrera.Nombre}";
+                        var mensaje = $" {registro.Corredor.NombreCompleto} avanzó a {registro.Distancia}m (Punto {registro.pntoControl}) en {carrera.Nombre}";
                         Console.WriteLine(mensaje);
 
                         // Emitir actualización por SignalR
@@ -186,7 +186,7 @@ namespace apiCarreras.Services
 
                     foreach (var ptos in alrevez)
                     {
-                        ptos.numeroEnCarrera = token - token2;
+                        ptos.NumeroEnCarrera = token - token2;
                         token2++;
                     }
 
@@ -204,17 +204,17 @@ namespace apiCarreras.Services
                         var index = _random.Next(carrera.Registros.Count);
                         var registro = carrera.Registros[index];
 
-                        int avance = _random.Next(registro.distancia, registro.distancia + 100);
-                        registro.distancia = avance;
+                        int avance = _random.Next(registro.Distancia, registro.Distancia + 100);
+                        registro.Distancia = avance;
 
                         double kmtrsPunto = 0;
                         foreach (var ptos in carrera.PuntosDeControl)
                         {
 
 
-                            if (ptos.Distancia < avance && registro.pntoControl < ptos.numeroEnCarrera)
+                            if (ptos.Distancia < avance && registro.pntoControl < ptos.NumeroEnCarrera)
                             {
-                                registro.pntoControl = ptos.numeroEnCarrera;
+                                registro.pntoControl = ptos.NumeroEnCarrera;
                                 kmtrsPunto = ptos.Distancia;
                                 registro.HoraAvance = DateTime.UtcNow;
                                 registro.Tiempo = DateTime.UtcNow - carrera.HoraInicio;
@@ -249,7 +249,7 @@ namespace apiCarreras.Services
                         }
 
 
-                        var mensaje = $" {registro.Corredor.NombreCompleto} avanzó a {registro.distancia}m (Punto {registro.pntoControl}) en {carrera.Nombre}";
+                        var mensaje = $" {registro.Corredor.NombreCompleto} avanzó a {registro.Distancia}m (Punto {registro.pntoControl}) en {carrera.Nombre}";
                         Console.WriteLine(mensaje);
 
 
