@@ -1,4 +1,4 @@
-﻿@model SGCarreras.Models.Carrera
+﻿@model SGCarreras.Models.ViewModels.CarreraDetailsViewModel
 @using System.Threading;
 @using System.Security.Claims;
 @using static SGCarreras.Models.Estado
@@ -8,6 +8,7 @@
 }
 
 @{
+    var carrera = Model.Carrera;
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
     var HoraAvance = DateTime.Now;
@@ -37,13 +38,13 @@
             <!-- Header de la Carrera -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h1 class="display-5 fw-bold text-primary">@Model.Nombre</h1>
+                    <h1 class="display-5 fw-bold text-primary">@Model.Carrera.Nombre</h1>
                     <p class="lead text-muted mb-0">Detalles completos de la carrera</p>
                 </div>
                 <div class="text-end">
                     @if (rol != null && rol == "Administrador")
                     {
-                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning btn-lg">
+                        <a asp-action="Edit" asp-route-id="@Model?.Carrera.Id" class="btn btn-warning btn-lg">
                             <i class="fas fa-edit me-2"></i>Editar Carrera
                         </a>
                     }
@@ -57,7 +58,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
                             <h5 class="card-title">Ubicación</h5>
-                            <p class="card-text fs-6">@Model?.Ubicacion</p>
+                            <p class="card-text fs-6">@Model?.Carrera.Ubicacion</p>
                         </div>
                     </div>
                 </div>
@@ -66,7 +67,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-flag-checkered fa-2x mb-3"></i>
                             <h5 class="card-title">Estado</h5>
-                            <p class="card-text fs-6">@Model?.Estado</p>
+                            <p class="card-text fs-6">@Model?.Carrera.Estado</p>
                         </div>
                     </div>
                 </div>
@@ -75,7 +76,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-route fa-2x mb-3"></i>
                             <h5 class="card-title">Distancia</h5>
-                            <p class="card-text fs-6">@Model?.KmTotales km</p>
+                            <p class="card-text fs-6">@Model?.Carrera.KmTotales km</p>
                         </div>
                     </div>
                 </div>
@@ -84,7 +85,7 @@
                         <div class="card-body text-center">
                             <i class="fas fa-running fa-2x mb-3"></i>
                             <h5 class="card-title">Participantes</h5>
-                            <p class="card-text fs-6">@(Model?.Inscripciones?.Count ?? 0) corredores</p>
+                            <p class="card-text fs-6">@(Model?.Carrera.Inscripciones?.Count ?? 0) corredores</p>
                         </div>
                     </div>
                 </div>
@@ -105,12 +106,12 @@
                                 <div class="col-md-6">
                                     <dl class="row">
                                         <dt class="col-sm-4 text-muted">Nombre:</dt>
-                                        <dd class="col-sm-8 fs-5 fw-bold text-dark">@Model?.Nombre</dd>
+                                        <dd class="col-sm-8 fs-5 fw-bold text-dark">@Model?.Carrera.Nombre</dd>
 
                                         <dt class="col-sm-4 text-muted">Ubicación:</dt>
                                         <dd class="col-sm-8">
                                             <i class="fas fa-map-marker-alt text-danger me-2"></i>
-                                            @Model?.Ubicacion
+                                            @Model?.Carrera.Ubicacion
                                         </dd>
                                     </dl>
                                 </div>
@@ -119,16 +120,16 @@
                                         <dt class="col-sm-4 text-muted">Estado:</dt>
                                         <dd class="col-sm-8">
                                             @{
-                                                var estadoBadgeClass = Model?.Estado.ToString() == "Activa" ? "bg-success" :
-                                                Model?.Estado.ToString() == "Cancelada" ? "bg-danger" : "bg-warning";
+                                                var estadoBadgeClass = Model?.Carrera.Estado.ToString() == "Activa" ? "bg-success" :
+                                                Model?.Carrera.Estado.ToString() == "Cancelada" ? "bg-danger" : "bg-warning";
                                             }
-                                            <span class="badge @estadoBadgeClass text-white fs-6">@Model?.Estado</span>
+                                            <span class="badge @estadoBadgeClass text-white fs-6">@Model?.Carrera.Estado</span>
                                         </dd>
 
                                         <dt class="col-sm-4 text-muted">Distancia:</dt>
                                         <dd class="col-sm-8">
                                             <i class="fas fa-route text-info me-2"></i>
-                                            <span class="fw-bold">@Model?.KmTotales km</span>
+                                            <span class="fw-bold">@Model?.Carrera.KmTotales km</span>
                                         </dd>
                                     </dl>
                                 </div>
@@ -145,7 +146,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <small class="text-muted">Fecha de Creación:</small>
-                                                <div class="fw-semibold">@Model?.Fecha.ToString("dd/MM/yyyy HH:mm")</div>
+                                                <div class="fw-semibold">@Model?.Carrera.Fecha.ToString("dd/MM/yyyy HH:mm")</div>
                                             </div>
                                             <div class="col-md-4">
                                                 <small class="text-muted">Última Actualización:</small>
@@ -184,10 +185,10 @@
                         @if (rol != null && rol == "Administrador")
                         {
                             <div>
-                                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning me-2">
+                                <a asp-action="Edit" asp-route-id="@Model?.Carrera.Id" class="btn btn-warning me-2">
                                     <i class="fas fa-edit me-2"></i>Editar
                                 </a>
-                                <a asp-action="GestionarParticipantes" asp-controller="Inscripcion" asp-route-carreraId="@Model?.Id" class="btn btn-outline-primary">
+                                <a asp-action="GestionarParticipantes" asp-controller="Inscripcion" asp-route-carreraId="@Model?.Carrera.Id" class="btn btn-outline-primary">
                                     <i class="fas fa-users me-2"></i>Gestionar Participantes
                                 </a>
                             </div>
@@ -203,7 +204,7 @@
             </div>
 
             <!-- Sección de Participantes (Opcional) -->
-            @if (Model?.Inscripciones?.Any() == true)
+            @if (Model?.Carrera.Inscripciones?.Any() == true)
             {
                 <div class="row mt-5">
                     <div class="col-12">
@@ -227,7 +228,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var registro in Model.Inscripciones.Take(5))
+                                            @foreach (var registro in Model.Carrera.Inscripciones.Take(5))
                                             {
                                                 <tr>
                                                     <td>@registro.Id</td>
@@ -242,10 +243,10 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                @if (Model.Inscripciones.Count > 5)
+                                @if (Model.Carrera.Inscripciones.Count > 5)
                                 {
                                     <div class="text-center mt-3">
-                                        <a href="#" class="btn btn-outline-secondary">Ver todos los participantes (@Model.Inscripciones.Count)</a>
+                                        <a href="#" class="btn btn-outline-secondary">Ver todos los participantes (@Model.Carrera.Inscripciones.Count)</a>
                                     </div>
                                 }
                             </div>
@@ -258,6 +259,84 @@
    
 </div>
 
+@using static SGCarreras.Models.Estado.EstadoEnum
+
+@* Lógica para mostrar los resultados finales solo si la carrera está Finalizada *@
+@if (carrera.Estado == EstadoEnum.Finalizada)
+{
+    var resultadosFinales = Model.Registros.ToList(); // Ya vienen cargados y ordenados desde el controlador
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="fw-bold mb-3"><i class="fas fa-medal me-2 text-warning"></i>Resultados Oficiales de la Carrera</h3>
+            <p class="text-muted">Posiciones y tiempos de los corredores que han finalizado.</p>
+
+            @if (resultadosFinales.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle text-center shadow-sm">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Posición</th>
+                                <th>Nombre Corredor</th>
+                                <th>Número en Carrera</th>
+                                <th>Hora de Finalización</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tabla-resultados-finales">
+                            @foreach (var registro in resultadosFinales)
+                            {
+                                <tr id="registro-@registro.Id">
+                                    <td>
+                                        @* Destacamos las primeras posiciones *@
+                                        @if (registro.PosicionEnCarrera == 1)
+                                        {
+                                            <span class="badge bg-gold rounded-pill fs-6"><i class="fas fa-trophy"></i> 1°</span>
+                                        }
+                                        else if (registro.PosicionEnCarrera == 2)
+                                        {
+                                            <span class="badge bg-silver rounded-pill fs-6"><i class="fas fa-trophy"></i> 2°</span>
+                                        }
+                                        else if (registro.PosicionEnCarrera == 3)
+                                        {
+                                            <span class="badge bg-bronze rounded-pill fs-6"><i class="fas fa-trophy"></i> 3°</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary rounded-pill fs-6">#@registro.PosicionEnCarrera</span>
+                                        }
+                                    </td>
+                                    <td>@(registro.Corredor?.NombreCompleto ?? "Corredor Desconocido")</td>
+                                    <td>@registro.NumeroEnCarrera</td>
+                                    <td>
+                                        @if (registro.HoraDeFinalizacion != null)
+                                        {
+                                            <strong>@registro.HoraDeFinalizacion.ToString("HH:mm:ss")</strong>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">N/A</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i> No se encontraron resultados finales (registros) para esta carrera.
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@*
+<!--A partir de aqui la informacion varia dependiendo del estado de la carrera-->
 <table class="table table-striped align-middle text-center">
     <thead class="table-dark">
         <tr>
@@ -281,8 +360,8 @@
     </tbody>
 
 </table>
-
-
+<!--Hasta aqui la informacion varia dependiendo del estado de la carrera-->
+*@
 
 <style>
     .card {
@@ -359,12 +438,29 @@
     .fa-list-ol::before {
         content: "📋";
     }
+
+    .bg-gold {
+        background-color: #ffc107 !important; /* Amarillo oro */
+        color: #333;
+    }
+
+    .bg-silver {
+        background-color: #adb5bd !important; /* Gris plata */
+        color: #333;
+    }
+
+    .bg-bronze {
+        background-color: #fd7e14 !important; /* Naranja bronce */
+        color: white;
+    }
+
+
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <script>
-    window.carreraId = @Model.Id;
+    window.carreraId = @Model.Carrera.Id;
 </script>
 
 <!-- Incluir el script adaptado de SignalR debajo -->
@@ -407,7 +503,7 @@
 
     // Conectarse y unirse al grupo correspondiente
     connection.start().then(() => {
-        connection.invoke("UnirseACarrera", @Model.Id);
+        connection.invoke("UnirseACarrera", @Model.Carrera.Id);
     }).catch(err => console.error(err));
 </script>
 -->

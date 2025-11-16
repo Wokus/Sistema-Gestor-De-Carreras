@@ -46,20 +46,34 @@ namespace SGCarreras.Controllers
                 return NotFound();
             }
 
+            // 1. Cargar la carrera sin preocuparnos por las Inscripciones/Registros por ahora
             var carrera = await _context.Carrera
-                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
-                    .ThenInclude(i => i.Registro)
-                        .ThenInclude(r => r.Corredor)
-                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
-                    .ThenInclude(i => i.Corredor)
                 .Include(c => c.PuntosDeControl)
+                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada)) // Mantenemos esta por si la vista la usa para seguimiento
+                    .ThenInclude(i => i.Corredor)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (carrera == null)
             {
                 return NotFound();
             }
 
-            return View(carrera);
+            // 2. Cargar los Registros asociados directamente a esta carrera
+            // Asumimos que la clase Registro tiene una propiedad CarreraId
+            var registros = await _context.Registro
+                .Where(r => r.CarreraId == carrera.Id)
+                .Include(r => r.Corredor) // Cargamos el Corredor asociado para obtener el NombreCorredor
+                .OrderBy(r => r.PosicionEnCarrera)
+                .ToListAsync();
+
+            // 3. Crear un ViewModel para pasar todos los datos necesarios a la vista
+            var viewModel = new CarreraDetailsViewModel
+            {
+                Carrera = carrera,
+                Registros = registros
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> SeguimientoDeCorredor(int? id)
