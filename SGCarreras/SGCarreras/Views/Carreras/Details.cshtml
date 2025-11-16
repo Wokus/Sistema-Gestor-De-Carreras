@@ -268,13 +268,13 @@
     </thead>
 
     <tbody id="tabla-corredores">
-        @foreach (var registro in Model.Registros)
+        @foreach (var inscri in Model.Inscripciones)
         {
-            <tr id="row-@registro.Corredor.Id">
-                <td>@registro.Corredor.NombreCompleto</td>
+            <tr id="row-@inscri.Corredor.Id">
+                <td>@inscri.Corredor.NombreCompleto</td>
 
                 <td>
-                    <a asp-action="SeguimientoDeCorredor" asp-route-id="@registro.Id" class="btn btn-sm btn-info">Seguir corredor</a>
+                    <a asp-action="SeguimientoDeCorredor" asp-route-id="@inscri.Id" class="btn btn-sm btn-info">Seguir corredor</a>
                 </td>
             </tr>
         }

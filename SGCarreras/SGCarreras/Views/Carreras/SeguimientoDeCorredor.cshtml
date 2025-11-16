@@ -61,22 +61,24 @@
         .withUrl("https://localhost:7247/carrerasHub")
         .build();
 
-    // Evento recibido desde el servidor
+ 
+
+    
     connection.on("CorredorActualizado", (data) => {
         console.log("CorredorActualizado:", data);
 
-        if (data.corredorId !== @Model.corredorId) return;
+        /
+        if (data.kilometro !== undefined)
+            document.getElementById("kilometro").textContent = data.kilometro;
 
-
-        document.getElementById("kilometro").textContent = data.kilometro;
-
-
-        document.getElementById("tiempo").textContent =
-            data.tiempo;
+        if (data.tiempo !== undefined)
+            document.getElementById("tiempo").textContent = data.tiempo;
     });
 
-    // Conectarse y unirse al grupo correspondiente
-    connection.start().then(() => {
-        connection.invoke("UnirseACorredorCorriendoceUnaCarreraCarrerosa", @Model.registroId);
-    }).catch(err => console.error(err));
+    
+    connection.start()
+        .then(() => {
+            connection.invoke("UnirseACorredorCorriendoceUnaCarreraCarrerosa", @Model.registroId);
+        })
+        .catch(err => console.error("Error al conectar:", err));
 </script>

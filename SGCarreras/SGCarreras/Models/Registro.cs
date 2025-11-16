@@ -20,7 +20,7 @@ namespace SGCarreras.Models
         //Releishon Taim
         public int CorredorId { get; set; }
         public int CarreraId { get; set; }
-
+        [JsonIgnore]
         [Required]
         [ForeignKey("CorredorId")]
         public Corredor? Corredor { get; set; }

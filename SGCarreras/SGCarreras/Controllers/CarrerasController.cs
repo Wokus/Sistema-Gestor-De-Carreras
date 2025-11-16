@@ -47,8 +47,12 @@ namespace SGCarreras.Controllers
             }
 
             var carrera = await _context.Carrera
-                .Include(m => m.Registros.Where(r => r.confirmado == true))
-                .ThenInclude(r => r.Corredor)
+                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
+                    .ThenInclude(i => i.Registro)
+                        .ThenInclude(r => r.Corredor)
+                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
+                    .ThenInclude(i => i.Corredor)
+                .Include(c => c.PuntosDeControl)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (carrera == null)
             {
@@ -66,11 +70,14 @@ namespace SGCarreras.Controllers
             }
 
             var carrera = await _context.Carrera
-                .Include(m => m.Registros.Where(r => r.Id == id))
-                .ThenInclude(r => r.Corredor)
+                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id))
+                    .ThenInclude(i => i.Registro)
+                        .ThenInclude(r => r.Corredor)
+                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id))
+                    .ThenInclude(i => i.Corredor)
                 .FirstOrDefaultAsync();
 
-            var registro = await _context.Registro
+            var registro = await _context.Inscripcion
                 .Include(r => r.Corredor)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
@@ -79,7 +86,7 @@ namespace SGCarreras.Controllers
                 return NotFound();
             }
             CorredorActivo correAct = new CorredorActivo();
-            correAct.nmroEnCarrera = registro.NumeroEnCarrera;
+            correAct.nmroEnCarrera = registro.NumeroCorredor;
             correAct.corredorNombre = registro.Corredor.NombreCompleto;
             correAct.corredorId = registro.Corredor.Id;
             correAct.carreraId = carrera.Id;
@@ -505,10 +512,14 @@ namespace SGCarreras.Controllers
             client.BaseAddress = new Uri("https://localhost:7247/api/Simulacion/importar"); // URL de la API
 
             var carrera = await _context.Carrera
-            .Include(c => c.Registros.Where(r => r.confirmado == true))
-                .ThenInclude(r => r.Corredor)
+            .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
+                    .ThenInclude(i => i.Registro)
+                        .ThenInclude(r => r.Corredor)
+                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
+                    .ThenInclude(i => i.Corredor)
             .Include(c => c.PuntosDeControl) 
             .ToListAsync();
+
 
             var activas = carrera
                 .Where(c => c.Estado == EstadoEnum.Activo)

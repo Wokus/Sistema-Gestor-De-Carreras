@@ -12,7 +12,8 @@ namespace apiCarreras.Services
         private readonly ILogger<SimuladorService> _logger = logger;
         private readonly Random _random = new();
         private readonly IHubContext<CarrerasSimuladasHub> _hubContext = hubContext;
-
+        private readonly Dictionary<int, RegistroDTO> _estadoActual = new();
+        /*
         public void IniciarSimulacion(CarreraDTO carrera)
         {
             if (_simulaciones.ContainsKey(carrera.Id))
@@ -43,7 +44,7 @@ namespace apiCarreras.Services
                         return;
                     }
 
-                    if (carrera.Registros == null || carrera.Registros.Count == 0)
+                    if (carrera.Inscripciones == null || carrera.Inscripciones.Count == 0)
                     {
                         Console.WriteLine($" Carrera {carrera.Nombre} no tiene corredores");
                         return;
@@ -74,14 +75,14 @@ namespace apiCarreras.Services
                         await Task.Delay(TimeSpan.FromSeconds(2), cts.Token);
 
                         // Validar que los registros no sean null
-                        if (carrera.Registros == null || carrera.Registros.Count == 0)
+                        if (carrera.Inscripciones == null || carrera.Inscripciones.Count == 0)
                         {
                             _logger.LogWarning("No hay registros disponibles en la carrera {Nombre}", carrera.Nombre);
                             continue;
                         }
 
-                        var index = _random.Next(carrera.Registros.Count);
-                        var registro = carrera.Registros[index];
+                        var index = _random.Next(carrera.Inscripciones.Count);
+                        var registro = carrera.Inscripciones[index];
 
                         // Validar que el registro y el corredor no sean null
                         if (registro?.Corredor == null)
@@ -90,7 +91,7 @@ namespace apiCarreras.Services
                             continue;
                         }
 
-                        int avance = _random.Next(registro.Distancia, registro.Distancia + 100);
+                        double avance = _random.Next(registro.Distancia, registro.Distancia + 100);
                         registro.Distancia = avance;
 
                         double kmtrsPunto = 0;
@@ -138,7 +139,7 @@ namespace apiCarreras.Services
             }, cts.Token);
         }
 
-
+        */
         public void IniciarSimulacion_ElectricBoogaloo(CarreraDTO carrera)
         {
             if (_simulaciones.ContainsKey(carrera.Id))
@@ -169,7 +170,7 @@ namespace apiCarreras.Services
 
                     }
 
-                    if (carrera.Registros == null || carrera.Registros.Count == 0)
+                    if (carrera.Inscripciones == null || carrera.Inscripciones.Count == 0)
                     {
 
                         Console.WriteLine($" Carrera {carrera.Nombre} no tiene corredores");
@@ -201,12 +202,31 @@ namespace apiCarreras.Services
 
                         await Task.Delay(TimeSpan.FromSeconds(2), cts.Token);
 
-                        var index = _random.Next(carrera.Registros.Count);
-                        var registro = carrera.Registros[index];
+                        var index = _random.Next(carrera.Inscripciones.Count);
+                        var registro = carrera.Inscripciones[index];
 
-                        int avance = _random.Next(registro.Distancia, registro.Distancia + 100);
+                     //   double avance = _random.NextDouble(registro.Distancia, registro.Distancia + 100);
+                      //  
+
+                        var rnd = new Random();
+                        double min = registro.Distancia;
+                        double max = registro.Distancia + 0.10;
+
+                        double valor = _random.NextDouble() * (max - min) + min;
+                        valor = Math.Round(valor, 2);
+                        double parteDecimal = 0;
+                        {
+                            parteDecimal = valor - Math.Floor(valor);
+                            if (parteDecimal >= 0.10)
+                            {
+                                valor = valor + 1;
+                                valor = valor - 0.10;
+                                parteDecimal = valor - Math.Floor(valor);
+                            }
+                        } while (parteDecimal >= 10) ;
+
+                        double avance = valor;
                         registro.Distancia = avance;
-
                         double kmtrsPunto = 0;
                         foreach (var ptos in carrera.PuntosDeControl)
                         {
@@ -220,17 +240,15 @@ namespace apiCarreras.Services
                                 registro.Tiempo = DateTime.UtcNow - carrera.HoraInicio;
 
                                 string registroTiempoEnformato = $"{(int)registro.Tiempo.TotalHours:D2}:{registro.Tiempo.Minutes:D2}";
-                               
-                                // break;
-                                //gestion de posiciones
 
-                                //  foreach (var regi in carrera.Registros)
-                                // {
-                                //   if (regi.)
-                                //    {
+                                RegistroDTO regiMandar = new RegistroDTO();
+                                
+                                regiMandar.PosicionEnCarrera = registro.PosicionEnCarrera;
+                                regiMandar.tiempoperoenstingayuda = registroTiempoEnformato;
+                                regiMandar.Distancia = kmtrsPunto;
+                                regiMandar.Id = registro.Id;
 
-                                //    }
-                                //  }
+                                _estadoActual[registro.Id] = regiMandar;
 
                                 await _hubContext.Clients.Group($"Registro-{registro.Id}")
                                 .SendAsync("CorredorActualizado", new
@@ -276,5 +294,25 @@ namespace apiCarreras.Services
                 _logger.LogInformation("Simulación de carrera {Id} detenida", carreraId);
             }
         }
+
+        public object? ObtenerEstadoActual(int registroId)
+        {
+            if (_estadoActual.TryGetValue(registroId, out var registro))
+            {
+                return new
+                {
+
+                    posicionCarrera = registro.PosicionEnCarrera,
+                    tiempo = registro.tiempoperoenstingayuda,
+                    kilometro = registro.Distancia,
+                        Id = registro.Id
+
+            }
+            ;
+            }
+            return null;
+        }
+
+
     }
 }
