@@ -4,7 +4,7 @@
     {
 
         public int Id { get; set; }
-        public string NombreCompleto { get; set; }
+        public required string NombreCompleto { get; set; }
 
     }
 }
