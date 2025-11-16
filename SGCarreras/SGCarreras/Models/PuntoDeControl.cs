@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SGCarreras.Models
 {
@@ -14,6 +15,7 @@ namespace SGCarreras.Models
         public int CarreraId { get; set; }
 
         [ForeignKey("CarreraId")]
+        [JsonIgnore]
         public Carrera? Carrera { get; set; }
         public PuntoDeControl() { }
 

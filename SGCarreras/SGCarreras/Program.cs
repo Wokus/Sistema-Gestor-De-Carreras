@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
+using SGCarreras.Controllers;
 using SGCarreras.Data;
 using System;
+using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SGCarrerasContext>(options =>
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<SGCarrerasContext>(options =>
 // Agregar servicios MVC y Razor Pages
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient();
 
 // Agregar autenticación con cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
@@ -55,4 +57,27 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<SGCarrerasContext>();
+    var clientFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
+
+    var controlador = new SGCarreras.Controllers.CarrerasController(context, clientFactory);
+    await controlador.InicializarCarrerasActivasAsync(clientFactory);
+}
+
+
 app.Run();
+
+/* using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var clientFactory = services.GetRequiredService<IHttpClientFactory>();
+    var carrerasController = new SGCarreras.Controllers.CarrerasController(
+        services.GetRequiredService<SGCarreras.Data.SGCarrerasContext>()
+    );
+
+    await carrerasController.InicializarCarrerasActivasAsync(clientFactory);
+}
+*/
+

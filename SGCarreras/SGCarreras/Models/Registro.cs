@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SGCarreras.Models
 {
@@ -26,6 +27,7 @@ namespace SGCarreras.Models
 
         [Required]
         [ForeignKey("CarreraId")]
+        [JsonIgnore]
         public Carrera? Carrera { get; set; }
         public ICollection<TiempoParcial> TiemposParciales { get; set; } = [];
 

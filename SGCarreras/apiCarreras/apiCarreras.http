@@ -1,0 +1,6 @@
+@apiCarreras_HostAddress = http://localhost:5077
+
+GET {{apiCarreras_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
