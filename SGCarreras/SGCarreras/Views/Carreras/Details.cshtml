@@ -193,11 +193,10 @@
                                 </a>
                             </div>
                         }
-                        else if (User?.Identity?.IsAuthenticated == true)
+                        else if (User?.Identity?.IsAuthenticated == true || User?.Identity?.IsAuthenticated == false)
                         {
-                            <a href="#" class="btn btn-success btn-lg">
-                                <i class="fas fa-user-plus me-2"></i>Inscribirse en esta Carrera
-                            </a>
+                            <a asp-action="Inscribirse" asp-route-carreraId="@carrera.Id" asp-controller="Inscripcion" class="btn btn-success btn-lg">
+                                <i><i class="fas fa-user-plus me-2"></i>Inscribirse en esta Carrera</i></a>
                         }
                     </div>
                 </div>

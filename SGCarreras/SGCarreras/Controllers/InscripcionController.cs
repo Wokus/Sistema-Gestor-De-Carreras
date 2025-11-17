@@ -543,6 +543,29 @@ namespace SGCarreras.Controllers
             return RedirectToAction("GestionarParticipantes", new { carreraId = inscripcion.CarreraId });
         }
 
+        // GET: Inscripcion/VerificarInscripcion/5
+        [HttpGet]
+        public async Task<IActionResult> VerificarInscripcion(int carreraId)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Json(new { yaInscrito = false, mensaje = "Usuario no autenticado" });
+            }
+
+            var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var yaInscrito = await _context.Inscripcion
+                .AnyAsync(i => i.CorredorId == usuarioId &&
+                              i.CarreraId == carreraId &&
+                              i.Estado != EstadoInscripcion.Cancelada);
+
+            return Json(new
+            {
+                yaInscrito = yaInscrito,
+                mensaje = yaInscrito ? "Ya estás inscrito en esta carrera" : "No estás inscrito"
+            });
+        }
+
         // POST: Inscripcion/EliminarInscripcion
         [HttpPost]
         [ValidateAntiForgeryToken]

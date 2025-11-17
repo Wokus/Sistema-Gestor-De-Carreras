@@ -5,55 +5,235 @@
     string filtro = ViewBag.FiltroActual as string ?? "Todas";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4 text-center fw-bold text-primary">Calendarios de Carreras</h2>
-
-    <div class="btn-group mb-4 d-flex justify-content-center" role="group" aria-label="Filtros de carreras">
-        <a class="btn btn-outline-primary @(filtro == "Todas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Todas">Todas</a>
-        <a class="btn btn-outline-primary @(filtro == "Activas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Activas">Activas</a>
-        <a class="btn btn-outline-primary @(filtro == "EnEspera" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="EnEspera">En Espera</a>
-        <a class="btn btn-outline-primary @(filtro == "Finalizadas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Finalizadas">Finalizadas</a>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold text-primary mb-2">Calendarios de Carreras</h1>
+            <p class="lead text-muted">Explora y gestiona todas las carreras disponibles</p>
+        </div>
+        <div class="d-flex gap-2">
+            <input type="text" id="searchInputCarreras" class="form-control" placeholder="Buscar carrera..." style="max-width: 250px;">
+            <button class="btn btn-outline-secondary" id="refreshBtnCarreras">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
     </div>
 
-    <div class="table-responsive shadow rounded">
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-primary">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Ubicación</th>
-                    <th>Kilómetros Totales</th>
-                    <th>Fecha y Hora</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td class="fw-semibold">@item.Nombre</td>
-                        <td>@item.Ubicacion</td>
-                        <td>@string.Format("{0:N2}", item.KmTotales)</td>
-                        <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>
-                            <span class="badge @GetEstadoBadgeClass(item.Estado)">
-                                @item.Estado.ToString()
-                            </span>
-                        </td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Ver Detalles</a>
+    <!-- Filtros -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">
+                <i class="fas fa-filter text-primary me-2"></i>Filtrar Carreras
+            </h5>
+            <div class="btn-group w-100" role="group" aria-label="Filtros de carreras">
+                <a class="btn btn-outline-primary @(filtro == "Todas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Todas">
+                    <i class="fas fa-list me-2"></i>Todas
+                </a>
+                <a class="btn btn-outline-primary @(filtro == "Activas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Activas">
+                    <i class="fas fa-play-circle me-2"></i>Activas
+                </a>
+                <a class="btn btn-outline-primary @(filtro == "EnEspera" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="EnEspera">
+                    <i class="fas fa-clock me-2"></i>En Espera
+                </a>
+                <a class="btn btn-outline-primary @(filtro == "Finalizadas" ? "active" : "")" asp-action="Calendarios" asp-route-filtro="Finalizadas">
+                    <i class="fas fa-flag-checkered me-2"></i>Finalizadas
+                </a>
+            </div>
+        </div>
+    </div>
 
-                            <!-- BOTÓN INSCRIBIRSE SOLO PARA CARRERAS EN ESPERA -->
-                            @if (item.Estado == SGCarreras.Models.Estado.EstadoEnum.En_espera)
-                            {
-                                <a asp-action="Inscribirse" asp-route-carreraId="@item.Id"
-                                   asp-controller="Inscripcion" class="btn btn-sm btn-success">Inscribirse</a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <!-- Tabla de Carreras -->
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-light py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-calendar-alt text-primary me-2"></i>
+                    Lista de Carreras
+                </h4>
+                <div>
+                    <span class="badge bg-primary fs-6">@Model.Count() carreras</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0" id="carrerasTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-4">
+                                <i class="fas fa-tag me-2"></i>Nombre
+                            </th>
+                            <th>
+                                <i class="fas fa-map-marker-alt me-2"></i>Ubicación
+                            </th>
+                            <th>
+                                <i class="fas fa-route me-2"></i>Kilómetros
+                            </th>
+                            <th>
+                                <i class="fas fa-calendar me-2"></i>Fecha y Hora
+                            </th>
+                            <th>
+                                <i class="fas fa-info-circle me-2"></i>Estado
+                            </th>
+                            <th class="text-center pe-4">
+                                <i class="fas fa-cogs me-2"></i>Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle bg-primary text-white me-3">
+                                            @{
+                                                var inicial = "C";
+                                                if (!string.IsNullOrEmpty(item.Nombre))
+                                                {
+                                                    inicial = item.Nombre.Substring(0, 1).ToUpper();
+                                                }
+                                            }
+                                            @inicial
+                                        </div>
+                                        <div>
+                                            <strong>@item.Nombre</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-map-marker-alt me-1"></i>@item.Ubicacion
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-primary">@string.Format("{0:N2} km", item.KmTotales)</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <strong>@item.Fecha.ToString("dd/MM/yyyy")</strong>
+                                        <small class="text-muted">@item.Fecha.ToString("HH:mm") hrs</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge @GetEstadoBadgeClass(item.Estado) fs-6">
+                                        <i class="@GetEstadoIcon(item.Estado) me-1"></i>@item.Estado.ToString()
+                                    </span>
+                                </td>
+                                <td class="text-center pe-4">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm"
+                                           data-bs-toggle="tooltip" title="Ver detalles de la carrera">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        <!-- BOTÓN INSCRIBIRSE SOLO PARA CARRERAS EN ESPERA -->
+                                        @if (item.Estado == SGCarreras.Models.Estado.EstadoEnum.En_espera)
+                                        {
+                                            <button class="btn btn-success btn-sm btn-inscribirse"
+                                                    data-carrera-id="@item.Id"
+                                                    data-carrera-nombre="@item.Nombre"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Inscribirse en esta carrera">
+                                                <i class="fas fa-user-plus"></i>
+                                            </button>
+                                        }
+                                        else if (item.Estado == SGCarreras.Models.Estado.EstadoEnum.Activo)
+                                        {
+                                            <span class="btn btn-outline-secondary btn-sm"
+                                                  data-bs-toggle="tooltip"
+                                                  title="Carrera en curso - No se permiten inscripciones">
+                                                <i class="fas fa-play-circle"></i>
+                                            </span>
+                                        }
+                                        else if (item.Estado == SGCarreras.Models.Estado.EstadoEnum.Finalizada)
+                                        {
+                                            <span class="btn btn-outline-secondary btn-sm"
+                                                  data-bs-toggle="tooltip"
+                                                  title="Carrera finalizada">
+                                                <i class="fas fa-flag-checkered"></i>
+                                            </span>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    Mostrando <strong>@Model.Count()</strong> carreras (@filtro.ToLower())
+                </small>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm" id="exportBtnCarreras">
+                        <i class="fas fa-download me-1"></i>Exportar Lista
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación de Inscripción -->
+<div class="modal fade" id="inscripcionModal" tabindex="-1" aria-labelledby="inscripcionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="inscripcionModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Ya estás inscrito
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="fas fa-user-check fa-3x text-warning"></i>
+                </div>
+                <h5 class="mb-3">Ya estás inscrito en esta carrera</h5>
+                <p class="text-muted" id="modalCarreraNombre"></p>
+                <p class="small text-muted">Puedes ver el estado de tu inscripción en la sección "Mis Carreras".</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
+                <a href="#" class="btn btn-primary" id="btnVerMisCarreras">
+                    <i class="fas fa-running me-1"></i>Ver Mis Carreras
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Usuario No Autenticado -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title text-white" id="loginModalLabel">
+                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="fas fa-user-lock fa-3x text-info"></i>
+                </div>
+                <h5 class="mb-3">Debes iniciar sesión</h5>
+                <p class="text-muted">Para inscribirte en una carrera, necesitas iniciar sesión en tu cuenta.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <a href="@Url.Action("Login", "Account")" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -68,4 +248,339 @@
             _ => "bg-light text-dark"
         };
     }
+
+    private string GetEstadoIcon(SGCarreras.Models.Estado.EstadoEnum estado)
+    {
+        return estado switch
+        {
+            SGCarreras.Models.Estado.EstadoEnum.Activo => "fas fa-play-circle",
+            SGCarreras.Models.Estado.EstadoEnum.En_espera => "fas fa-clock",
+            SGCarreras.Models.Estado.EstadoEnum.Finalizada => "fas fa-flag-checkered",
+            _ => "fas fa-info-circle"
+        };
+    }
 }
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .bg-primary, .bg-success, .bg-info, .bg-warning {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%) !important;
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success) 100%) !important;
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, var(--bs-info) 0%, var(--bs-info) 100%) !important;
+    }
+
+    .bg-warning {
+        background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,123,255,0.05) !important;
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+
+    .table-dark {
+        background: linear-gradient(135deg, #343a40 0%, #495057 100%) !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 5px !important;
+        margin: 0 2px;
+    }
+
+    #searchInputCarreras {
+        border-radius: 20px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        #searchInputCarreras:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+
+    .badge {
+        font-size: 0.75em;
+        padding: 0.5em 0.75em;
+    }
+
+    .btn-group .btn.active {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+
+    /* Loading spinner para botones */
+    .btn-loading {
+        position: relative;
+        color: transparent !important;
+    }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-right-color: transparent;
+            animation: spinner .75s linear infinite;
+        }
+
+    @@keyframes spinner {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Iconos con fallbacks */
+    .fas {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+    }
+
+    .fa-filter::before {
+        content: "🔍";
+    }
+
+    .fa-list::before {
+        content: "📋";
+    }
+
+    .fa-play-circle::before {
+        content: "▶️";
+    }
+
+    .fa-clock::before {
+        content: "⏰";
+    }
+
+    .fa-flag-checkered::before {
+        content: "🏁";
+    }
+
+    .fa-calendar-alt::before {
+        content: "📅";
+    }
+
+    .fa-tag::before {
+        content: "🏷️";
+    }
+
+    .fa-map-marker-alt::before {
+        content: "📍";
+    }
+
+    .fa-route::before {
+        content: "🛣️";
+    }
+
+    .fa-calendar::before {
+        content: "📅";
+    }
+
+    .fa-info-circle::before {
+        content: "ℹ️";
+    }
+
+    .fa-cogs::before {
+        content: "⚙️";
+    }
+
+    .fa-eye::before {
+        content: "👁️";
+    }
+
+    .fa-user-plus::before {
+        content: "➕";
+    }
+
+    .fa-sync-alt::before {
+        content: "🔄";
+    }
+
+    .fa-download::before {
+        content: "📥";
+    }
+
+    .fa-exclamation-triangle::before {
+        content: "⚠️";
+    }
+
+    .fa-user-check::before {
+        content: "✓";
+    }
+
+    .fa-times::before {
+        content: "✕";
+    }
+
+    .fa-running::before {
+        content: "🏃";
+    }
+
+    .fa-sign-in-alt::before {
+        content: "🔑";
+    }
+
+    .fa-user-lock::before {
+        content: "🔒";
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Búsqueda en tiempo real
+            const searchInputCarreras = document.getElementById('searchInputCarreras');
+            const carrerasTable = document.getElementById('carrerasTable');
+
+            if (carrerasTable) {
+                const rowsCarreras = carrerasTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                searchInputCarreras.addEventListener('input', function() {
+                    const filter = this.value.toLowerCase();
+
+                    for (let i = 0; i < rowsCarreras.length; i++) {
+                        const cells = rowsCarreras[i].getElementsByTagName('td');
+                        let found = false;
+
+                        for (let j = 0; j < cells.length - 1; j++) { // Excluir columna de acciones
+                            const cellText = cells[j].textContent || cells[j].innerText;
+                            if (cellText.toLowerCase().indexOf(filter) > -1) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        rowsCarreras[i].style.display = found ? '' : 'none';
+                    }
+                });
+
+                // Botón de refresh
+                document.getElementById('refreshBtnCarreras').addEventListener('click', function() {
+                    this.classList.add('fa-spin');
+                    setTimeout(() => {
+                        this.classList.remove('fa-spin');
+                    }, 1000);
+
+                    searchInputCarreras.value = '';
+                    for (let i = 0; i < rowsCarreras.length; i++) {
+                        rowsCarreras[i].style.display = '';
+                    }
+                });
+
+                // Botón de exportar (simulado)
+                document.getElementById('exportBtnCarreras').addEventListener('click', function() {
+                    const toast = document.createElement('div');
+                    toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                    toast.style.top = '20px';
+                    toast.style.right = '20px';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        Lista de carreras exportada correctamente
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(toast);
+
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 3000);
+                });
+            }
+
+            // Manejo de botones de inscripción
+            const botonesInscripcion = document.querySelectorAll('.btn-inscribirse');
+            const inscripcionModal = new bootstrap.Modal(document.getElementById('inscripcionModal'));
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+
+            botonesInscripcion.forEach(boton => {
+                boton.addEventListener('click', async function() {
+                    const carreraId = this.getAttribute('data-carrera-id');
+                    const carreraNombre = this.getAttribute('data-carrera-nombre');
+
+                    // Mostrar loading en el botón
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    this.disabled = true;
+
+                    try {
+                        // Verificar si el usuario está inscrito llamando al método del controlador
+                        const response = await fetch('@Url.Action("VerificarInscripcion", "Inscripcion")' + '?carreraId=' + carreraId);
+                        const data = await response.json();
+
+                        if (data.yaInscrito) {
+                            // Mostrar modal de notificación
+                            document.getElementById('modalCarreraNombre').textContent = carreraNombre;
+                            inscripcionModal.show();
+                        } else {
+                            // Redirigir a la página de inscripción
+                            window.location.href = '@Url.Action("Inscribirse", "Inscripcion")' + '?carreraId=' + carreraId;
+                        }
+                    } catch (error) {
+                        console.error('Error al verificar inscripción:', error);
+                        // En caso de error, redirigir directamente
+                        window.location.href = '@Url.Action("Inscribirse", "Inscripcion")' + '?carreraId=' + carreraId;
+                    } finally {
+                        // Restaurar botón
+                        this.innerHTML = originalHTML;
+                        this.disabled = false;
+                    }
+                });
+            });
+
+            // Configurar enlace "Ver Mis Carreras" en el modal
+            document.getElementById('btnVerMisCarreras').addEventListener('click', function() {
+                // Aquí deberías poner la URL correcta para "Mis Carreras"
+                window.location.href = '@Url.Action("Index", "MisCarreras")';
+            });
+
+            // Verificar autenticación al cargar la página
+            function verificarAutenticacion() {
+                // Esta función podría usarse para mostrar/ocultar elementos basados en autenticación
+                // Por ahora, la verificación se hace en tiempo real al hacer clic
+            }
+
+            // Inicializar verificación de autenticación
+            verificarAutenticacion();
+        });
+    </script>
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
