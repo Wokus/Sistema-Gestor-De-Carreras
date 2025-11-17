@@ -266,53 +266,132 @@
 {
     var resultadosFinales = Model.Registros.ToList(); // Ya vienen cargados y ordenados desde el controlador
 
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3 class="fw-bold mb-3"><i class="fas fa-medal me-2 text-warning"></i>Resultados Oficiales de la Carrera</h3>
-            <p class="text-muted">Posiciones y tiempos de los corredores que han finalizado.</p>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-5 fw-bold text-primary mb-2">Resultados Oficiales de la Carrera</h1>
+                <p class="lead text-muted">Posiciones y tiempos de los corredores que han finalizado.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <input type="text" id="searchInputResultados" class="form-control" placeholder="Buscar corredor..." style="max-width: 250px;">
+            </div>
+        </div>
 
-            @if (resultadosFinales.Any())
-            {
+        <!-- Tabla de Resultados -->
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-light py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-medal text-primary me-2"></i>
+                        Resultados Finales
+                    </h4>
+                    <div>
+                        <span class="badge bg-primary fs-6">@resultadosFinales.Count() corredores finalizados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle text-center shadow-sm">
+                    <table class="table table-hover table-striped mb-0" id="resultadosTable">
                         <thead class="table-dark">
                             <tr>
-                                <th>Posición</th>
-                                <th>Nombre Corredor</th>
-                                <th>Número en Carrera</th>
-                                <th>Hora de Finalización</th>
+                                <th class="ps-4">
+                                    <i class="fas fa-trophy me-2"></i>Posición
+                                </th>
+                                <th>
+                                    <i class="fas fa-user me-2"></i>Corredor
+                                </th>
+                                <th>
+                                    <i class="fas fa-hashtag me-2"></i>Número
+                                </th>
+                                <th class="pe-4">
+                                    <i class="fas fa-clock me-2"></i>Hora de Finalización
+                                </th>
                             </tr>
                         </thead>
-
-                        <tbody id="tabla-resultados-finales">
+                        <tbody>
                             @foreach (var registro in resultadosFinales)
                             {
                                 <tr id="registro-@registro.Id">
-                                    <td>
+                                    <td class="ps-4">
                                         @* Destacamos las primeras posiciones *@
                                         @if (registro.PosicionEnCarrera == 1)
                                         {
-                                            <span class="badge bg-gold rounded-pill fs-6"><i class="fas fa-trophy"></i> 1°</span>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle bg-gold text-dark me-3">
+                                                    <i class="fas fa-trophy"></i>
+                                                </div>
+                                                <div>
+                                                    <strong>1° LUGAR</strong>
+                                                    <div class="small text-muted">Campeón</div>
+                                                </div>
+                                            </div>
                                         }
                                         else if (registro.PosicionEnCarrera == 2)
                                         {
-                                            <span class="badge bg-silver rounded-pill fs-6"><i class="fas fa-trophy"></i> 2°</span>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle bg-silver text-dark me-3">
+                                                    <i class="fas fa-trophy"></i>
+                                                </div>
+                                                <div>
+                                                    <strong>2° LUGAR</strong>
+                                                    <div class="small text-muted">Subcampeón</div>
+                                                </div>
+                                            </div>
                                         }
                                         else if (registro.PosicionEnCarrera == 3)
                                         {
-                                            <span class="badge bg-bronze rounded-pill fs-6"><i class="fas fa-trophy"></i> 3°</span>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle bg-bronze text-white me-3">
+                                                    <i class="fas fa-trophy"></i>
+                                                </div>
+                                                <div>
+                                                    <strong>3° LUGAR</strong>
+                                                    <div class="small text-muted">Tercer puesto</div>
+                                                </div>
+                                            </div>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary rounded-pill fs-6">#@registro.PosicionEnCarrera</span>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle bg-secondary text-white me-3">
+                                                    @registro.PosicionEnCarrera
+                                                </div>
+                                                <div>
+                                                    <strong>Posición #@registro.PosicionEnCarrera</strong>
+                                                </div>
+                                            </div>
                                         }
                                     </td>
-                                    <td>@(registro.Corredor?.NombreCompleto ?? "Corredor Desconocido")</td>
-                                    <td>@registro.NumeroEnCarrera</td>
                                     <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-primary text-white me-3">
+                                                @{
+                                                    var inicial = "?";
+                                                    if (!string.IsNullOrEmpty(registro.Corredor?.NombreCompleto))
+                                                    {
+                                                        var partes = registro.Corredor.NombreCompleto.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                                        inicial = partes.Last().Substring(0, 1).ToUpper();
+                                                    }
+                                                }
+                                                @inicial
+                                            </div>
+                                            <div>
+                                                <strong>@(registro.Corredor?.NombreCompleto ?? "Corredor Desconocido")</strong>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-dark fs-6">@registro.NumeroEnCarrera</span>
+                                    </td>
+                                    <td class="pe-4">
                                         @if (registro.HoraDeFinalizacion != null)
                                         {
-                                            <strong>@registro.HoraDeFinalizacion.ToString("HH:mm:ss")</strong>
+                                            <div class="d-flex flex-column">
+                                                <strong class="fs-5 text-primary">@registro.HoraDeFinalizacion.ToString("HH:mm:ss")</strong>
+                                                <small class="text-muted">Tiempo oficial</small>
+                                            </div>
                                         }
                                         else
                                         {
@@ -324,44 +403,17 @@
                         </tbody>
                     </table>
                 </div>
-            }
-            else
-            {
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle me-2"></i> No se encontraron resultados finales (registros) para esta carrera.
+            </div>
+            <div class="card-footer bg-light py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        Mostrando <strong>@resultadosFinales.Count()</strong> corredores que finalizaron la carrera
+                    </small>
                 </div>
-            }
+            </div>
         </div>
     </div>
 }
-
-@*
-<!--A partir de aqui la informacion varia dependiendo del estado de la carrera-->
-<table class="table table-striped align-middle text-center">
-    <thead class="table-dark">
-        <tr>
-            <th>Corredor</th>
- 
-            <th>Acciones</th>
-        </tr>
-    </thead>
-
-    <tbody id="tabla-corredores">
-        @foreach (var inscri in Model.Inscripciones)
-        {
-            <tr id="row-@inscri.Corredor.Id">
-                <td>@inscri.Corredor.NombreCompleto</td>
-
-                <td>
-                    <a asp-action="SeguimientoDeCorredor" asp-route-id="@inscri.Id" class="btn btn-sm btn-info">Seguir corredor</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-
-</table>
-<!--Hasta aqui la informacion varia dependiendo del estado de la carrera-->
-*@
 
 <style>
     .card {
@@ -389,73 +441,165 @@
         background: linear-gradient(135deg, var(--bs-warning) 0%, var(--bs-warning) 100%) !important;
     }
 
+    .bg-pink {
+        background: linear-gradient(135deg, #e83e8c 0%, #d91a72 100%) !important;
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,123,255,0.05) !important;
+        transform: scale(1.01);
+        transition: all 0.2s ease;
+    }
+
+    .table-dark {
+        background: linear-gradient(135deg, #343a40 0%, #495057 100%) !important;
+    }
+
+    .btn-group .btn {
+        border-radius: 5px !important;
+        margin: 0 2px;
+    }
+
+    #searchInputResultados {
+        border-radius: 20px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        #searchInputResultados:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+
+    .badge {
+        font-size: 0.75em;
+        padding: 0.5em 0.75em;
+    }
+
     .fas {
         font-family: 'Font Awesome 5 Free';
         font-weight: 900;
     }
 
     /* Fallbacks para iconos */
-    .fa-edit::before {
-        content: "✏️";
+    .fa-trophy::before {
+        content: "🏆";
     }
 
-    .fa-arrow-left::before {
-        content: "⬅️";
+    .fa-medal::before {
+        content: "🥇";
     }
 
-    .fa-map-marker-alt::before {
-        content: "📍";
+    .fa-user::before {
+        content: "👤";
     }
 
-    .fa-flag-checkered::before {
-        content: "🏁";
+    .fa-hashtag::before {
+        content: "#";
     }
 
-    .fa-route::before {
-        content: "🛣️";
+    .fa-clock::before {
+        content: "⏱️";
     }
 
-    .fa-running::before {
-        content: "🏃";
+    .fa-sync-alt::before {
+        content: "🔄";
     }
 
-    .fa-info-circle::before {
-        content: "ℹ️";
-    }
-
-    .fa-calendar-alt::before {
-        content: "📅";
-    }
-
-    .fa-users::before {
-        content: "👥";
-    }
-
-    .fa-user-plus::before {
-        content: "➕";
-    }
-
-    .fa-list-ol::before {
-        content: "📋";
+    .fa-download::before {
+        content: "📥";
     }
 
     .bg-gold {
-        background-color: #ffc107 !important; /* Amarillo oro */
+        background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%) !important;
         color: #333;
     }
 
     .bg-silver {
-        background-color: #adb5bd !important; /* Gris plata */
+        background: linear-gradient(135deg, #adb5bd 0%, #9ca3af 100%) !important;
         color: #333;
     }
 
     .bg-bronze {
-        background-color: #fd7e14 !important; /* Naranja bronce */
+        background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%) !important;
         color: white;
     }
-
-
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Búsqueda en tiempo real para resultados
+        const searchInputResultados = document.getElementById('searchInputResultados');
+        const resultadosTable = document.getElementById('resultadosTable');
+
+        if (resultadosTable) {
+            const rowsResultados = resultadosTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            searchInputResultados.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+
+                for (let i = 0; i < rowsResultados.length; i++) {
+                    const cells = rowsResultados[i].getElementsByTagName('td');
+                    let found = false;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        const cellText = cells[j].textContent || cells[j].innerText;
+                        if (cellText.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    rowsResultados[i].style.display = found ? '' : 'none';
+                }
+            });
+
+            // Botón de refresh para resultados
+            document.getElementById('refreshBtnResultados').addEventListener('click', function() {
+                this.classList.add('fa-spin');
+                setTimeout(() => {
+                    this.classList.remove('fa-spin');
+                }, 1000);
+
+                searchInputResultados.value = '';
+                for (let i = 0; i < rowsResultados.length; i++) {
+                    rowsResultados[i].style.display = '';
+                }
+            });
+
+            // Botón de exportar para resultados (simulado)
+            document.getElementById('exportBtnResultados').addEventListener('click', function() {
+                const toast = document.createElement('div');
+                toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                toast.style.top = '20px';
+                toast.style.right = '20px';
+                toast.style.zIndex = '9999';
+                toast.innerHTML = `
+                    <i class="fas fa-check-circle me-2"></i>
+                    Resultados exportados correctamente
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            });
+        }
+    });
+</script>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
