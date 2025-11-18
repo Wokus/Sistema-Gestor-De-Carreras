@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace apiCarreras.Services
 {
-    public class SimuladorService(ILogger<SimuladorService> logger, IHubContext<CarrerasSimuladasHub> hubContext) : ISimuladorService
+    public class SimuladorService(ILogger<SimuladorService> logger, IHubContext<CarrerasSimuladasHub> hubContext, httpService httpServicee) : ISimuladorService
     {
         private readonly ConcurrentDictionary<int, CancellationTokenSource> _simulaciones = new();
         private readonly ILogger<SimuladorService> _logger = logger;
@@ -14,6 +14,7 @@ namespace apiCarreras.Services
         private readonly IHubContext<CarrerasSimuladasHub> _hubContext = hubContext;
         private readonly Dictionary<int, RegistroDTO> _estadoActual = new();
         private readonly Dictionary<int, GanaDoorDTO> _ganaDoors = new();
+        private readonly httpService _httpService = httpServicee;
         /*
         public void IniciarSimulacion(CarreraDTO carrera)
         {
@@ -245,7 +246,7 @@ namespace apiCarreras.Services
                                 
 
                                 GanaDoorDTO ganaDoor = new GanaDoorDTO();
-                                ganaDoor.registroId = registro.Id;
+                                ganaDoor.inscripcionId = registro.Id;
                                 ganaDoor.numeroEnCarrera = _ganaDoors.Count + 1;
                                 ganaDoor.tiempoDeFinalizacion = registroTiempoEnformato;
                                 ganaDoor.numeroDelCorredor = registro.NumeroEnCarrera;
@@ -258,7 +259,7 @@ namespace apiCarreras.Services
                                .SendAsync("CorredorActualizado", new
                                {
                                    mensake = "Se llego a la meta",
-                                   registroId = ganaDoor.registroId,
+                                   registroId = ganaDoor.inscripcionId,
                                    numeroEnCarrera = ganaDoor.numeroEnCarrera,
                                    tiempoDeFinalizacion = ganaDoor.tiempoDeFinalizacion,
                                    numeroDelCorredor = ganaDoor.numeroDelCorredor,
@@ -275,7 +276,10 @@ namespace apiCarreras.Services
 
                                 if (countCorredores == _ganaDoors.Count())
                                 {
-                                   //metodo para guardoar los datos de la carrera
+                                    //metodo para guardoar los datos de la carrera
+                                    var lista = _ganaDoors.Values.ToList();
+                                    await _httpService.NotificarCarreraTerminada(lista);
+
                                     this.DetenerSimulacion(carrera.Id);
                                 }
                                 
