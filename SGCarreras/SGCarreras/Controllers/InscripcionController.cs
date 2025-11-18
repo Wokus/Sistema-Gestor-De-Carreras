@@ -547,10 +547,11 @@ namespace SGCarreras.Controllers
         [HttpGet]
         public async Task<IActionResult> VerificarInscripcion(int carreraId)
         {
+            /*
             if (!User.Identity.IsAuthenticated)
             {
                 return Json(new { yaInscrito = false, mensaje = "Usuario no autenticado" });
-            }
+            } */
 
             var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 

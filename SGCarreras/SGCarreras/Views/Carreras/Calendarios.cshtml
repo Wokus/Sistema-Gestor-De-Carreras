@@ -499,25 +499,6 @@
                         rowsCarreras[i].style.display = '';
                     }
                 });
-
-                // Botón de exportar (simulado)
-                document.getElementById('exportBtnCarreras').addEventListener('click', function() {
-                    const toast = document.createElement('div');
-                    toast.className = 'alert alert-success alert-dismissible fade show position-fixed';
-                    toast.style.top = '20px';
-                    toast.style.right = '20px';
-                    toast.style.zIndex = '9999';
-                    toast.innerHTML = `
-                        <i class="fas fa-check-circle me-2"></i>
-                        Lista de carreras exportada correctamente
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    `;
-                    document.body.appendChild(toast);
-
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 3000);
-                });
             }
 
             // Manejo de botones de inscripción
@@ -559,21 +540,6 @@
                     }
                 });
             });
-
-            // Configurar enlace "Ver Mis Carreras" en el modal
-            document.getElementById('btnVerMisCarreras').addEventListener('click', function() {
-                // Aquí deberías poner la URL correcta para "Mis Carreras"
-                window.location.href = '@Url.Action("Index", "MisCarreras")';
-            });
-
-            // Verificar autenticación al cargar la página
-            function verificarAutenticacion() {
-                // Esta función podría usarse para mostrar/ocultar elementos basados en autenticación
-                // Por ahora, la verificación se hace en tiempo real al hacer clic
-            }
-
-            // Inicializar verificación de autenticación
-            verificarAutenticacion();
         });
     </script>
 }
