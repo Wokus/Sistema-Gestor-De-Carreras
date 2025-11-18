@@ -139,17 +139,17 @@ namespace SGCarreras.Controllers
                 return NotFound();
             }
 
-            var corredor = await _context.Corredor
-               .Include(c => c.registros.Where(r => r.Carrera.Estado == EstadoEnum.Activo))
-               .FirstOrDefaultAsync(c => c.Cedula == corre.Cedula);
+            var inscri = await _context.Carrera
+               .Include(c => c.Inscripciones.Where(r => r.Estado == EstadoInscripcion.Confirmada && r.Corredor.Cedula == corre.Cedula))
+               .FirstOrDefaultAsync();
 
             
-            if (corredor == null)
+            if (inscri == null)
             {
                 return NotFound();
             }
-            var registro = corredor.registros.First();
-            return RedirectToAction("SeguimientoDeCorredor", new { id =  registro.Id});
+            
+            return RedirectToAction("SeguimientoDeCorredor", new { id = inscri.Id});
         }
 
         // POST: Carreras/Create - CON BIND Y DEBUGGING

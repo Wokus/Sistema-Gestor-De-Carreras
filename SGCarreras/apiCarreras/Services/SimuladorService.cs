@@ -13,6 +13,7 @@ namespace apiCarreras.Services
         private readonly Random _random = new();
         private readonly IHubContext<CarrerasSimuladasHub> _hubContext = hubContext;
         private readonly Dictionary<int, RegistroDTO> _estadoActual = new();
+        private readonly Dictionary<int, GanaDoorDTO> _ganaDoors = new();
         /*
         public void IniciarSimulacion(CarreraDTO carrera)
         {
@@ -180,6 +181,7 @@ namespace apiCarreras.Services
                     // Reasignar números a los puntos de control
                     var alrevez = carrera.PuntosDeControl.AsEnumerable().Reverse().ToList();
                     int token = carrera.PuntosDeControl.Count;
+                    int countCorredores = carrera.Inscripciones.Count();
                     Console.WriteLine(" --------------------------------------------------------------");
                     Console.WriteLine($" Count de ptos " + token);
                     Console.WriteLine(" --------------------------------------------------------------");
@@ -211,7 +213,7 @@ namespace apiCarreras.Services
                         var rnd = new Random();
                         double min = registro.Distancia;
                         double max = registro.Distancia + 0.10;
-
+                        
                         double valor = _random.NextDouble() * (max - min) + min;
                         valor = Math.Round(valor, 2);
                         double parteDecimal = 0;
@@ -228,21 +230,64 @@ namespace apiCarreras.Services
                         double avance = valor;
                         registro.Distancia = avance;
                         double kmtrsPunto = 0;
+                        registro.HoraAvance = DateTime.UtcNow;
+                        registro.Tiempo = DateTime.UtcNow - carrera.HoraInicio;
+
+                        string registroTiempoEnformato = $"{(int)registro.Tiempo.TotalHours:D2}:{registro.Tiempo.Minutes:D2}";
+
                         foreach (var ptos in carrera.PuntosDeControl)
                         {
 
-
-                            if (ptos.Distancia < avance && registro.pntoControl < ptos.NumeroEnCarrera)
+                            if (carrera.PuntosDeControl.Last().Id == ptos.NumeroEnCarrera && avance >= carrera.PuntosDeControl.Last().Distancia && !_ganaDoors.ContainsKey(registro.Id))
                             {
                                 registro.pntoControl = ptos.NumeroEnCarrera;
                                 kmtrsPunto = ptos.Distancia;
-                                registro.HoraAvance = DateTime.UtcNow;
-                                registro.Tiempo = DateTime.UtcNow - carrera.HoraInicio;
+                                
 
-                                string registroTiempoEnformato = $"{(int)registro.Tiempo.TotalHours:D2}:{registro.Tiempo.Minutes:D2}";
+                                GanaDoorDTO ganaDoor = new GanaDoorDTO();
+                                ganaDoor.registroId = registro.Id;
+                                ganaDoor.numeroEnCarrera = _ganaDoors.Count + 1;
+                                ganaDoor.tiempoDeFinalizacion = registroTiempoEnformato;
+                                ganaDoor.numeroDelCorredor = registro.NumeroEnCarrera;
+
+                                _ganaDoors.Add(registro.Id, ganaDoor);
+                                Console.WriteLine(" El corredor " + registro.Corredor.NombreCompleto + "llego a la meta como numero: " + ganaDoor.numeroEnCarrera);
+                                Console.WriteLine(")()=(=)(=(=)(=)(=)(=)(=)()=(=)(=)(=)(=)(=)(=)(=)(" + _ganaDoors.Count + ")()=(=)(=(=)(=)(=)(=)(=)()=(=)(=)(=)(=)(=)(=)(=)(");
+
+                                await _hubContext.Clients.Group($"Registro-{registro.Id}")
+                               .SendAsync("CorredorActualizado", new
+                               {
+                                   mensake = "Se llego a la meta",
+                                   registroId = ganaDoor.registroId,
+                                   numeroEnCarrera = ganaDoor.numeroEnCarrera,
+                                   tiempoDeFinalizacion = ganaDoor.tiempoDeFinalizacion,
+                                   numeroDelCorredor = ganaDoor.numeroDelCorredor,
+                                   //datos del otro 
+                                   carreraId = carrera.Id,
+                                   carreraNombre = carrera.Nombre,
+                                   corredorId = registro.Corredor.Id,
+                                   corredorNombre = registro.Corredor.NombreCompleto,
+                                   posicionCarrera = registro.PosicionEnCarrera,
+                                   tiempo = registroTiempoEnformato,
+                                   kilometro = kmtrsPunto
+
+                               });
+
+                                if (countCorredores == _ganaDoors.Count())
+                                {
+                                   //metodo para guardoar los datos de la carrera
+                                    this.DetenerSimulacion(carrera.Id);
+                                }
+                                
+                            }
+                            else if (ptos.Distancia < avance && registro.pntoControl < ptos.NumeroEnCarrera && !_ganaDoors.ContainsKey(registro.Id))
+                            {
+                                registro.pntoControl = ptos.NumeroEnCarrera;
+                                kmtrsPunto = ptos.Distancia;
+                                
 
                                 RegistroDTO regiMandar = new RegistroDTO();
-                                
+
                                 regiMandar.PosicionEnCarrera = registro.PosicionEnCarrera;
                                 regiMandar.tiempoperoenstingayuda = registroTiempoEnformato;
                                 regiMandar.Distancia = kmtrsPunto;
@@ -260,7 +305,7 @@ namespace apiCarreras.Services
                                     posicionCarrera = registro.PosicionEnCarrera,
                                     tiempo = registroTiempoEnformato,
                                     kilometro = kmtrsPunto
-                            });
+                                });
 
 
                             }
@@ -286,12 +331,12 @@ namespace apiCarreras.Services
 
 
 
-        public void DetenerSimulacion(int carreraId)
+        public void DetenerSimulacion(int id)
         {
-            if (_simulaciones.TryRemove(carreraId, out var cts))
+            if (_simulaciones.TryRemove(id, out var cts))
             {
                 cts.Cancel();
-                _logger.LogInformation("Simulación de carrera {Id} detenida", carreraId);
+                _logger.LogInformation("Simulación de carrera {id} detenida", id);
             }
         }
 

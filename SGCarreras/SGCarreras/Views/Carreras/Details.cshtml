@@ -203,7 +203,7 @@
             </div>
 
             <!-- Sección de Participantes (Opcional) -->
-            @if (Model?.Carrera.Inscripciones?.Any() == true)
+            @if (Model?.Carrera.Inscripciones?.Any() == true && Model.Carrera.Estado != EstadoEnum.Activo)
             {
                 <div class="row mt-5">
                     <div class="col-12">
@@ -236,6 +236,56 @@
                                                     <td><span class="badge bg-success">Inscrito</span></td>
                                                     <td>
                                                         <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (Model.Carrera.Inscripciones.Count > 5)
+                                {
+                                    <div class="text-center mt-3">
+                                        <a href="#" class="btn btn-outline-secondary">Ver todos los participantes (@Model.Carrera.Inscripciones.Count)</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Model.Carrera.Estado == EstadoEnum.Activo)
+            {
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h4 class="card-title mb-0">
+                                    <i class="fas fa-list-ol text-primary me-2"></i>
+                                    Participantes Corriendo
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Corredor</th>
+                                                <th>Categoría</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var registro in Model.Carrera.Inscripciones)
+                                            {
+                                                <tr>
+                                                    <td>@registro.Id</td>
+                                                    <td>@(registro.Corredor?.NombreCompleto ?? "N/A")</td>
+                                                    <td><span class="badge bg-info">General</span></td>
+                                                    <td><span class="badge bg-success">Inscrito</span></td>
+                                                    <td>
+                                                        <a asp-action="SeguimientoDeCorredor" asp-route-id="@registro.Id" class="btn btn-sm btn-outline-primary">Seguir corredor</a>
                                                     </td>
                                                 </tr>
                                             }

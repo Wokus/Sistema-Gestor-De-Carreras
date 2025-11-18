@@ -17,7 +17,17 @@
 <h1>
     @nombreCarrera
 </h1>
-
+<div id="mensajeMeta" style="
+    display:none;
+    background-color:gold;
+    color:black;
+    padding:10px;
+    margin:10px 0;
+    border-radius:5px;
+    font-weight:bold;
+">
+    El corredor llegó a la meta
+</div>
 <div>
     <h4>Corredor</h4>
     <hr />
@@ -46,7 +56,7 @@
             @Html.DisplayNameFor(model => model.tiempo)
         </dt>
         <dd class="col-sm-10" id="tiempo">
-            @Html.DisplayFor(model => model.tiempo)
+            00:00
         </dd>
         
 
@@ -66,8 +76,15 @@
     
     connection.on("CorredorActualizado", (data) => {
         console.log("CorredorActualizado:", data);
+        if (data.mensake) {
+        document.getElementById("mensajeMeta").style.display = "block";
+        var nombre = document.querySelector("#corredorNombre").innerText.trim();
 
-        /
+        var texto = `El corredor  ${nombre} llegó a la meta en el puesto ${data.numeroEnCarrera} en ${data.tiempoDeFinalizacion} minutos`;
+         
+        document.getElementById("mensajeMeta").textContent = texto;
+        }
+        
         if (data.kilometro !== undefined)
             document.getElementById("kilometro").textContent = data.kilometro;
 
