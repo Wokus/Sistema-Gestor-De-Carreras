@@ -43,25 +43,10 @@
                             <span asp-validation-for="Contra" class="text-danger small"></span>
                         </div>
 
-                        <!-- Recordar contraseña (opcional) -->
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="recordar">
-                            <label class="form-check-label" for="recordar">
-                                Recordar mi sesión
-                            </label>
-                        </div>
-
                         <!-- Botón de Login -->
                         <button type="submit" class="btn btn-primary btn-lg w-100 py-3 mb-4">
                             <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                         </button>
-
-                        <!-- Enlace de recuperación -->
-                        <div class="text-center mb-4">
-                            <a href="#" class="text-primary text-decoration-none">
-                                <i class="fas fa-key me-1"></i>¿Olvidaste tu contraseña?
-                            </a>
-                        </div>
 
                         <!-- Separador -->
                         <div class="position-relative text-center mb-4">
@@ -103,28 +88,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Demo Credentials (opcional para desarrollo) -->
-            @if (Context.Request.Host.Value.Contains("localhost"))
-            {
-                <div class="card border-0 bg-light mt-4">
-                    <div class="card-body text-center">
-                        <h6 class="card-title text-muted mb-2">
-                            <i class="fas fa-info-circle me-1"></i>Credenciales de Demo
-                        </h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <small class="text-muted">Corredor:</small>
-                                <div class="fw-semibold">correo@ejemplo.com</div>
-                            </div>
-                            <div class="col-md-6">
-                                <small class="text-muted">Administrador:</small>
-                                <div class="fw-semibold">admin@ejemplo.com</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
         </div>
     </div>
 </div>
@@ -277,20 +240,6 @@
                 firstInput.focus();
             }
 
-            // Demo credentials click (solo en desarrollo)
-            if (window.location.hostname === 'localhost') {
-                const demoLinks = document.querySelectorAll('.fw-semibold');
-                demoLinks.forEach(link => {
-                    link.style.cursor = 'pointer';
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const email = this.textContent.trim();
-                        document.querySelector('input[type="email"]').value = email;
-                        document.querySelector('input[type="password"]').value = 'demo123';
-                    });
-                });
-            }
-        });
     </script>
 }
 
