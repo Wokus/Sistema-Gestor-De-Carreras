@@ -65,7 +65,11 @@ using (var scope = app.Services.CreateScope())
     var controlador = new SGCarreras.Controllers.CarrerasController(context, clientFactory);
     await controlador.InicializarCarrerasActivasAsync(clientFactory);
 }
+app.UseHttpsRedirection();
 
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
 

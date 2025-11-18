@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISimuladorService, SimuladorService>();
-
+builder.Services.AddHttpClient<httpService>();
 builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
@@ -34,9 +34,6 @@ app.UseCors("AllowFrontend"); //
 app.UseAuthorization();       //
 
 
-app.MapHub<CarrerasSimuladasHub>("/carrerasHub");
-app.MapControllers();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -50,6 +47,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<CarrerasSimuladasHub>("/carreraHub");
+app.MapHub<CarrerasSimuladasHub>("/carrerasHub");
 
 app.Run();

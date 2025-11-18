@@ -1,6 +1,4 @@
-﻿using static apiCarreras.Controllers.CarrerasSimuladasController;
-
-namespace apiCarreras.DTOs
+﻿namespace SGCarreras.Models.apiThings
 {
     public class GanaDoorDTO
     {
