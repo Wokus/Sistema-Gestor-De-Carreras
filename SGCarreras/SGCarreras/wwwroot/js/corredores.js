@@ -2,47 +2,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const passwordInput = document.querySelector('input[type="password"]');
     const confirmPasswordInput = document.getElementById('ConfirmarContra');
-    const passwordStrength = document.getElementById('password-strength');
     const passwordMatch = document.getElementById('password-match');
-
-    // Crear elemento de fuerza de contraseña
-    const strengthBar = document.createElement('div');
-    strengthBar.className = 'password-strength';
-    passwordInput.parentNode.appendChild(strengthBar);
-
-    // Validar fuerza de contraseña
-    passwordInput.addEventListener('input', function () {
-        const password = this.value;
-        let strength = 0;
-        let message = '';
-
-        if (password.length >= 8) strength++;
-        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-        if (password.match(/\d/)) strength++;
-        if (password.match(/[^a-zA-Z\d]/)) strength++;
-
-        // Actualizar barra y mensaje
-        strengthBar.className = 'password-strength';
-        switch (strength) {
-            case 0:
-            case 1:
-                strengthBar.classList.add('password-weak');
-                message = 'Contraseña débil';
-                break;
-            case 2:
-            case 3:
-                strengthBar.classList.add('password-medium');
-                message = 'Contraseña media';
-                break;
-            case 4:
-                strengthBar.classList.add('password-strong');
-                message = 'Contraseña fuerte';
-                break;
-        }
-
-        passwordStrength.textContent = message;
-        passwordStrength.className = strength === 4 ? 'text-success' : strength >= 2 ? 'text-warning' : 'text-danger';
-    });
 
     // Validar coincidencia de contraseñas
     confirmPasswordInput.addEventListener('input', function () {
