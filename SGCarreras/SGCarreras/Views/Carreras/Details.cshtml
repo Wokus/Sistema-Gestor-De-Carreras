@@ -193,7 +193,7 @@
                                 </a>
                             </div>
                         }
-                        else if (User?.Identity?.IsAuthenticated == true || User?.Identity?.IsAuthenticated == false)
+                        else if (User?.Identity?.IsAuthenticated == true || User?.Identity?.IsAuthenticated == false && @Model?.Carrera.Estado == SGCarreras.Models.Estado.EstadoEnum.En_espera)
                         {
                             <a asp-action="Inscribirse" asp-route-carreraId="@carrera.Id" asp-controller="Inscripcion" class="btn btn-success btn-lg">
                                 <i><i class="fas fa-user-plus me-2"></i>Inscribirse en esta Carrera</i></a>
