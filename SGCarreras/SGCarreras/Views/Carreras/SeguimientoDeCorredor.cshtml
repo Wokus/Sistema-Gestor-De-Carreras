@@ -199,7 +199,7 @@
                 }
 
                 // Lógica de Mensaje de Meta
-                if (data.mensake || data.numeroEnCarrera !== undefined) {
+                if (data.mensake || data.numeroEnCarrera !== undefined && data.numeroEnCarrera !== 0) {
                     
 
                     const nombre = document.getElementById("corredorNombre").textContent.trim();
