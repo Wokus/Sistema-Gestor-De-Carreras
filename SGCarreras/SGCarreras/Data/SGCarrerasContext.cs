@@ -18,7 +18,29 @@ namespace SGCarreras.Data
         public DbSet<SGCarreras.Models.Carrera> Carrera { get; set; } = default!;
         public DbSet<SGCarreras.Models.PuntoDeControl> PuntosDeControl { get; set; } = default!;
         public DbSet<SGCarreras.Models.Registro> Registro { get; set; } = default!;
-
         public DbSet<SGCarreras.Models.Inscripcion> Inscripcion { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Inscripcion>()
+                .HasOne(i => i.Registro)
+                .WithMany()
+                .HasForeignKey(i => i.RegistroId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Registro>()
+                .HasOne(r => r.Corredor)
+                .WithMany(c => c.registros)
+                .HasForeignKey(r => r.CorredorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Inscripcion>()
+                .HasOne(i => i.Corredor)
+                .WithMany()
+                .HasForeignKey(i => i.CorredorId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

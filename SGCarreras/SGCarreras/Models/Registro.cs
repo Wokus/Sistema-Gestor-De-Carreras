@@ -29,7 +29,6 @@ namespace SGCarreras.Models
         [ForeignKey("CarreraId")]
         [JsonIgnore]
         public Carrera? Carrera { get; set; }
-        public ICollection<TiempoParcial> TiemposParciales { get; set; } = [];
 
         public Registro() { }
 

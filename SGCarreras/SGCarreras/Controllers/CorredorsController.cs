@@ -307,27 +307,35 @@ namespace SGCarreras.Controllers
             return View(corredor);
         }
 
-        // POST: Corredors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var corredor = await _context.Corredor.FindAsync(id);
-            if (corredor != null)
+            try
             {
-                _context.Corredor.Remove(corredor);
-            }
+                // Usando SQL directo para evitar completamente los problemas de FK
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM Inscripcion WHERE CorredorId = {0}", id);
 
-            await _context.SaveChangesAsync();
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM Registro WHERE CorredorId = {0}", id);
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "DELETE FROM Corredor WHERE Id = {0}", id);
+
+                TempData["Success"] = "Corredor eliminado correctamente";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error al eliminar el corredor: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"Error eliminando corredor: {ex}");
+            }
             return RedirectToAction(nameof(Index));
         }
 
         private bool CorredorExists(int id)
         {
             return _context.Corredor.Any(e => e.Id == id);
-        }
-
-
-        
+        }        
     }
 }

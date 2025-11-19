@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SGCarreras.Data;
 
@@ -10,9 +11,11 @@ using SGCarreras.Data;
 namespace SGCarreras.Migrations
 {
     [DbContext(typeof(SGCarrerasContext))]
-    partial class SGCarrerasContextModelSnapshot : ModelSnapshot
+    [Migration("20251119082656_migracionInscripcion")]
+    partial class migracionInscripcion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -201,6 +204,30 @@ namespace SGCarreras.Migrations
                     b.ToTable("Registro");
                 });
 
+            modelBuilder.Entity("SGCarreras.Models.TiempoParcial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PuntoControlId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RegistroId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Tiempo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PuntoControlId");
+
+                    b.HasIndex("RegistroId");
+
+                    b.ToTable("TiempoParcial");
+                });
+
             modelBuilder.Entity("SGCarreras.Models.Inscripcion", b =>
                 {
                     b.HasOne("SGCarreras.Models.Carrera", "Carrera")
@@ -217,8 +244,7 @@ namespace SGCarreras.Migrations
 
                     b.HasOne("SGCarreras.Models.Registro", "Registro")
                         .WithMany()
-                        .HasForeignKey("RegistroId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RegistroId");
 
                     b.Navigation("Carrera");
 
@@ -257,6 +283,25 @@ namespace SGCarreras.Migrations
                     b.Navigation("Corredor");
                 });
 
+            modelBuilder.Entity("SGCarreras.Models.TiempoParcial", b =>
+                {
+                    b.HasOne("SGCarreras.Models.PuntoDeControl", "PuntoControl")
+                        .WithMany()
+                        .HasForeignKey("PuntoControlId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SGCarreras.Models.Registro", "Registro")
+                        .WithMany("TiemposParciales")
+                        .HasForeignKey("RegistroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PuntoControl");
+
+                    b.Navigation("Registro");
+                });
+
             modelBuilder.Entity("SGCarreras.Models.Carrera", b =>
                 {
                     b.Navigation("Inscripciones");
@@ -267,6 +312,11 @@ namespace SGCarreras.Migrations
             modelBuilder.Entity("SGCarreras.Models.Corredor", b =>
                 {
                     b.Navigation("registros");
+                });
+
+            modelBuilder.Entity("SGCarreras.Models.Registro", b =>
+                {
+                    b.Navigation("TiemposParciales");
                 });
 #pragma warning restore 612, 618
         }

@@ -34,6 +34,7 @@ namespace SGCarreras.Models
         [Required]
         public int CarreraId { get; set; }
 
+        public int? RegistroId { get; set; }
 
         // Navigation properties
         [ForeignKey("CorredorId")]
@@ -44,6 +45,7 @@ namespace SGCarreras.Models
         public Carrera? Carrera { get; set; }
 
         // Relación 1:1 con Registro (cuando el corredor completa la carrera)
+        [ForeignKey("RegistroId")]
         public Registro? Registro { get; set; }
 
         public Inscripcion() { }
