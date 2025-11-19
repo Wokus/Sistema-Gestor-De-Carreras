@@ -123,7 +123,7 @@ namespace SGCarreras.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registrar([Bind("Sexo,NombreCompleto,Cedula,Contra,Mail")] Corredor corredor)
+        public async Task<IActionResult> Registrar([Bind("Sexo,NombreCompleto,Cedula, Nacionalidad,Contra,Mail")] Corredor corredor)
         {
             if (ModelState.IsValid)
             {
@@ -132,23 +132,30 @@ namespace SGCarreras.Controllers
                     _context.Add(corredor);
                     await _context.SaveChangesAsync();
 
+                    var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, corredor.Mail),
+                new Claim(ClaimTypes.Name, corredor.NombreCompleto),
+                new Claim(ClaimTypes.NameIdentifier, corredor.Id.ToString()),
+                new Claim(ClaimTypes.Role, "Corredor"),
+            };
 
-                    ViewBag.Message = $"{corredor.NombreCompleto} / {corredor.Mail}, Registrado correcramente.";
-                    ModelState.Clear();
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+                    return RedirectToAction("Index", "Home");
 
-                    return RedirectToAction(nameof(Index));
-
-                    
                 }
                 catch (DbUpdateException ex)
                 {
                     ModelState.AddModelError(string.Empty, $"Error desde la base de datos: {ex.Message}");
-                    //error, gmail ya ingresado.
+                    if (ex.InnerException?.Message.Contains("duplicate") == true)
+                    {
+                        ModelState.AddModelError("Mail", "Este correo electrónico ya está registrado.");
+                    }
                     return View(corredor);
                 }
             }
-
             return View(corredor);
         }
 
