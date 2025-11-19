@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SGCarreras.Data;
 using SGCarreras.Models;
+using SGCarreras.Models.dtos;
 using SGCarreras.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -42,10 +43,23 @@ namespace SGCarreras.Controllers
                         .Include(m => m.registros)
                             .ThenInclude(r => r.Carrera)
                             .FirstOrDefaultAsync(m => m.Id == id);
+
+            var inscri = await _context.Inscripcion
+                        .Include(m => m.Corredor)
+                          .Include(m => m.Carrera).Where(m => m.Corredor.Id == id)
+                            .ToListAsync();
+
             if (corredor == null)
             {
                 return NotFound();
             }
+            CorredorDTO correDto = new CorredorDTO();
+            correDto.Id = corredor.Id;
+            correDto.Cedula = corredor.Cedula;
+            correDto.NombreCompleto = corredor.NombreCompleto;
+            correDto.Nacionalidad = corredor.Nacionalidad;
+            correDto.Mail = corredor.Mail;
+            correDto.Registros = inscri;
             List<Carrera> carrerasDeUsuario = new List<Carrera>();
 
             foreach (var item in corredor.registros)
@@ -56,7 +70,7 @@ namespace SGCarreras.Controllers
             ViewBag.FiltroActual = filtro;
 
 
-            return View(corredor);
+            return View(correDto);
         }
 
         // GET: Corredors/Create
