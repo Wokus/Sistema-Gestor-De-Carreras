@@ -104,18 +104,7 @@
                 .build();
 
             // Función para formatear tiempo (simulado si viene en minutos)
-            function formatTime(totalMinutes) {
-                if (totalMinutes === null || totalMinutes === undefined) return 'N/A';
-                let totalSeconds = Math.round(totalMinutes * 60);
-                const hours = Math.floor(totalSeconds / 3600);
-                totalSeconds %= 3600;
-                const minutes = Math.floor(totalSeconds / 60);
-                const seconds = totalSeconds % 60;
-
-                const pad = (num) => num.toString().padStart(2, '0');
-
-                return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-            }
+            
 
             // Manejador de eventos del Hub
             connection.on("CorredorActualizado", (data) => {
@@ -126,25 +115,24 @@
                 }
 
                 if (data.tiempo !== undefined) {
-                    const tiempoFormateado = formatTime(data.tiempo); // Asumiendo que data.tiempo está en minutos
-                    document.getElementById("tiempo").innerHTML = `<i class="fas fa-stopwatch me-1"></i>${tiempoFormateado}`;
+
+                   document.getElementById("tiempo").textContent = data.tiempo;
                 }
 
                 // Lógica de Mensaje de Meta
                 if (data.mensake) {
-                    const finalTimeFormatted = formatTime(data.tiempoDeFinalizacion); // Asumiendo que el tiempo de finalización también está en minutos
-                    document.getElementById("nmroEnCarrera").innerHTML = `<span class="badge bg-success fs-5">#${data.numeroEnCarrera} (Meta)</span>`;
+                    document.getElementById("nmroEnCarrera").textContent = data.numeroEnCarrera;
 
                     const nombre = document.getElementById("corredorNombre").textContent.trim();
-                    const texto = `El corredor **${nombre}** llegó a la meta en el puesto **${data.numeroEnCarrera}** con un tiempo de **${finalTimeFormatted}**.`;
+                    const texto = `El corredor **${nombre}** llegó a la meta en el puesto **${data.numeroEnCarrera}** con un tiempo de **${data.tiempo}**.`;
 
                     const mensajeMetaDiv = document.getElementById("mensajeMeta");
-                    mensajeMetaDiv.innerHTML = `<i class="fas fa-medal me-2"></i>${texto}`;
+                    mensajeMetaDiv.textContent = `<i class="fas fa-medal me-2"></i>${texto}`;
                     mensajeMetaDiv.classList.remove('alert-warning');
                     mensajeMetaDiv.classList.add('alert-success');
                     mensajeMetaDiv.style.display = "block";
 
-                    // Deshabilitar la reconexión o la escucha si el corredor ya terminó
+                    
                     connection.stop();
                     console.log("Conexión SignalR detenida, el corredor ha finalizado.");
                 }
