@@ -89,6 +89,7 @@ namespace SGCarreras.Controllers
 
             var carrera = await _context.Carrera
                 .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id))
+                .Include(c => c.PuntosDeControl) // ✅ AGREGAR ESTO para cargar puntos de control
                 .FirstOrDefaultAsync();
 
             if (carrera?.Inscripciones?.Count > 0)
@@ -126,7 +127,10 @@ namespace SGCarreras.Controllers
                 corredorId = registro.Corredor.Id,
                 carreraId = carrera.Id,
                 carreraNombre = carrera.Nombre ?? "Carrera sin nombre",
-                registroId = registro.Id
+                registroId = registro.Id,
+                kilometro = 0, // ✅ AGREGAR kilometro inicial
+                kmTotalesCarrera = carrera.KmTotales, // ✅ AGREGAR kilómetros totales
+                puntosDeControl = carrera.PuntosDeControl?.OrderBy(p => p.Distancia).ToList() ?? new List<PuntoDeControl>() // ✅ AGREGAR puntos de control ordenados
             };
 
             return View(correAct);

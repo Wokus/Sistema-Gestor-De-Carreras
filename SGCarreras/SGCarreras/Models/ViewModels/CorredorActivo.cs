@@ -30,6 +30,9 @@ namespace SGCarreras.Models.ViewModels
         public DateTime tiempo { get; set; }
         public int kilometro { get; set; }
 
+        public double kmTotalesCarrera { get; set; }
+        public List<PuntoDeControl> puntosDeControl { get; set; } = new List<PuntoDeControl>();
+
 
         public CorredorActivo() { }
 
