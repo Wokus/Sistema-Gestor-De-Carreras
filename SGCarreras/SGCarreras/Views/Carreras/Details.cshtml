@@ -427,7 +427,7 @@
                                                 @inicial
                                             </div>
                                             <div>
-                                                <strong>@(registro.Corredor?.NombreCompleto ?? "Corredor Desconocido")</strong>
+                                                <a href="/Corredors/Details/@registro.CorredorId" class="btn btn-sm btn-outline-primary"><strong>@(registro.Corredor?.NombreCompleto ?? "Corredor Desconocido")</strong></a>
                                             </div>
                                         </div>
                                     </td>
