@@ -67,6 +67,57 @@
                 </div>
             </div>
 
+            <div class="card border-0 shadow-lg mt-4">
+                <div class="card-header bg-light py-3">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-chart-line text-primary me-2"></i>Progreso en Tiempo Real
+                    </h4>
+                </div>
+                <div class="card-body py-4 px-5">
+
+                    @{
+                        // **IMPORTANTE**: Simulación de datos necesarios para la visualización.
+                        // En una aplicación real, estas propiedades deberían estar en tu ViewModel CorredorActivo.
+                        double kmTotalesCarrera = 10.0; // Distancia total de la carrera (ejemplo: 10 km)
+                        List<double> kmPuntosControl = new List<double> { 2.0, 5.0, 8.0 }; // Kilómetros de los puntos de control
+
+                        // Calculamos el progreso inicial del corredor
+                        double progresoInicial = (Model.kilometro / kmTotalesCarrera) * 100.0;
+                    }
+
+                    <div class="progress-container mb-4 position-relative">
+                        <div class="progress" style="height: 15px;">
+                            <div id="progressCorredor" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+                                 style="width: @progresoInicial%;" aria-valuenow="@progresoInicial" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        <i id="runnerIcon" class="fas fa-running runner-icon" style="left: @progresoInicial%;"></i>
+
+                        <div class="track-marker start-marker">
+                            <i class="fas fa-flag-checkered text-success"></i><br><small>Inicio</small>
+                        </div>
+
+                        <div class="track-marker end-marker">
+                            <i class="fas fa-flag-checkered text-danger"></i><br><small>Meta (@kmTotalesCarrera Km)</small>
+                        </div>
+
+                        @foreach (var km in kmPuntosControl)
+                        {
+                            // Calcula la posición porcentual del punto de control
+                            double percent = (km / kmTotalesCarrera) * 100.0;
+                            <div class="track-marker checkpoint-marker" style="left: @percent%;">
+                                <i class="fas fa-map-pin text-info"></i>
+                                <small>@km Km</small>
+                            </div>
+                        }
+                    </div>
+                    <p class="text-center text-muted mt-4">Progreso: <span id="progresoPorcentaje">@string.Format("{0:N1}", progresoInicial)</span>% de la meta.</p>
+
+                    <input type="hidden" id="kmTotalesCarrera" value="@kmTotalesCarrera" />
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -82,42 +133,90 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
+            // --- Variables para el progreso y la conexión ---
+            const kmTotalesCarrera = parseFloat(document.getElementById("kmTotalesCarrera").value);
+            const runnerIcon = document.getElementById("runnerIcon");
+            const progressBar = document.getElementById("progressCorredor");
+            const progresoPorcentajeText = document.getElementById("progresoPorcentaje");
+
             // Conexión y Lógica de SignalR
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("https://localhost:7247/carrerasHub") // Ajustar URL si es necesario
                 .withAutomaticReconnect()
                 .build();
 
-            // Función para formatear tiempo (simulado si viene en minutos)
-            
+            // Función para formatear tiempo (asumiendo que viene en minutos)
+            function formatTime(totalMinutes) {
+                if (totalMinutes === null || totalMinutes === undefined) return '00:00:00';
+                let totalSeconds = Math.round(totalMinutes * 60);
+                const hours = Math.floor(totalSeconds / 3600);
+                totalSeconds %= 3600;
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                
+                const pad = (num) => num.toString().padStart(2, '0');
+                
+                return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+            }
+
+            // Función para actualizar la posición visual del corredor
+            function updateRunnerPosition(currentKm) {
+                if (kmTotalesCarrera > 0) {
+                    let progressPercent = (currentKm / kmTotalesCarrera) * 100;
+                    
+                    // Asegurar que el progreso no exceda el 100%
+                    progressPercent = Math.min(100, Math.max(0, progressPercent));
+
+                    // Actualizar la posición del icono (con animación CSS)
+                    runnerIcon.style.left = progressPercent + '%';
+                    
+                    // Actualizar la barra de progreso
+                    progressBar.style.width = progressPercent + '%';
+                    progressBar.setAttribute('aria-valuenow', progressPercent);
+
+                    // Actualizar texto de porcentaje
+                    progresoPorcentajeText.textContent = progressPercent.toFixed(1);
+                }
+            }
+
 
             // Manejador de eventos del Hub
             connection.on("CorredorActualizado", (data) => {
                 console.log("CorredorActualizado:", data);
-
+                
+                // 1. Actualización de Kilometraje y Posición Visual
                 if (data.kilometro !== undefined) {
-                    document.getElementById("kilometro").innerHTML = `<i class="fas fa-map-pin me-1"></i>${data.kilometro} km`;
+                    const currentKm = parseFloat(data.kilometro);
+                    
+                    document.getElementById("kilometro").innerHTML = `<i class="fas fa-map-pin me-1"></i>${currentKm.toFixed(2)} km`;
+                    
+                    updateRunnerPosition(currentKm);
                 }
-
+                
+                // 2. Actualización de Tiempo
                 if (data.tiempo !== undefined) {
-
-                   document.getElementById("tiempo").textContent = data.tiempo;
+                    const tiempoFormateado = formatTime(data.tiempo); 
+                    document.getElementById("tiempo").innerHTML = `<i class="fas fa-stopwatch me-1"></i>${tiempoFormateado}`;
                 }
 
-                // Lógica de Mensaje de Meta
+                // 3. Lógica de Mensaje de Meta
                 if (data.mensake) {
-                    document.getElementById("nmroEnCarrera").textContent = data.numeroEnCarrera;
-
+                    const finalTimeFormatted = formatTime(data.tiempoDeFinalizacion); 
+                    document.getElementById("nmroEnCarrera").innerHTML = `<span class="badge bg-success fs-5">#${data.numeroEnCarrera} (Meta)</span>`;
+                    
                     const nombre = document.getElementById("corredorNombre").textContent.trim();
-                    const texto = `El corredor **${nombre}** llegó a la meta en el puesto **${data.numeroEnCarrera}** con un tiempo de **${data.tiempo}**.`;
-
+                    const texto = `El corredor <strong>${nombre}</strong> llegó a la meta en el puesto <strong>${data.numeroEnCarrera}</strong> con un tiempo de <strong>${finalTimeFormatted}</strong>.`;
+                    
                     const mensajeMetaDiv = document.getElementById("mensajeMeta");
-                    mensajeMetaDiv.textContent = `<i class="fas fa-medal me-2"></i>${texto}`;
+                    mensajeMetaDiv.innerHTML = `<i class="fas fa-medal me-2"></i>${texto}`;
                     mensajeMetaDiv.classList.remove('alert-warning');
                     mensajeMetaDiv.classList.add('alert-success');
                     mensajeMetaDiv.style.display = "block";
-
                     
+                    // Asegurar que el corredor y la barra estén al 100% al terminar
+                    updateRunnerPosition(kmTotalesCarrera);
+
+                    // Detener la conexión al finalizar
                     connection.stop();
                     console.log("Conexión SignalR detenida, el corredor ha finalizado.");
                 }
@@ -178,6 +277,53 @@
         font-family: 'Font Awesome 5 Free';
         font-weight: 900;
     }
+
+    /* --- Estilos para la barra de progreso de la carrera --- */
+    .progress-container {
+        padding-top: 30px; /* Espacio para los marcadores superiores */
+    }
+
+    .runner-icon {
+        position: absolute;
+        top: 5px; /* Posiciona el icono ligeramente por encima de la barra */
+        transform: translateX(-50%); /* Centra el icono en su punto de 'left' */
+        color: #007bff; /* Color primario */
+        font-size: 1.5rem;
+        z-index: 10;
+        transition: left 0.5s ease-out; /* Animación para el movimiento del corredor */
+    }
+
+    .track-marker {
+        position: absolute;
+        top: 0;
+        text-align: center;
+        transform: translateX(-50%);
+        z-index: 5;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .checkpoint-marker i {
+        color: #17a2b8; /* info */
+    }
+
+    .start-marker {
+        left: 0% !important;
+        transform: translateX(0%);
+    }
+
+        .start-marker i {
+            color: #28a745; /* success */
+        }
+
+    .end-marker {
+        left: 100% !important;
+        transform: translateX(-100%);
+    }
+
+        .end-marker i {
+            color: #dc3545; /* danger */
+        }
 
     /* Fallbacks para iconos */
     .fa-arrow-left::before {
