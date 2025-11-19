@@ -33,6 +33,9 @@ namespace SGCarreras.Models.ViewModels
         public double kmTotalesCarrera { get; set; }
         public List<PuntoDeControl> puntosDeControl { get; set; } = new List<PuntoDeControl>();
 
+        public List<double> PuntosControlAlcanzados { get; set; } = new List<double>();
+        public double UltimoPuntoControlAlcanzado { get; set; } = 0;
+
 
         public CorredorActivo() { }
 

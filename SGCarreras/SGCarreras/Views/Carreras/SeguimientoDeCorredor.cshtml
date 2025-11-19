@@ -4,148 +4,574 @@
     ViewData["Title"] = "Seguimiento en Vivo";
     string nombreCarrera = Model.carreraNombre;
     string corredorNombreInicial = Model.corredorNombre.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Substring(0, 1).ToUpper() ?? "?";
+
+    double kmTotalesCarrera = Model.kmTotalesCarrera > 0 ? Model.kmTotalesCarrera : 42.2;
+
+    // FILTRAR PUNTOS DE CONTROL - EXCLUIR EL QUE COINCIDE CON LA META
+    List<double> kmPuntosControl = Model.puntosDeControl?
+        .Select(p => p.Distancia)
+        .Where(d => d < kmTotalesCarrera)
+        .OrderBy(d => d)
+        .ToList() ?? new List<double> { 10.5, 21.1, 31.5 };
+
+    double progresoInicial = Math.Min(100, Math.Max(0, (Model.kilometro / kmTotalesCarrera) * 100.0));
 }
 
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="display-5 fw-bold text-primary mb-2">
-                        <i class="fas fa-route me-2"></i>Seguimiento en Vivo
-                    </h1>
-                    <p class="lead text-muted">Carrera: @nombreCarrera</p>
-                </div>
-                <div>
-                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Volver
-                    </a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* [MANTENER TODOS LOS ESTILOS CSS ANTERIORES] */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-section h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+
+        .title-section p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .back-btn {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+            .back-btn:hover {
+                background: #bdc3c7;
+                transform: translateY(-2px);
+            }
+
+        .alert {
+            background: #f39c12;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+            .alert.success {
+                background: #27ae60;
+            }
+
+        .messages-card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .messages-header {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .messages-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .message-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .message-item:last-child {
+                border-bottom: none;
+            }
+
+            .message-item.info {
+                background: #d6eaf8;
+                color: #2874a6;
+            }
+
+            .message-item.success {
+                background: #d5f4e6;
+                color: #1e8449;
+            }
+
+            .message-item.warning {
+                background: #fdebd0;
+                color: #b7950b;
+            }
+
+        .message-time {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .runner-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .runner-header {
+            background: #e74c3c;
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            margin: -30px -30px 25px -30px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .runner-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .runner-avatar {
+            text-align: center;
+        }
+
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+            margin: 0 auto 15px auto;
+        }
+
+        .runner-name {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .runner-details {
+            display: grid;
+            gap: 15px;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .detail-label {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #2c3e50;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: #95a5a6;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .progress-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .progress-header {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            margin: -30px -30px 25px -30px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        /* ESTILOS MEJORADOS PARA LA BARRA DE PROGRESO */
+        .track-container {
+            position: relative;
+            margin: 60px 0 100px 0;
+        }
+
+        .progress-track {
+            position: relative;
+            height: 25px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 12px;
+            width: @progresoInicial %;
+            transition: width 0.5s ease-in-out;
+            position: relative;
+        }
+
+            .progress-bar::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                animation: shimmer 2s infinite;
+            }
+
+        @@keyframes shimmer {
+            0%
+
+        {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+
+        }
+
+        .runner-icon {
+            position: absolute;
+            top: -35px;
+            transform: translateX(-50%);
+            color: #e74c3c;
+            font-size: 2.5em;
+            z-index: 20;
+            transition: left 0.5s ease-in-out;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            left: @progresoInicial %;
+        }
+
+        .markers-container {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0 10px;
+        }
+
+        .track-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            min-width: 80px;
+        }
+
+        .marker-icon {
+            font-size: 1.4em;
+            margin-bottom: 8px;
+            z-index: 10;
+        }
+
+        .marker-label {
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 3px;
+        }
+
+        .marker-distance {
+            font-size: 0.75em;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        .start-marker .marker-icon {
+            color: #27ae60;
+        }
+
+        .end-marker .marker-icon {
+            color: #e74c3c;
+        }
+
+        .checkpoint-marker .marker-icon {
+            color: #f39c12;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #7f8c8d;
+        }
+
+        .progress-percent {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+
+        /* LÍNEA CONECTORA */
+        .connection-line {
+            position: absolute;
+            top: 12px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: #bdc3c7;
+            z-index: 1;
+        }
+
+        /* RESPONSIVE */
+        @@media (max-width: 768px) {
+            .runner-content
+
+        {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .title-section h1 {
+            font-size: 1.8em;
+        }
+
+        .markers-container {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .track-marker {
+            min-width: 60px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="title-section">
+                <h1><i class="fas fa-route"></i> Seguimiento en Vivo</h1>
+                <p>Carrera: @nombreCarrera - @kmTotalesCarrera km</p>
+            </div>
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+            <input type="hidden" id="corredorId" value="@Model.corredorId" />
+        </div>
+
+        <!-- Mensaje de Meta -->
+        <div id="mensajeMeta" class="alert">
+            <i class="fas fa-medal"></i> El corredor llegó a la meta
+        </div>
+
+        <!-- Mensajes de Puntos de Control 
+        <div id="mensajesPuntosControl" class="messages-card">
+            <div class="messages-header">
+                <i class="fas fa-bullhorn"></i> Eventos de la Carrera
+            </div>
+            <div id="listaMensajes" class="messages-list">
+                <div class="message-item info">
+                    <div><i class="fas fa-info-circle"></i> Los eventos aparecerán aquí durante la carrera</div>
                 </div>
             </div>
+        </div>-->
 
-            <div id="mensajeMeta" class="alert alert-warning text-dark text-center fw-bold shadow-sm" style="display:none;">
-                <i class="fas fa-medal me-2"></i>El corredor llegó a la meta
+        <!-- Información del Corredor -->
+        <div class="runner-card">
+            <div class="runner-header">
+                <i class="fas fa-running"></i> Información del Corredor
             </div>
-
-            <div class="card border-0 shadow-lg mb-5">
-                <div class="card-header bg-primary text-white py-3">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-running me-2"></i>Información del Corredor
-                    </h4>
+            <div class="runner-content">
+                <div class="runner-avatar">
+                    <div class="avatar-circle">@corredorNombreInicial</div>
+                    <div class="runner-name">@Model.corredorNombre</div>
+                    <p style="color: #7f8c8d;">Corriendo en @nombreCarrera</p>
                 </div>
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-4 text-center">
-                            <div class="avatar-circle bg-primary text-white mx-auto mb-3" style="width: 120px; height: 120px; font-size: 48px;">
-                                @corredorNombreInicial
-                            </div>
-                            <h3 class="fw-bold text-dark">@Model.corredorNombre</h3>
-                            <p class="text-muted">Corriendo en @nombreCarrera</p>
+                <div class="runner-details">
+                    <div class="detail-row">
+                        <div class="detail-label">Nombre:</div>
+                        <div class="detail-value" id="corredorNombre">@Model.corredorNombre</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Número del Corredor:</div>
+                        <div class="detail-value">
+                            <span class="badge" id="nmroEnCarrera">#@Model.nmroEnCarrera</span>
                         </div>
-                        <div class="col-md-8 border-start">
-                            <dl class="row mb-0">
-                                <dt class="col-sm-4 text-muted">Nombre:</dt>
-                                <dd class="col-sm-8 fs-5 fw-bold text-primary" id="corredorNombre">@Html.DisplayFor(model => model.corredorNombre)</dd>
-
-                                <dt class="col-sm-4 text-muted">Número del Corredor:</dt>
-                                <dd class="col-sm-8 fs-5 fw-bold" id="nmroEnCarrera">
-                                    <span class="badge bg-secondary fs-6">#@Html.DisplayFor(model => model.nmroEnCarrera)</span>
-                                </dd>
-
-                                <dt class="col-sm-4 text-muted">Distancia Transcurrida:</dt>
-                                <dd class="col-sm-8 fs-5 fw-bold text-success" id="kilometro">
-                                    <i class="fas fa-map-pin me-1"></i>@Html.DisplayFor(model => model.kilometro) km
-                                </dd>
-
-                                <dt class="col-sm-4 text-muted">Tiempo Transcurrido:</dt>
-                                <dd class="col-sm-8 fs-5 fw-bold text-info" id="tiempo">
-                                    <i class="fas fa-stopwatch me-1"></i>00:00:00
-                                </dd>
-                            </dl>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Distancia Transcurrida:</div>
+                        <div class="detail-value" id="kilometro">
+                            <i class="fas fa-map-pin"></i> @Model.kilometro.ToString("F1") km
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Tiempo Transcurrido:</div>
+                        <div class="detail-value" id="tiempo">
+                            <i class="fas fa-stopwatch"></i> 00:00:00
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="card border-0 shadow-lg mt-4">
-                <div class="card-header bg-light py-3">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-chart-line text-primary me-2"></i>Progreso en Tiempo Real
-                    </h4>
+        <!-- Progreso en Tiempo Real -->
+        <div class="progress-card">
+            <div class="progress-header">
+                <i class="fas fa-chart-line"></i> Progreso en Tiempo Real
+            </div>
+
+            <div class="track-container">
+                <!-- Línea conectora -->
+                <div class="connection-line"></div>
+
+                <!-- Barra de progreso -->
+                <div class="progress-track">
+                    <div id="progressCorredor" class="progress-bar"></div>
+                    <i id="runnerIcon" class="fas fa-running runner-icon"></i>
                 </div>
-                <div class="card-body py-4 px-5">
 
-                    @{
-                        // **IMPORTANTE**: Simulación de datos necesarios para la visualización.
-                        // En una aplicación real, estas propiedades deberían estar en tu ViewModel CorredorActivo.
-                        double kmTotalesCarrera = 10.0; // Distancia total de la carrera (ejemplo: 10 km)
-                        List<double> kmPuntosControl = new List<double> { 2.0, 5.0, 8.0 }; // Kilómetros de los puntos de control
+                <!-- Marcadores -->
+                <div class="markers-container">
+                    <!-- Marcador de Inicio -->
+                    <div class="track-marker start-marker">
+                        <i class="fas fa-flag-checkered marker-icon"></i>
+                        <div class="marker-label">Inicio</div>
+                        <div class="marker-distance">0 km</div>
+                    </div>
 
-                        // Calculamos el progreso inicial del corredor
-                        double progresoInicial = (Model.kilometro / kmTotalesCarrera) * 100.0;
+                    <!-- Puntos de Control -->
+                    @foreach (var km in kmPuntosControl)
+                    {
+                        <div class="track-marker checkpoint-marker">
+                            <i class="fas fa-map-marker-alt marker-icon"></i>
+                            <div class="marker-label">Punto</div>
+                            <div class="marker-distance">@km km</div>
+                        </div>
                     }
 
-                    <div class="progress-container mb-4 position-relative">
-                        <div class="progress" style="height: 15px;">
-                            <div id="progressCorredor" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
-                                 style="width: @progresoInicial%;" aria-valuenow="@progresoInicial" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        </div>
-
-                        <i id="runnerIcon" class="fas fa-running runner-icon" style="left: @progresoInicial%;"></i>
-
-                        <div class="track-marker start-marker">
-                            <i class="fas fa-flag-checkered text-success"></i><br><small>Inicio</small>
-                        </div>
-
-                        <div class="track-marker end-marker">
-                            <i class="fas fa-flag-checkered text-danger"></i><br><small>Meta (@kmTotalesCarrera Km)</small>
-                        </div>
-
-                        @foreach (var km in kmPuntosControl)
-                        {
-                            // Calcula la posición porcentual del punto de control
-                            double percent = (km / kmTotalesCarrera) * 100.0;
-                            <div class="track-marker checkpoint-marker" style="left: @percent%;">
-                                <i class="fas fa-map-pin text-info"></i>
-                                <small>@km Km</small>
-                            </div>
-                        }
+                    <!-- Marcador de Meta -->
+                    <div class="track-marker end-marker">
+                        <i class="fas fa-flag-checkered marker-icon"></i>
+                        <div class="marker-label">Meta</div>
+                        <div class="marker-distance">@kmTotalesCarrera km</div>
                     </div>
-                    <p class="text-center text-muted mt-4">Progreso: <span id="progresoPorcentaje">@string.Format("{0:N1}", progresoInicial)</span>% de la meta.</p>
-
-                    <input type="hidden" id="kmTotalesCarrera" value="@kmTotalesCarrera" />
                 </div>
             </div>
 
+            <div class="progress-text">
+                Progreso: <span id="progresoPorcentaje">@progresoInicial.ToString("F1")</span>% de la meta.
+            </div>
+
+            <input type="hidden" id="kmTotalesCarrera" value="@kmTotalesCarrera" />
+            <input type="hidden" id="puntosControlData" value="@Json.Serialize(kmPuntosControl)" />
+            <input type="hidden" id="puntosControlAlcanzadosData" value="@Json.Serialize(Model.PuntosControlAlcanzados ?? new List<double>())" />
+            <input type="hidden" id="kilometroActual" value="@Model.kilometro" />
+            <input type="hidden" id="registroId" value="@Model.registroId" />
         </div>
     </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
-
-@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Inicializar tooltips (si los hubiese)
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+            console.log("Iniciando seguimiento en vivo - DEBUG PROFUNDO...");
 
-            // --- Variables para el progreso y la conexión ---
+            // Variables
             const kmTotalesCarrera = parseFloat(document.getElementById("kmTotalesCarrera").value);
+            const registroId = parseInt(document.getElementById("registroId").value);
             const runnerIcon = document.getElementById("runnerIcon");
             const progressBar = document.getElementById("progressCorredor");
             const progresoPorcentajeText = document.getElementById("progresoPorcentaje");
 
-            // Conexión y Lógica de SignalR
-            const connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7247/carrerasHub") // Ajustar URL si es necesario
-                .withAutomaticReconnect()
-                .build();
+            // Puntos de control
+            const puntosControl = JSON.parse(document.getElementById("puntosControlData").value);
+            const puntosControlAlcanzadosData = JSON.parse(document.getElementById("puntosControlAlcanzadosData").value);
+            const puntosControlAlcanzados = new Set(puntosControlAlcanzadosData);
+            const listaMensajes = document.getElementById("listaMensajes");
+            const mensajesContainer = document.getElementById("mensajesPuntosControl");
+            let ultimoKilometroCompleto = Math.floor(parseFloat(document.getElementById("kilometroActual").value));
 
-            // Función para formatear tiempo (asumiendo que viene en minutos)
+            console.log("=== DEBUG INICIAL ===", {
+                kmTotalesCarrera,
+                registroId,
+                progresoInicial: @progresoInicial,
+                kilometroActual: @Model.kilometro,
+                puntosControl: puntosControl
+            });
+
+            // Función para formatear tiempo
             function formatTime(totalMinutes) {
                 if (totalMinutes === null || totalMinutes === undefined) return '00:00:00';
                 let totalSeconds = Math.round(totalMinutes * 60);
@@ -153,208 +579,141 @@
                 totalSeconds %= 3600;
                 const minutes = Math.floor(totalSeconds / 60);
                 const seconds = totalSeconds % 60;
-                
+
                 const pad = (num) => num.toString().padStart(2, '0');
-                
                 return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
             }
 
-            // Función para actualizar la posición visual del corredor
+            // Función para actualizar posición
             function updateRunnerPosition(currentKm) {
                 if (kmTotalesCarrera > 0) {
                     let progressPercent = (currentKm / kmTotalesCarrera) * 100;
-                    
-                    // Asegurar que el progreso no exceda el 100%
                     progressPercent = Math.min(100, Math.max(0, progressPercent));
 
-                    // Actualizar la posición del icono (con animación CSS)
+
+                    // Actualizar icono del corredor
                     runnerIcon.style.left = progressPercent + '%';
-                    
-                    // Actualizar la barra de progreso
+
+                    // Actualizar barra de progreso
                     progressBar.style.width = progressPercent + '%';
-                    progressBar.setAttribute('aria-valuenow', progressPercent);
 
                     // Actualizar texto de porcentaje
                     progresoPorcentajeText.textContent = progressPercent.toFixed(1);
                 }
             }
 
+            
 
-            // Manejador de eventos del Hub
+            // Verificar puntos de control
+            function verificarPuntosControl(currentKm) {
+                puntosControl.forEach(punto => {
+                    if (!puntosControlAlcanzados.has(punto) && currentKm >= punto) {
+                        puntosControlAlcanzados.add(punto);
+                    }
+                });
+            }
+
+            // Verificar nuevo kilómetro
+            function verificarNuevoKilometro(currentKm) {
+                const kilometroActual = Math.floor(currentKm);
+                if (kilometroActual > ultimoKilometroCompleto && kilometroActual > 0) {
+                    
+                   
+
+                    ultimoKilometroCompleto = kilometroActual;
+
+                }
+            }
+
+            // SignalR
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7247/carrerasHub")
+                .withAutomaticReconnect()
+                .build();
+
+            // Manejador principal
             connection.on("CorredorActualizado", (data) => {
-                console.log("CorredorActualizado:", data);
-                
-                // 1. Actualización de Kilometraje y Posición Visual
-                if (data.kilometro !== undefined) {
+                console.log("CorredorActualizado:");
+                console.log(data);
+                // Verificar si es para nuestro corredor
+ 
+
+
+                if (data.kilometro !== undefined && data.kilometro !== null) {
                     const currentKm = parseFloat(data.kilometro);
-                    
-                    document.getElementById("kilometro").innerHTML = `<i class="fas fa-map-pin me-1"></i>${currentKm.toFixed(2)} km`;
-                    
+
+                    document.getElementById("kilometro").innerHTML = `<i class="fas fa-map-pin"></i> ${currentKm.toFixed(1)} km`;
+
+       
                     updateRunnerPosition(currentKm);
-                }
-                
-                if (data.tiempo !== undefined) {
 
-                   document.getElementById("tiempo").textContent = data.tiempo;
+                    verificarPuntosControl(currentKm);
+                    verificarNuevoKilometro(currentKm);
+                } else {
+                    console.log("No hay datos de kilometraje en la actualización");
                 }
 
-                // Lógica de Mensaje de Meta
+
+                if (data.tiempo !== undefined && data.tiempo !== null) {
+                   
+                    document.getElementById("tiempo").textContent = data.tiempo;
+                   
+                } 
+
+                // 3. Lógica de Meta  7 document.getElementById("nmroEnCarrera").innerHTML = `<span class="badge">#${data.numeroEnCarrera} (Meta)</span>`;
                 if (data.mensake || data.numeroEnCarrera !== undefined && data.numeroEnCarrera !== 0) {
-                    
+
 
                     const nombre = document.getElementById("corredorNombre").textContent.trim();
-                    const texto = `El corredor ${nombre}llegó a la meta en el puesto ${data.numeroEnCarrera} con un tiempo de ${data.tiempo}.`;
-                    
-                    const mensajeMetaDiv = document.getElementById("mensajeMeta");
-                    mensajeMetaDiv.textContent = texto;
-                    mensajeMetaDiv.classList.remove('alert-warning');
-                    mensajeMetaDiv.classList.add('alert-success');
-                    mensajeMetaDiv.style.display = "block";
-                    
-                    // Asegurar que el corredor y la barra estén al 100% al terminar
+                    document.getElementById("mensajeMeta").textContent = `${nombre} llegó a la meta en el puesto ${data.numeroEnCarrera} con tiempo ${data.tiempo}`;
+                    document.getElementById("mensajeMeta").classList.add('success');
+                    document.getElementById("mensajeMeta").style.display = 'block';
+
+                    verificarPuntosControl
+                    // Asegurar posición final
                     updateRunnerPosition(kmTotalesCarrera);
 
-                    // Detener la conexión al finalizar
+                    // Detener conexión
                     connection.stop();
-                    console.log("Conexión SignalR detenida, el corredor ha finalizado.");
+                   
                 }
             });
 
-            // Iniciar Conexión
+            // Iniciar conexión
             connection.start()
                 .then(() => {
-                    console.log("Conectado a SignalR.");
-                    connection.invoke("UnirseACorredorCorriendoceUnaCarreraCarrerosa", @Model.registroId)
-                        .catch(err => console.error("Error al invocar UnirseACorredorCorriendoceUnaCarreraCarrerosa:", err));
+                    console.log("Se inicio coneccion signal r");
+
+                    return connection.invoke("UnirseACorredorCorriendoceUnaCarreraCarrerosa", registroId);
                 })
-                .catch(err => console.error("Error al conectar a SignalR:", err));
+                .then(() => {
+                    console.log("unido al grupo del corredor");
+                
+                    // Forzar actualización inicial
+                    const kilometroActual = parseFloat(document.getElementById("kilometroActual").value);
+                    updateRunnerPosition(kilometroActual);
+
+                    // Mensaje de estado
+                  
+                })
+                .catch(err => {
+                    console.error("error en SignalR:", err);
+                    
+                });
+
+            // Agregar input hidden para el corredorId si no existe
+            if (!document.getElementById('corredorId')) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.id = 'corredorId';
+                input.value = '@Model.corredorId';
+                document.body.appendChild(input);
+            }
+
+          
+
+           
         });
     </script>
-}
-
-<style>
-    .card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-        }
-
-    .avatar-circle {
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-
-    .bg-primary {
-        background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%) !important;
-    }
-
-    .bg-pink {
-        background: linear-gradient(135deg, #e83e8c 0%, #d91a72 100%) !important;
-    }
-
-    .bg-info {
-        background: linear-gradient(135deg, #0dcaf0 0%, #0aa7c7 100%) !important;
-    }
-
-    /* Estilos para el mensaje de meta */
-    .alert-warning {
-        border-left: 5px solid #ffc107;
-    }
-
-    .alert-success {
-        border-left: 5px solid #198754;
-    }
-
-    .fas {
-        font-family: 'Font Awesome 5 Free';
-        font-weight: 900;
-    }
-
-    /* --- Estilos para la barra de progreso de la carrera --- */
-    .progress-container {
-        padding-top: 30px; /* Espacio para los marcadores superiores */
-    }
-
-    .runner-icon {
-        position: absolute;
-        top: 5px; /* Posiciona el icono ligeramente por encima de la barra */
-        transform: translateX(-50%); /* Centra el icono en su punto de 'left' */
-        color: #007bff; /* Color primario */
-        font-size: 1.5rem;
-        z-index: 10;
-        transition: left 0.5s ease-out; /* Animación para el movimiento del corredor */
-    }
-
-    .track-marker {
-        position: absolute;
-        top: 0;
-        text-align: center;
-        transform: translateX(-50%);
-        z-index: 5;
-        font-size: 0.8rem;
-        color: #6c757d;
-    }
-
-    .checkpoint-marker i {
-        color: #17a2b8; /* info */
-    }
-
-    .start-marker {
-        left: 0% !important;
-        transform: translateX(0%);
-    }
-
-        .start-marker i {
-            color: #28a745; /* success */
-        }
-
-    .end-marker {
-        left: 100% !important;
-        transform: translateX(-100%);
-    }
-
-        .end-marker i {
-            color: #dc3545; /* danger */
-        }
-
-    /* Fallbacks para iconos */
-    .fa-arrow-left::before {
-        content: "⬅️";
-    }
-
-    .fa-route::before {
-        content: "🛣️";
-    }
-
-    .fa-running::before {
-        content: "🏃";
-    }
-
-    .fa-map-pin::before {
-        content: "📌";
-    }
-
-    .fa-stopwatch::before {
-        content: "⏱️";
-    }
-
-    .fa-medal::before {
-        content: "🏅";
-    }
-
-    .fa-chart-line::before {
-        content: "📈";
-    }
-
-    .fa-chart-bar::before {
-        content: "📊";
-    }
-</style>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</body>
+</html>
