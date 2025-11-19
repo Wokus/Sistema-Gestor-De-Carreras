@@ -8,6 +8,5 @@
             En_espera,
             Finalizada
         }
-
     }
 }
