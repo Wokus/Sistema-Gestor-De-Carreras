@@ -87,10 +87,17 @@ namespace SGCarreras.Controllers
                 return NotFound();
             }
 
-            var carrera = await _context.Carrera
-                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id))
-                .Include(c => c.PuntosDeControl) // ✅ AGREGAR ESTO para cargar puntos de control
+            var carrera2 = await _context.Inscripcion
+                .Include(c => c.Carrera)
+                .ThenInclude(c => c.PuntosDeControl).Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id)
                 .FirstOrDefaultAsync();
+
+            var carrera = await _context.Carrera
+               .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id))
+               .Include(c => c.PuntosDeControl)
+               .FirstOrDefaultAsync(c => c.Id == carrera2.Carrera.Id);
+
+
 
             if (carrera?.Inscripciones?.Count > 0)
             {

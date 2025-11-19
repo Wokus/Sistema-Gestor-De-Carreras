@@ -193,10 +193,9 @@
                     updateRunnerPosition(currentKm);
                 }
                 
-                // 2. Actualización de Tiempo
                 if (data.tiempo !== undefined) {
-                    const tiempoFormateado = formatTime(data.tiempo); 
-                    document.getElementById("tiempo").innerHTML = `<i class="fas fa-stopwatch me-1"></i>${tiempoFormateado}`;
+
+                   document.getElementById("tiempo").textContent = data.tiempo;
                 }
 
                 // Lógica de Mensaje de Meta
