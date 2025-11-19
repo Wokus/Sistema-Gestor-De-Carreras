@@ -10,14 +10,9 @@ using System.Security.Claims;
 
 namespace SGCarreras.Controllers
 {
-    public class InscripcionController : Controller
+    public class InscripcionController(SGCarrerasContext context) : Controller
     {
-        private readonly SGCarrerasContext _context;
-
-        public InscripcionController(SGCarrerasContext context)
-        {
-            _context = context;
-        }
+        private readonly SGCarrerasContext _context = context;
 
         // GET: Inscripcion
         public async Task<IActionResult> Index()
@@ -270,9 +265,9 @@ namespace SGCarreras.Controllers
             ViewData["Carrera"] = carrera;
 
             // Verificar si el usuario está autenticado
-            if (User.Identity.IsAuthenticated)
+            if (User!.Identity!.IsAuthenticated)
             {
-                var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var usuarioId = int.Parse(User!.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
                 // Verificar si es administrador
                 var esAdministrador = User.IsInRole("Administrador");
@@ -375,7 +370,7 @@ namespace SGCarreras.Controllers
 
         private async Task<IActionResult> InscribirUsuarioExistente(InscripcionViewModel model)
         {
-            var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var usuarioId = int.Parse(User!.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             // Verificar si ya está inscrito (doble verificación)
             var yaInscrito = await _context.Inscripcion
@@ -477,10 +472,10 @@ namespace SGCarreras.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, corredor.Id.ToString()),
-                new Claim(ClaimTypes.Name, corredor.NombreCompleto),
-                new Claim(ClaimTypes.Email, corredor.Mail),
-                new Claim(ClaimTypes.Role, "Corredor")
+                new(ClaimTypes.NameIdentifier, corredor.Id.ToString()),
+                new(ClaimTypes.Name, corredor.NombreCompleto),
+                new(ClaimTypes.Email, corredor.Mail),
+                new(ClaimTypes.Role, "Corredor")
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -547,12 +542,12 @@ namespace SGCarreras.Controllers
         [HttpGet]
         public async Task<IActionResult> VerificarInscripcion(int carreraId)
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User!.Identity!.IsAuthenticated)
             {
                 return Json(new { yaInscrito = false, mensaje = "Usuario no autenticado" });
             } 
 
-            var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var usuarioId = int.Parse(User!.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             var yaInscrito = await _context.Inscripcion
                 .AnyAsync(i => i.CorredorId == usuarioId &&
@@ -561,7 +556,7 @@ namespace SGCarreras.Controllers
 
             return Json(new
             {
-                yaInscrito = yaInscrito,
+                yaInscrito,
                 mensaje = yaInscrito ? "Ya estás inscrito en esta carrera" : "No estás inscrito"
             });
         }

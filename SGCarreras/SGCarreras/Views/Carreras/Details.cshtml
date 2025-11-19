@@ -13,7 +13,6 @@
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
     var HoraAvance = DateTime.Now;
-    var PuntoControl = 0;
     // Obtener el referer (página anterior) para saber de dónde vino el usuario
     var referer = Context.Request.Headers["Referer"].ToString();
     var vieneDeCalendarios = referer.Contains("Calendarios");
@@ -266,7 +265,7 @@
                     </div>
                 </div>
             }
-            else if (Model.Carrera.Estado == EstadoEnum.Activo)
+            else if (Model!.Carrera.Estado == EstadoEnum.Activo)
             {
                 <div class="row mt-5">
                     <div class="col-12">
@@ -448,7 +447,7 @@
                                         <span class="badge bg-dark fs-6">@registro.NumeroEnCarrera</span>
                                     </td>
                                     <td class="pe-4">
-                                        @if (registro.HoraDeFinalizacion != null)
+                                        @if (registro.HoraDeFinalizacion != DateTime.MinValue)
                                         {
                                             <div class="d-flex flex-column">
                                                 <strong class="fs-5 text-primary">@registro.HoraDeFinalizacion.ToString("HH:mm:ss")</strong>
@@ -666,7 +665,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <script>
-    window.carreraId = @Model?.Carrera.Id;
+    window.carreraId = @Json.Serialize(Model?.Carrera?.Id);
 </script>
 
 <!-- Incluir el script adaptado de SignalR debajo -->
@@ -709,7 +708,7 @@
 
     // Conectarse y unirse al grupo correspondiente
     connection.start().then(() => {
-        connection.invoke("UnirseACarrera", @Model.Carrera.Id);
+        connection.invoke("UnirseACarrera", @Model!.Carrera.Id);
     }).catch(err => console.error(err));
 </script>
 -->

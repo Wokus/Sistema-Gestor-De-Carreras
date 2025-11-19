@@ -16,16 +16,10 @@ using static SGCarreras.Models.Sexo;
 
 namespace SGCarreras.Controllers
 {
-    public class CarrerasController : Controller
+    public class CarrerasController(SGCarrerasContext context, IHttpClientFactory clientFactory) : Controller
     {
-        private readonly SGCarrerasContext _context;
-        private readonly IHttpClientFactory _clientFactory;
-
-        public CarrerasController(SGCarrerasContext context, IHttpClientFactory clientFactory)
-        {
-            _context = context;
-            _clientFactory = clientFactory;
-        }
+        private readonly SGCarrerasContext _context = context;
+        private readonly IHttpClientFactory _clientFactory = clientFactory;
 
         // GET: Carreras
         public async Task<IActionResult> Index()
@@ -63,15 +57,17 @@ namespace SGCarreras.Controllers
                 .OrderBy(r => r.PosicionEnCarrera)
                 .ToListAsync();
 
-            // Verificar inscripción en la tabla Inscripcion (no Registro)
             bool yaInscrito = false;
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity?.IsAuthenticated == true)
             {
-                var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                yaInscrito = await _context.Inscripcion
-                    .AnyAsync(i => i.CorredorId == usuarioId &&
-                                  i.CarreraId == id &&
-                                  i.Estado != EstadoInscripcion.Cancelada);
+                var usuarioIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (int.TryParse(usuarioIdString, out int usuarioId))
+                {
+                    yaInscrito = await _context.Inscripcion
+                        .AnyAsync(i => i.CorredorId == usuarioId &&
+                                      i.CarreraId == id.Value &&
+                                      i.Estado != EstadoInscripcion.Cancelada);
+                }
             }
 
             var viewModel = new CarreraDetailsViewModel
@@ -93,27 +89,46 @@ namespace SGCarreras.Controllers
 
             var carrera = await _context.Carrera
                 .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id))
-                    .ThenInclude(i => i.Registro)
-                        .ThenInclude(r => r.Corredor)
-                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Id == id))
-                    .ThenInclude(i => i.Corredor)
                 .FirstOrDefaultAsync();
+
+            if (carrera?.Inscripciones?.Count > 0)
+            {
+                await _context.Entry(carrera.Inscripciones.First())
+                    .Reference(i => i.Registro)
+                    .Query()
+                    .Include(r => r.Corredor)
+                    .LoadAsync();
+
+                await _context.Entry(carrera.Inscripciones.First())
+                    .Reference(i => i.Corredor)
+                    .LoadAsync();
+            }
 
             var registro = await _context.Inscripcion
                 .Include(r => r.Corredor)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
-            if (registro == null)
+            if (registro == null || registro.Corredor == null)
             {
                 return NotFound();
             }
-            CorredorActivo correAct = new CorredorActivo();
-            correAct.nmroEnCarrera = registro.NumeroCorredor;
-            correAct.corredorNombre = registro.Corredor.NombreCompleto;
-            correAct.corredorId = registro.Corredor.Id;
-            correAct.carreraId = carrera.Id;
-            correAct.carreraNombre = carrera.Nombre;
-            correAct.registroId = registro.Id;
+
+            // Verificar que carrera no sea null antes de usarla
+            if (carrera == null)
+            {
+                return NotFound();
+            }
+
+            CorredorActivo correAct = new()
+            {
+                nmroEnCarrera = registro.NumeroCorredor,
+                corredorNombre = registro.Corredor.NombreCompleto ?? "Nombre no disponible",
+                corredorId = registro.Corredor.Id,
+                carreraId = carrera.Id,
+                carreraNombre = carrera.Nombre ?? "Carrera sin nombre",
+                registroId = registro.Id
+            };
+
             return View(correAct);
         }
 
@@ -142,23 +157,29 @@ namespace SGCarreras.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BuscarCorredorCorriendoce([Bind("Cedula")] Corredor2 corre)
         {
-            Console.WriteLine("&/&/&/&/&/&/&/&/&/&/&/&/&/&/&" + corre.Cedula + "&/&/&/&/&/&/&/&/&/&/&/&/&/&/&");
-            if (corre == null)
+            if (corre == null || string.IsNullOrEmpty(corre.Cedula))
             {
                 return NotFound();
             }
-            
+
+            Console.WriteLine("&/&/&/&/&/&/&/&/&/&/&/&/&/&/&" + corre.Cedula + "&/&/&/&/&/&/&/&/&/&/&/&/&/&/&");
 
             var inscri = await _context.Inscripcion
-               .Include(i => i.Carrera).Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Corredor.Cedula == corre.Cedula && i.Carrera.Estado == EstadoEnum.Activo)
+               .Include(i => i.Carrera)
+               .Include(i => i.Corredor)
+               .Where(i => i.Estado == EstadoInscripcion.Confirmada
+                           && i.Corredor != null
+                           && i.Corredor.Cedula == corre.Cedula
+                           && i.Carrera != null
+                           && i.Carrera.Estado == EstadoEnum.Activo)
                .FirstOrDefaultAsync();
 
             if (inscri == null)
             {
                 return NotFound();
             }
-            
-            return RedirectToAction("SeguimientoDeCorredor", new { id = inscri.Id});
+
+            return RedirectToAction("SeguimientoDeCorredor", new { id = inscri.Id });
         }
 
         // POST: Carreras/Create - CON BIND Y DEBUGGING
@@ -206,7 +227,7 @@ namespace SGCarreras.Controllers
                     Console.WriteLine($"Carrera guardada con ID: {carrera.Id}");
 
                     // 2. Procesar puntos de control si existen
-                    if (carrera.PuntosDeControl != null && carrera.PuntosDeControl.Any())
+                    if (carrera.PuntosDeControl != null && carrera.PuntosDeControl.Count != 0)
                     {
                         Console.WriteLine($"Procesando {carrera.PuntosDeControl.Count} puntos de control...");
 
@@ -325,7 +346,7 @@ namespace SGCarreras.Controllers
                     await _context.SaveChangesAsync(); // Guardar cambios de la carrera
 
                     // 3. Agregar nuevos puntos de control
-                    if (carrera.PuntosDeControl != null && carrera.PuntosDeControl.Any())
+                    if (carrera.PuntosDeControl != null && carrera.PuntosDeControl.Count != 0)
                     {
                         Console.WriteLine($"Agregando {carrera.PuntosDeControl.Count} nuevos puntos...");
 
@@ -454,32 +475,21 @@ namespace SGCarreras.Controllers
 
         public IActionResult Calendarios(string filtro = "Todas")
         {
-            IEnumerable<Carrera> carreras;
-
-            switch (filtro)
+            IEnumerable<Carrera> carreras = filtro switch
             {
-                case "Activas":
-                    carreras = _context.Carrera
-                        .Include(c => c.PuntosDeControl)
-                        .Where(c => c.Estado == EstadoEnum.Activo).ToList();
-                    break;
-                case "EnEspera":
-                    carreras = _context.Carrera
-                        .Include(c => c.PuntosDeControl)
-                        .Where(c => c.Estado == EstadoEnum.En_espera).ToList();
-                    break;
-                case "Finalizadas":
-                    carreras = _context.Carrera
-                        .Include(c => c.PuntosDeControl)
-                        .Where(c => c.Estado == EstadoEnum.Finalizada).ToList();
-                    break;
-                default:
-                    carreras = _context.Carrera
-                        .Include(c => c.PuntosDeControl)
-                        .ToList();
-                    break;
-            }
-
+                "Activas" => [.. _context.Carrera
+                                        .Include(c => c.PuntosDeControl)
+                                        .Where(c => c.Estado == EstadoEnum.Activo)],
+                "EnEspera" => [.. _context.Carrera
+                                        .Include(c => c.PuntosDeControl)
+                                        .Where(c => c.Estado == EstadoEnum.En_espera)],
+                "Finalizadas" => [.. _context.Carrera
+                                        .Include(c => c.PuntosDeControl)
+                                        .Where(c => c.Estado == EstadoEnum.Finalizada)],
+                _ => _context.Carrera
+                                        .Include(c => c.PuntosDeControl)
+                                        .ToList(),
+            };
             ViewBag.FiltroActual = filtro;
             return View(carreras);
         }
@@ -487,24 +497,15 @@ namespace SGCarreras.Controllers
         public IActionResult CalendariosAdmin(string filtro = "Todas")
         {
             IEnumerable<Carrera> carreras;
-            if (corroborarRol("Administrador") == true)
+            if (CorroborarRol("Administrador") == true)
             {
-                switch (filtro)
+                carreras = filtro switch
                 {
-                    case "Activas":
-                        carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.Activo).ToList();
-                        break;
-                    case "EnEspera":
-                        carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.En_espera).ToList();
-                        break;
-                    case "Finalizadas":
-                        carreras = _context.Carrera.Where(c => c.Estado == EstadoEnum.Finalizada).ToList();
-                        break;
-                    default:
-                        carreras = _context.Carrera.ToList();
-                        break;
-                }
-
+                    "Activas" => [.. _context.Carrera.Where(c => c.Estado == EstadoEnum.Activo)],
+                    "EnEspera" => [.. _context.Carrera.Where(c => c.Estado == EstadoEnum.En_espera)],
+                    "Finalizadas" => [.. _context.Carrera.Where(c => c.Estado == EstadoEnum.Finalizada)],
+                    _ => _context.Carrera.ToList(),
+                };
                 ViewBag.FiltroActual = filtro;
                 return View("AdminShenanigans/CalendariosAdmin", carreras);
             }
@@ -515,7 +516,7 @@ namespace SGCarreras.Controllers
      
         }
 
-        private bool corroborarRol(string rol)
+        private bool CorroborarRol(string rol)
         {
             var rolToken = User.FindFirstValue(ClaimTypes.Role);
             if (rolToken != null && rolToken == rol)
@@ -529,18 +530,26 @@ namespace SGCarreras.Controllers
             
         }
 
-        public async Task InicializarCarrerasActivasAsync(IHttpClientFactory clientFactory)
+        public JsonSerializerOptions GetOptions()
+        {
+            return new JsonSerializerOptions
+            {
+                WriteIndented = true // lo hace más legible
+            };
+        }
+
+        public async Task InicializarCarrerasActivasAsync(IHttpClientFactory clientFactory, JsonSerializerOptions options)
         {
             var client = clientFactory.CreateClient();
             client.BaseAddress = new Uri("https://localhost:7247/api/Simulacion/importar"); // URL de la API
 
             var carrera = await _context.Carrera
             .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
-                    .ThenInclude(i => i.Registro)
-                        .ThenInclude(r => r.Corredor)
-                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
-                    .ThenInclude(i => i.Corredor)
-            .Include(c => c.PuntosDeControl) 
+            .ThenInclude(i => i!.Registro)
+            .ThenInclude(r => r!.Corredor)
+            .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
+            .ThenInclude(i => i.Corredor)
+            .Include(c => c.PuntosDeControl)
             .ToListAsync();
 
 
@@ -549,10 +558,7 @@ namespace SGCarreras.Controllers
                 .ToList();
 
             // 🔍 Serializamos para ver qué se está enviando
-            var json = JsonSerializer.Serialize(activas, new JsonSerializerOptions
-            {
-                WriteIndented = true // lo hace más legible
-            });
+            var json = JsonSerializer.Serialize(activas, options);
 
             Console.WriteLine("===------------------------------------ JSON a enviar a la API ===-------------------------------------");
             Console.WriteLine(json);

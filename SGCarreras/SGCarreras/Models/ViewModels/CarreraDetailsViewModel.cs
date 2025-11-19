@@ -6,9 +6,8 @@ namespace SGCarreras.Models.ViewModels
 {
     public class CarreraDetailsViewModel
     {
-        public Carrera Carrera { get; set; }
-        public List<Registro> Registros { get; set; } = new List<Registro>();
+        public required Carrera Carrera { get; set; }
+        public List<Registro> Registros { get; set; } = [];
         public bool YaInscrito { get; set; }
-        // Puedes añadir más propiedades según lo necesites en la vista
     }
 }

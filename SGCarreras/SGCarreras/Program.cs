@@ -63,7 +63,7 @@ using (var scope = app.Services.CreateScope())
     var clientFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
 
     var controlador = new SGCarreras.Controllers.CarrerasController(context, clientFactory);
-    await controlador.InicializarCarrerasActivasAsync(clientFactory);
+    await controlador.InicializarCarrerasActivasAsync(clientFactory, controlador.GetOptions());
 }
 app.UseHttpsRedirection();
 
