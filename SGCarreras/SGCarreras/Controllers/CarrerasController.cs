@@ -142,16 +142,17 @@ namespace SGCarreras.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BuscarCorredorCorriendoce([Bind("Cedula")] Corredor2 corre)
         {
+            Console.WriteLine("&/&/&/&/&/&/&/&/&/&/&/&/&/&/&" + corre.Cedula + "&/&/&/&/&/&/&/&/&/&/&/&/&/&/&");
             if (corre == null)
             {
                 return NotFound();
             }
+            
 
-            var inscri = await _context.Carrera
-               .Include(c => c.Inscripciones.Where(r => r.Estado == EstadoInscripcion.Confirmada && r.Corredor.Cedula == corre.Cedula))
+            var inscri = await _context.Inscripcion
+               .Include(i => i.Carrera).Where(i => i.Estado == EstadoInscripcion.Confirmada && i.Corredor.Cedula == corre.Cedula && i.Carrera.Estado == EstadoEnum.Activo)
                .FirstOrDefaultAsync();
 
-            
             if (inscri == null)
             {
                 return NotFound();

@@ -1,10 +1,10 @@
-﻿@using System.Security.Claims
-@model SGCarreras.Models.Corredor
+﻿@model SGCarreras.Models.dtos.CorredorDTO;
+﻿@using System.Security.Claims;
 @using static SGCarreras.Models.Estado;
 @{
     ViewData["Title"] = "Detalles del Corredor";
     string filtro = ViewBag.FiltroActual as string ?? "Todas";
-    var listaRegistros = Model.registros;
+    var listaRegistros = Model.Registros;
 }
 
 <div class="container-fluid py-4">
@@ -100,19 +100,19 @@
                             <!-- Estadísticas Rápidas -->
                             <div class="row mt-4 pt-3 border-top">
                                 <div class="col-md-3 text-center">
-                                    <div class="h3 fw-bold text-primary">@(Model.registros?.Count ?? 0)</div>
+                                    <div class="h3 fw-bold text-primary">@(Model.Registros?.Count ?? 0)</div>
                                     <small class="text-muted">Total Carreras</small>
                                 </div>
                                 <div class="col-md-3 text-center">
-                                    <div class="h3 fw-bold text-success">@(Model.registros?.Count(r => r.Carrera?.Estado == EstadoEnum.Activo) ?? 0)</div>
+                                    <div class="h3 fw-bold text-success">@(Model.Registros?.Count(r => r.Carrera?.Estado == EstadoEnum.Activo) ?? 0)</div>
                                     <small class="text-muted">Carreras Activas</small>
                                 </div>
                                 <div class="col-md-3 text-center">
-                                    <div class="h3 fw-bold text-warning">@(Model.registros?.Count(r => r.Carrera?.Estado == EstadoEnum.En_espera) ?? 0)</div>
+                                    <div class="h3 fw-bold text-warning">@(Model.Registros?.Count(r => r.Carrera?.Estado == EstadoEnum.En_espera) ?? 0)</div>
                                     <small class="text-muted">En Espera</small>
                                 </div>
                                 <div class="col-md-3 text-center">
-                                    <div class="h3 fw-bold text-secondary">@(Model.registros?.Count(r => r.Carrera?.Estado == EstadoEnum.Finalizada) ?? 0)</div>
+                                    <div class="h3 fw-bold text-secondary">@(Model.Registros?.Count(r => r.Carrera?.Estado == EstadoEnum.Finalizada) ?? 0)</div>
                                     <small class="text-muted">Finalizadas</small>
                                 </div>
                             </div>
