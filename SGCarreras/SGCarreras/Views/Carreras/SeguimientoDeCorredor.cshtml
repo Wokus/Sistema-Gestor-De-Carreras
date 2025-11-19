@@ -200,10 +200,10 @@
 
                 // Lógica de Mensaje de Meta
                 if (data.mensake || data.numeroEnCarrera !== undefined) {
-                    document.getElementById("nmroEnCarrera").textContent = data.numeroEnCarrera;
+                    
 
                     const nombre = document.getElementById("corredorNombre").textContent.trim();
-                    const texto = `El corredor <strong>${nombre}</strong> llegó a la meta en el puesto <strong>${data.numeroEnCarrera}</strong> con un tiempo de <strong>${finalTimeFormatted}</strong>.`;
+                    const texto = `El corredor ${nombre}llegó a la meta en el puesto ${data.numeroEnCarrera} con un tiempo de ${data.tiempo}.`;
                     
                     const mensajeMetaDiv = document.getElementById("mensajeMeta");
                     mensajeMetaDiv.textContent = texto;
