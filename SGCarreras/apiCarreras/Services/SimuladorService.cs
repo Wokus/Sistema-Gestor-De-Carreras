@@ -13,7 +13,7 @@ namespace apiCarreras.Services
         private readonly Random _random = new();
         private readonly IHubContext<CarrerasSimuladasHub> _hubContext = hubContext;
         private readonly Dictionary<int, RegistroDTO> _estadoActual = new();
-        private readonly Dictionary<int, GanaDoorDTO> _ganaDoors = new();
+        private readonly ConcurrentDictionary<int, Dictionary<int, GanaDoorDTO>> _ganaDoors = new();
         private readonly httpService _httpService = httpServicee;
       
         public void IniciarSimulacion_ElectricBoogaloo(CarreraDTO carrera)
@@ -27,7 +27,7 @@ namespace apiCarreras.Services
             carrera.HoraInicio = DateTime.UtcNow;
             var cts = new CancellationTokenSource();
             _simulaciones[carrera.Id] = cts;
-
+            _ganaDoors[carrera.Id] = new Dictionary<int, GanaDoorDTO>();
             _ = Task.Run(async () =>
             {
                 try
@@ -112,15 +112,9 @@ namespace apiCarreras.Services
 
                         foreach (var ptos in carrera.PuntosDeControl)
                         {
-                            /* Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                            Console.WriteLine("carrera.PuntosDeControl.Last().Id = " + carrera.PuntosDeControl.Last().Id + "/ptos.NumeroEnCarrera = " + ptos.NumeroEnCarrera);
-                            Console.WriteLine("avance = " + avance + "/carrera.PuntosDeControl.Last().Distancia" + carrera.PuntosDeControl.Last().Distancia);
-                            Console.WriteLine("!_ganaDoors.ContainsKey(registro.Id) = " + !_ganaDoors.ContainsKey(registro.Id));
-                            
-                            
-                            Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                            */
-                            if (carrera.PuntosDeControl.Last().NumeroEnCarrera == ptos.NumeroEnCarrera && avance >= carrera.PuntosDeControl.Last().Distancia && !_ganaDoors.ContainsKey(registro.Id))
+                            var ganaDoorDict = _ganaDoors[carrera.Id];
+
+                            if (carrera.PuntosDeControl.Last().NumeroEnCarrera == ptos.NumeroEnCarrera && avance >= carrera.PuntosDeControl.Last().Distancia && !ganaDoorDict.ContainsKey(registro.Id))
                             {
                                 registro.pntoControl = ptos.NumeroEnCarrera;
                                 kmtrsPunto = ptos.Distancia;
@@ -128,13 +122,19 @@ namespace apiCarreras.Services
 
                                 GanaDoorDTO ganaDoor = new GanaDoorDTO();
                                 ganaDoor.inscripcionId = registro.Id;
-                                ganaDoor.numeroEnCarrera = _ganaDoors.Count + 1;
+                                ganaDoor.numeroEnCarrera = ganaDoorDict.Count + 1;
                                 ganaDoor.tiempoDeFinalizacion = registroTiempoEnformato;
                                 ganaDoor.numeroDelCorredor = registro.NumeroEnCarrera;
 
-                                _ganaDoors.Add(registro.Id, ganaDoor);
+                                ganaDoorDict[registro.Id] = ganaDoor;
                                 Console.WriteLine(" El corredor " + registro.Corredor.NombreCompleto + "llego a la meta como numero: " + ganaDoor.numeroEnCarrera);
                                 Console.WriteLine(")()=(=)(=(=)(=)(=)(=)(=)()=(=)(=)(=)(=)(=)(=)(=)(" + _ganaDoors.Count + ")()=(=)(=(=)(=)(=)(=)(=)()=(=)(=)(=)(=)(=)(=)(=)(");
+
+                                
+
+                               // regiMandar.mensake = "mensake";
+
+                               
 
                                 await _hubContext.Clients.Group($"Registro-{registro.Id}")
                                .SendAsync("CorredorActualizado", new
@@ -155,10 +155,24 @@ namespace apiCarreras.Services
 
                                });
 
-                                if (countCorredores == _ganaDoors.Count())
+                                RegistroDTO regiMandar = new RegistroDTO();
+
+                                regiMandar.PosicionEnCarrera = ganaDoor.numeroEnCarrera;
+                                regiMandar.tiempoperoenstingayuda = registroTiempoEnformato;
+                                regiMandar.Distancia = kmtrsPunto;
+                                regiMandar.Id = registro.Id;
+                                _estadoActual[registro.Id] = regiMandar;
+                                Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                                Console.WriteLine("countCorredores = " + countCorredores + "/_ganaDoors.Count() = " + _ganaDoors[carrera.Id].Count);
+                                Console.WriteLine("/Carrera = " + carrera.Nombre);
+                                Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
+
+
+                                if (countCorredores == _ganaDoors[carrera.Id].Count)
                                 {
                                     //metodo para guardoar los datos de la carrera
-                                    var lista = _ganaDoors.Values.ToList();
+                                    var lista = _ganaDoors[carrera.Id].Values.ToList();
                                     await _httpService.NotificarCarreraTerminada(lista);
 
                                     this.DetenerSimulacion(carrera.Id);
@@ -231,8 +245,7 @@ namespace apiCarreras.Services
             {
                 return new
                 {
-
-                    posicionCarrera = registro.PosicionEnCarrera,
+                    numeroEnCarrera = registro.PosicionEnCarrera,
                     tiempo = registro.tiempoperoenstingayuda,
                     kilometro = registro.Distancia,
                         Id = registro.Id

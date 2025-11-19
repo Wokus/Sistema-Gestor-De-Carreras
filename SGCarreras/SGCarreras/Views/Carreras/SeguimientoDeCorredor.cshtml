@@ -105,14 +105,14 @@
                 }
 
                 // Lógica de Mensaje de Meta
-                if (data.mensake) {
+                if (data.mensake || data.numeroEnCarrera !== undefined) {
                     document.getElementById("nmroEnCarrera").textContent = data.numeroEnCarrera;
 
                     const nombre = document.getElementById("corredorNombre").textContent.trim();
                     const texto = `El corredor **${nombre}** llegó a la meta en el puesto **${data.numeroEnCarrera}** con un tiempo de **${data.tiempo}**.`;
 
                     const mensajeMetaDiv = document.getElementById("mensajeMeta");
-                    mensajeMetaDiv.textContent = `<i class="fas fa-medal me-2"></i>${texto}`;
+                    mensajeMetaDiv.textContent = texto;
                     mensajeMetaDiv.classList.remove('alert-warning');
                     mensajeMetaDiv.classList.add('alert-success');
                     mensajeMetaDiv.style.display = "block";

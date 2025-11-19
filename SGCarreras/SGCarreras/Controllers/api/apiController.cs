@@ -65,7 +65,7 @@ namespace apiCarreras.Controllers
 
                     regi.CorredorId = inscri.CorredorId;
                     regi.CarreraId = inscri.CarreraId;
-                    regi.HoraDeFinalizacion = DateTime.ParseExact(ganador.tiempoDeFinalizacion, "HH:mm", null);
+                    regi.HoraDeFinalizacion = DateTime.ParseExact(ganador.tiempoDeFinalizacion, "HH:mm:ss", null);
                     regi.NumeroEnCarrera = inscri.NumeroCorredor;
                     regi.PosicionEnCarrera = ganador.numeroEnCarrera;
                     _context.Add(regi);

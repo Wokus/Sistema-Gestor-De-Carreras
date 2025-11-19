@@ -5,6 +5,7 @@ namespace apiCarreras.DTOs
     public class RegistroDTO
     {
         public int Id { get; set; }
+       // public string mensake { get; set; }
         public int NumeroEnCarrera { get; set; }
         public string tiempoperoenstingayuda { get; set; } = string.Empty;
         public double Distancia { get; set; }
@@ -13,7 +14,10 @@ namespace apiCarreras.DTOs
         public DateTime HoraAvance { get; set; } = DateTime.Now;
         public int pntoControl { get; set; }
         public DateTime HoraDeFinalizacion { get; set; }
+        //
         public CorredorDTO Corredor { get; set; }
+
+        
 
         public RegistroDTO() { }
     }
