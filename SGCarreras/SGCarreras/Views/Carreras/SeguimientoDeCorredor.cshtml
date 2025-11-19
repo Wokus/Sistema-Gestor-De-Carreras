@@ -14,7 +14,7 @@
                     <h1 class="display-5 fw-bold text-primary mb-2">
                         <i class="fas fa-route me-2"></i>Seguimiento en Vivo
                     </h1>
-                    <p class="lead text-muted">Carrera: **@nombreCarrera**</p>
+                    <p class="lead text-muted">Carrera: @nombreCarrera</p>
                 </div>
                 <div>
                     <a href="javascript:history.back()" class="btn btn-outline-secondary">
@@ -40,19 +40,19 @@
                                 @corredorNombreInicial
                             </div>
                             <h3 class="fw-bold text-dark">@Model.corredorNombre</h3>
-                            <p class="text-muted">Corriendo en **@nombreCarrera**</p>
+                            <p class="text-muted">Corriendo en @nombreCarrera</p>
                         </div>
                         <div class="col-md-8 border-start">
                             <dl class="row mb-0">
-                                <dt class="col-sm-4 text-muted">@Html.DisplayNameFor(model => model.corredorNombre):</dt>
+                                <dt class="col-sm-4 text-muted">Nombre:</dt>
                                 <dd class="col-sm-8 fs-5 fw-bold text-primary" id="corredorNombre">@Html.DisplayFor(model => model.corredorNombre)</dd>
 
-                                <dt class="col-sm-4 text-muted">@Html.DisplayNameFor(model => model.nmroEnCarrera):</dt>
+                                <dt class="col-sm-4 text-muted">Número del Corredor:</dt>
                                 <dd class="col-sm-8 fs-5 fw-bold" id="nmroEnCarrera">
                                     <span class="badge bg-secondary fs-6">#@Html.DisplayFor(model => model.nmroEnCarrera)</span>
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">@Html.DisplayNameFor(model => model.kilometro):</dt>
+                                <dt class="col-sm-4 text-muted">Distancia Transcurrida:</dt>
                                 <dd class="col-sm-8 fs-5 fw-bold text-success" id="kilometro">
                                     <i class="fas fa-map-pin me-1"></i>@Html.DisplayFor(model => model.kilometro) km
                                 </dd>
@@ -63,21 +63,6 @@
                                 </dd>
                             </dl>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card border-0 shadow-lg">
-                <div class="card-header bg-light py-3">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-chart-line text-primary me-2"></i>Progreso en Tiempo Real
-                    </h4>
-                </div>
-                <div class="card-body text-center py-5">
-                    <div id="visualizacionProgreso">
-                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">Cargando visualización de progreso...</h5>
-                        <p class="text-muted">Datos actualizados por SignalR.</p>
                     </div>
                 </div>
             </div>
