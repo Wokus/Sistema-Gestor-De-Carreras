@@ -151,9 +151,43 @@
                             <div class="card-body p-4">
                                 <div id="puntos-control-container">
                                     <h5 class="mb-3">Gestionar Puntos de Control</h5>
-                                    @Html.EditorFor(model => model.PuntosDeControl)
 
-                                    @if (Model.PuntosDeControl == null || !Model.PuntosDeControl.Any())
+                                    @{
+                                        // ✅ CONVERTIR a List para poder usar indexación
+                                        var puntosList = Model.PuntosDeControl?.ToList() ?? new List<PuntoDeControl>();
+                                    }
+
+                                    @if (puntosList.Any())
+                                    {
+                                        @for (int i = 0; i < puntosList.Count; i++)
+                                        {
+                                            <div class="punto-control-item card border mb-3">
+                                                <div class="card-body">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <label class="form-label fw-semibold">Distancia (km)</label>
+                                                                <input type="number" step="0.1"
+                                                                       name="PuntosDeControl[@i].Distancia"
+                                                                       value="@puntosList[i].Distancia"
+                                                                       class="form-control"
+                                                                       placeholder="Distancia desde el inicio" />
+                                                                <span asp-validation-for="PuntosDeControl" class="text-danger small"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <input type="hidden" name="PuntosDeControl[@i].id" value="@puntosList[i].id" />
+                                                            <input type="hidden" name="PuntosDeControl[@i].CarreraId" value="@puntosList[i].CarreraId" />
+                                                            <button type="button" class="btn btn-danger btn-sm eliminar-punto w-100">
+                                                                <i class="fas fa-trash me-1"></i>Eliminar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
                                     {
                                         <div class="alert alert-info">
                                             <i class="fas fa-info-circle me-2"></i>
@@ -189,7 +223,9 @@
         $(document).ready(function () {
             // Agregar punto de control
             $("#agregar-punto").click(function () {
-                var newIndex = Date.now();
+                // Calcular el nuevo índice basado en los puntos existentes
+                var existingPoints = $('.punto-control-item').length;
+                var newIndex = existingPoints;
 
                 var nuevoPuntoHtml = `
                     <div class="punto-control-item card border mb-3">
@@ -198,13 +234,14 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label class="form-label fw-semibold">Distancia (km)</label>
-                                        <input type="number" step="0.1" name="PuntosDeControl[${newIndex}].distancia"
-                                               class="form-control" placeholder="Distancia desde el inicio" />
+                                        <input type="number" step="0.1" name="PuntosDeControl[${newIndex}].Distancia"
+                                               class="form-control" placeholder="Distancia desde el inicio" required />
+                                        <div class="invalid-feedback">Por favor ingrese una distancia válida</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="hidden" name="PuntosDeControl.Index" value="${newIndex}" />
                                     <input type="hidden" name="PuntosDeControl[${newIndex}].id" value="0" />
+                                    <input type="hidden" name="PuntosDeControl[${newIndex}].CarreraId" value="@Model.Id" />
                                     <button type="button" class="btn btn-danger btn-sm eliminar-punto w-100">
                                         <i class="fas fa-trash me-1"></i>Eliminar
                                     </button>
@@ -221,8 +258,19 @@
             $(document).on('click', '.eliminar-punto', function () {
                 $(this).closest('.punto-control-item').fadeOut(300, function() {
                     $(this).remove();
+                    // Reindexar los puntos restantes
+                    reindexarPuntos();
                 });
             });
+
+            // Función para reindexar puntos después de eliminar
+            function reindexarPuntos() {
+                $('.punto-control-item').each(function(index) {
+                    $(this).find('input[name*="Distancia"]').attr('name', `PuntosDeControl[${index}].Distancia`);
+                    $(this).find('input[name*="id"]').attr('name', `PuntosDeControl[${index}].id`);
+                    $(this).find('input[name*="CarreraId"]').attr('name', `PuntosDeControl[${index}].CarreraId`);
+                });
+            }
 
             // Validación de formulario
             $('.needs-validation').on('submit', function (e) {

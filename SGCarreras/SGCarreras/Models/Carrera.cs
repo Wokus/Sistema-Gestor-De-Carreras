@@ -30,9 +30,6 @@ namespace SGCarreras.Models
         [Display(Name = "Fecha y Hora")]
         public DateTime Fecha { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "El máximo de participantes debe ser un valor positivo.")]
-        [Display(Name = "Máximo de participantes")]
-
         // RELACIONES ACTUALIZADAS
         public ICollection<Inscripcion> Inscripciones { get; set; } = [];
 

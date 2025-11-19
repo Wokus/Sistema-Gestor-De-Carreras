@@ -198,7 +198,6 @@ namespace SGCarreras.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Ubicacion,Estado,KmTotales,Fecha,PuntosDeControl")] Carrera carrera)
         {
-            // DEBUGGING: Ver qué datos llegan
             Console.WriteLine("=== DEBUG CREATE ===");
             Console.WriteLine($"Carrera recibida - Nombre: {carrera.Nombre}, Ubicacion: {carrera.Ubicacion}");
             Console.WriteLine($"PuntosDeControl es null: {carrera.PuntosDeControl == null}");
@@ -211,56 +210,29 @@ namespace SGCarreras.Controllers
                     Console.WriteLine($"Punto - id: {punto.id}, distancia: {punto.Distancia}, CarreraId: {punto.CarreraId}");
                 }
             }
-            else
-            {
-                Console.WriteLine("PuntosDeControl es NULL - revisando Request.Form...");
-
-                // Debug del FormCollection
-                foreach (var key in Request.Form.Keys)
-                {
-                    if (key.Contains("PuntosDeControl"))
-                    {
-                        Console.WriteLine($"Form[{key}] = {Request.Form[key]}");
-                    }
-                }
-            }
 
             if (ModelState.IsValid)
             {
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
                 try
                 {
                     Console.WriteLine("ModelState es válido, guardando carrera...");
 
-                    // 1. Guardar la carrera primero para obtener el ID
+                    // ✅ SOLUCIÓN: Guardar la carrera CON los puntos de control de una vez
+                    // Entity Framework manejará automáticamente las relaciones
                     _context.Add(carrera);
                     await _context.SaveChangesAsync();
 
                     Console.WriteLine($"Carrera guardada con ID: {carrera.Id}");
+                    Console.WriteLine($"Puntos de control guardados automáticamente: {carrera.PuntosDeControl?.Count ?? 0}");
 
-                    // 2. Procesar puntos de control si existen
-                    if (carrera.PuntosDeControl != null && carrera.PuntosDeControl.Count != 0)
-                    {
-                        Console.WriteLine($"Procesando {carrera.PuntosDeControl.Count} puntos de control...");
-
-                        foreach (var punto in carrera.PuntosDeControl)
-                        {
-                            // Asignar el ID de la carrera al punto de control
-                            punto.CarreraId = carrera.Id;
-                            _context.PuntosDeControl.Add(punto);
-                            Console.WriteLine($"Agregado punto: {punto.Distancia} km para carrera {punto.CarreraId}");
-                        }
-                        await _context.SaveChangesAsync();
-                        Console.WriteLine("Puntos de control guardados exitosamente");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No hay puntos de control para guardar");
-                    }
-
+                    await transaction.CommitAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
+                    await transaction.RollbackAsync();
                     Console.WriteLine($"ERROR: {ex.Message}");
                     Console.WriteLine($"StackTrace: {ex.StackTrace}");
                     ModelState.AddModelError("", $"Error al crear la carrera: {ex.Message}");
@@ -315,12 +287,10 @@ namespace SGCarreras.Controllers
             return View(carrera);
         }
 
-        // POST: Carreras/Edit/5 - CON BIND Y DEBUGGING
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Ubicacion,Estado,KmTotales,Fecha,PuntosDeControl")] Carrera carrera)
         {
-            // DEBUGGING
             Console.WriteLine("=== DEBUG EDIT ===");
             Console.WriteLine($"Editando carrera ID: {id}, Carrera recibida ID: {carrera.Id}");
             Console.WriteLine($"PuntosDeControl es null: {carrera.PuntosDeControl == null}");
@@ -341,40 +311,58 @@ namespace SGCarreras.Controllers
 
             if (ModelState.IsValid)
             {
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
                 try
                 {
                     Console.WriteLine("ModelState válido, procesando edición...");
 
-                    // 1. Eliminar puntos de control existentes
-                    var puntosExistentes = _context.PuntosDeControl.Where(p => p.CarreraId == id);
-                    var countExistentes = await puntosExistentes.CountAsync();
-                    Console.WriteLine($"Eliminando {countExistentes} puntos existentes...");
+                    // 1. Cargar la carrera existente con sus puntos de control
+                    var carreraExistente = await _context.Carrera
+                        .Include(c => c.PuntosDeControl)
+                        .FirstOrDefaultAsync(c => c.Id == id);
 
-                    _context.PuntosDeControl.RemoveRange(puntosExistentes);
-
-                    // 2. Actualizar la carrera
-                    _context.Update(carrera);
-                    await _context.SaveChangesAsync(); // Guardar cambios de la carrera
-
-                    // 3. Agregar nuevos puntos de control
-                    if (carrera.PuntosDeControl != null && carrera.PuntosDeControl.Count != 0)
+                    if (carreraExistente == null)
                     {
-                        Console.WriteLine($"Agregando {carrera.PuntosDeControl.Count} nuevos puntos...");
+                        return NotFound();
+                    }
 
+                    // 2. Actualizar propiedades básicas de la carrera
+                    carreraExistente.Nombre = carrera.Nombre;
+                    carreraExistente.Ubicacion = carrera.Ubicacion;
+                    carreraExistente.Estado = carrera.Estado;
+                    carreraExistente.KmTotales = carrera.KmTotales;
+                    carreraExistente.Fecha = carrera.Fecha;
+
+                    // 3. Manejar puntos de control
+                    // Limpiar puntos existentes
+                    _context.PuntosDeControl.RemoveRange(carreraExistente.PuntosDeControl);
+
+                    // Agregar nuevos puntos (si los hay)
+                    if (carrera.PuntosDeControl != null && carrera.PuntosDeControl.Any())
+                    {
                         foreach (var punto in carrera.PuntosDeControl)
                         {
-                            punto.CarreraId = carrera.Id;
-                            _context.PuntosDeControl.Add(punto);
-                            Console.WriteLine($"Agregado punto: {punto.Distancia} km");
+                            // Crear NUEVAS instancias para evitar problemas de tracking
+                            var nuevoPunto = new PuntoDeControl
+                            {
+                                CarreraId = carreraExistente.Id,
+                                Distancia = punto.Distancia
+                            };
+                            _context.PuntosDeControl.Add(nuevoPunto);
                         }
-                        await _context.SaveChangesAsync(); // Guardar puntos
                     }
+
+                    // 4. Guardar todos los cambios de una vez
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
 
                     Console.WriteLine("Edición completada exitosamente");
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    await transaction.RollbackAsync();
                     if (!CarreraExists(carrera.Id))
                     {
                         return NotFound();
@@ -386,6 +374,7 @@ namespace SGCarreras.Controllers
                 }
                 catch (Exception ex)
                 {
+                    await transaction.RollbackAsync();
                     Console.WriteLine($"ERROR en Edit: {ex.Message}");
                     ModelState.AddModelError("", $"Error al editar la carrera: {ex.Message}");
                 }
