@@ -2,14 +2,18 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SGCarreras;
 using SGCarreras.Controllers;
 using SGCarreras.Data;
+using SGCarreras.Services;
 using System;
 using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SGCarrerasContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SGCarrerasContext") ?? throw new InvalidOperationException("Connection string 'SGCarrerasContext' not found.")));
+
+builder.Services.AddHostedService<CarreraBackgroundService>();
 
 // Agregar servicios MVC y Razor Pages
 builder.Services.AddControllersWithViews();
