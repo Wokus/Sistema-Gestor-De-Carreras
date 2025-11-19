@@ -1,101 +1,243 @@
 ﻿@model SGCarreras.Models.ViewModels.CorredorActivo
 
 @{
-    ViewData["Title"] = "SeguimientoDeCorredor";
+    ViewData["Title"] = "Seguimiento en Vivo";
     string nombreCarrera = Model.carreraNombre;
-    /*
-         carreraId = carrera.Id,
-                                    carreraNombre = carrera.Nombre,
-                                    corredorId = registro.Corredor.Id,
-                                    corredorNombre = registro.Corredor.NombreCompleto,
-                                    posicionCarrera = registro.PosicionEnCarrera,
-                                    tiempo = registro.HoraAvance,
-                                    kilometro = kmtrsPunto
-    */
+    string corredorNombreInicial = Model.corredorNombre.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Substring(0, 1).ToUpper() ?? "?";
 }
 
-<h1>
-    @nombreCarrera
-</h1>
-<div id="mensajeMeta" style="
-    display:none;
-    background-color:gold;
-    color:black;
-    padding:10px;
-    margin:10px 0;
-    border-radius:5px;
-    font-weight:bold;
-">
-    El corredor llegó a la meta
-</div>
-<div>
-    <h4>Corredor</h4>
-    <hr />
-    <dl class="row">
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary mb-2">
+                        <i class="fas fa-route me-2"></i>Seguimiento en Vivo
+                    </h1>
+                    <p class="lead text-muted">Carrera: **@nombreCarrera**</p>
+                </div>
+                <div>
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                </div>
+            </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.corredorNombre)
-        </dt>
-        <dd class="col-sm-10" id="corredorNombre">
-            @Html.DisplayFor(model => model.corredorNombre)
-        </dd>
+            <div id="mensajeMeta" class="alert alert-warning text-dark text-center fw-bold shadow-sm" style="display:none;">
+                <i class="fas fa-medal me-2"></i>El corredor llegó a la meta
+            </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.nmroEnCarrera)
-        </dt>
-        <dd class="col-sm-10" id="nmroEnCarrera">
-            @Html.DisplayFor(model => model.nmroEnCarrera)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.kilometro)
-        </dt>
-        <dd class="col-sm-10" id="kilometro">
-            @Html.DisplayFor(model => model.kilometro)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.tiempo)
-        </dt>
-        <dd class="col-sm-10" id="tiempo">
-            00:00
-        </dd>
-        
+            <div class="card border-0 shadow-lg mb-5">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-running me-2"></i>Información del Corredor
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <div class="avatar-circle bg-primary text-white mx-auto mb-3" style="width: 120px; height: 120px; font-size: 48px;">
+                                @corredorNombreInicial
+                            </div>
+                            <h3 class="fw-bold text-dark">@Model.corredorNombre</h3>
+                            <p class="text-muted">Corriendo en **@nombreCarrera**</p>
+                        </div>
+                        <div class="col-md-8 border-start">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4 text-muted">@Html.DisplayNameFor(model => model.corredorNombre):</dt>
+                                <dd class="col-sm-8 fs-5 fw-bold text-primary" id="corredorNombre">@Html.DisplayFor(model => model.corredorNombre)</dd>
 
-      
-    </dl>
+                                <dt class="col-sm-4 text-muted">@Html.DisplayNameFor(model => model.nmroEnCarrera):</dt>
+                                <dd class="col-sm-8 fs-5 fw-bold" id="nmroEnCarrera">
+                                    <span class="badge bg-secondary fs-6">#@Html.DisplayFor(model => model.nmroEnCarrera)</span>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">@Html.DisplayNameFor(model => model.kilometro):</dt>
+                                <dd class="col-sm-8 fs-5 fw-bold text-success" id="kilometro">
+                                    <i class="fas fa-map-pin me-1"></i>@Html.DisplayFor(model => model.kilometro) km
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Tiempo Transcurrido:</dt>
+                                <dd class="col-sm-8 fs-5 fw-bold text-info" id="tiempo">
+                                    <i class="fas fa-stopwatch me-1"></i>00:00:00
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-light py-3">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-chart-line text-primary me-2"></i>Progreso en Tiempo Real
+                    </h4>
+                </div>
+                <div class="card-body text-center py-5">
+                    <div id="visualizacionProgreso">
+                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Cargando visualización de progreso...</h5>
+                        <p class="text-muted">Datos actualizados por SignalR.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 
-<script>
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:7247/carrerasHub")
-        .build();
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips (si los hubiese)
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
 
- 
+            // Conexión y Lógica de SignalR
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7247/carrerasHub") // Ajustar URL si es necesario
+                .withAutomaticReconnect()
+                .build();
 
-    
-    connection.on("CorredorActualizado", (data) => {
-        console.log("CorredorActualizado:", data);
-        if (data.mensake) {
-        document.getElementById("mensajeMeta").style.display = "block";
-        var nombre = document.querySelector("#corredorNombre").innerText.trim();
+            // Función para formatear tiempo (simulado si viene en minutos)
+            function formatTime(totalMinutes) {
+                if (totalMinutes === null || totalMinutes === undefined) return 'N/A';
+                let totalSeconds = Math.round(totalMinutes * 60);
+                const hours = Math.floor(totalSeconds / 3600);
+                totalSeconds %= 3600;
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
 
-        var texto = `El corredor  ${nombre} llegó a la meta en el puesto ${data.numeroEnCarrera} en ${data.tiempoDeFinalizacion} minutos`;
-         
-        document.getElementById("mensajeMeta").textContent = texto;
+                const pad = (num) => num.toString().padStart(2, '0');
+
+                return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+            }
+
+            // Manejador de eventos del Hub
+            connection.on("CorredorActualizado", (data) => {
+                console.log("CorredorActualizado:", data);
+
+                if (data.kilometro !== undefined) {
+                    document.getElementById("kilometro").innerHTML = `<i class="fas fa-map-pin me-1"></i>${data.kilometro} km`;
+                }
+
+                if (data.tiempo !== undefined) {
+                    const tiempoFormateado = formatTime(data.tiempo); // Asumiendo que data.tiempo está en minutos
+                    document.getElementById("tiempo").innerHTML = `<i class="fas fa-stopwatch me-1"></i>${tiempoFormateado}`;
+                }
+
+                // Lógica de Mensaje de Meta
+                if (data.mensake) {
+                    const finalTimeFormatted = formatTime(data.tiempoDeFinalizacion); // Asumiendo que el tiempo de finalización también está en minutos
+                    document.getElementById("nmroEnCarrera").innerHTML = `<span class="badge bg-success fs-5">#${data.numeroEnCarrera} (Meta)</span>`;
+
+                    const nombre = document.getElementById("corredorNombre").textContent.trim();
+                    const texto = `El corredor **${nombre}** llegó a la meta en el puesto **${data.numeroEnCarrera}** con un tiempo de **${finalTimeFormatted}**.`;
+
+                    const mensajeMetaDiv = document.getElementById("mensajeMeta");
+                    mensajeMetaDiv.innerHTML = `<i class="fas fa-medal me-2"></i>${texto}`;
+                    mensajeMetaDiv.classList.remove('alert-warning');
+                    mensajeMetaDiv.classList.add('alert-success');
+                    mensajeMetaDiv.style.display = "block";
+
+                    // Deshabilitar la reconexión o la escucha si el corredor ya terminó
+                    connection.stop();
+                    console.log("Conexión SignalR detenida, el corredor ha finalizado.");
+                }
+            });
+
+            // Iniciar Conexión
+            connection.start()
+                .then(() => {
+                    console.log("Conectado a SignalR.");
+                    connection.invoke("UnirseACorredorCorriendoceUnaCarreraCarrerosa", @Model.registroId)
+                        .catch(err => console.error("Error al invocar UnirseACorredorCorriendoceUnaCarreraCarrerosa:", err));
+                })
+                .catch(err => console.error("Error al conectar a SignalR:", err));
+        });
+    </script>
+}
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
         }
-        
-        if (data.kilometro !== undefined)
-            document.getElementById("kilometro").textContent = data.kilometro;
 
-        if (data.tiempo !== undefined)
-            document.getElementById("tiempo").textContent = data.tiempo;
-    });
+    .avatar-circle {
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
 
-    
-    connection.start()
-        .then(() => {
-            connection.invoke("UnirseACorredorCorriendoceUnaCarreraCarrerosa", @Model.registroId);
-        })
-        .catch(err => console.error("Error al conectar:", err));
-</script>
+    .bg-primary {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%) !important;
+    }
+
+    .bg-pink {
+        background: linear-gradient(135deg, #e83e8c 0%, #d91a72 100%) !important;
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, #0dcaf0 0%, #0aa7c7 100%) !important;
+    }
+
+    /* Estilos para el mensaje de meta */
+    .alert-warning {
+        border-left: 5px solid #ffc107;
+    }
+
+    .alert-success {
+        border-left: 5px solid #198754;
+    }
+
+    .fas {
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+    }
+
+    /* Fallbacks para iconos */
+    .fa-arrow-left::before {
+        content: "⬅️";
+    }
+
+    .fa-route::before {
+        content: "🛣️";
+    }
+
+    .fa-running::before {
+        content: "🏃";
+    }
+
+    .fa-map-pin::before {
+        content: "📌";
+    }
+
+    .fa-stopwatch::before {
+        content: "⏱️";
+    }
+
+    .fa-medal::before {
+        content: "🏅";
+    }
+
+    .fa-chart-line::before {
+        content: "📈";
+    }
+
+    .fa-chart-bar::before {
+        content: "📊";
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

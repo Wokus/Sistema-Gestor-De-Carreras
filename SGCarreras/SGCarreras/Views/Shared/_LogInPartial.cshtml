@@ -20,9 +20,18 @@
 
     <form asp-controller="Corredors" asp-action="LogOut" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a class="btn btn-link navbar-btn navbar-link" asp-controller="Corredors" asp-action="Details" asp-route-id="@userId"> @Context.User.Identity.Name!</a>
-            </li>
+            @if (rol == "Administrador")
+            {
+                <li>
+                    <p class="text-center my-2">@Context.User.Identity.Name</p>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a class="btn btn-link navbar-btn navbar-link" asp-controller="Corredors" asp-action="Details" asp-route-id="@userId"> @Context.User.Identity.Name</a>
+                </li>
+            }
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Cerrar Sesión</button>
             </li>
