@@ -16,8 +16,8 @@
                     <p class="lead text-muted">Información completa y historial de carreras</p>
                 </div>
                 <div>
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
                     </a>
                 </div>
             </div>
@@ -238,19 +238,26 @@
 
             <!-- Acciones -->
             <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Volver al Listado
-                    </a>
-                </div>
-                <div class="btn-group">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                        <i class="fas fa-edit me-2"></i>Editar Corredor
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>Eliminar
-                    </a>
-                </div>
+                @{
+                    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    int userId = 0;
+                    int.TryParse(userIdString, out userId);
+
+                    var email = User.FindFirstValue(ClaimTypes.Email);
+                    var nombre = User.FindFirstValue(ClaimTypes.Name);
+                    var rol = User.FindFirstValue(ClaimTypes.Role);
+                }
+                @if (rol == "Administrador")
+                {
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="fas fa-edit me-2"></i>Editar Corredor
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="fas fa-trash me-2"></i>Eliminar
+                        </a>
+                    </div>                
+                }               
             </div>
         </div>
     </div>

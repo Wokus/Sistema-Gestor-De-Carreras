@@ -193,7 +193,7 @@
                                 </a>
                             </div>
                         }
-                        else if (User?.Identity?.IsAuthenticated == true || User?.Identity?.IsAuthenticated == false && @Model?.Carrera.Estado == SGCarreras.Models.Estado.EstadoEnum.En_espera)
+                        else if (@Model?.Carrera.Estado == SGCarreras.Models.Estado.EstadoEnum.En_espera)
                         {
                             <a asp-action="Inscribirse" asp-route-carreraId="@carrera.Id" asp-controller="Inscripcion" class="btn btn-success btn-lg">
                                 <i><i class="fas fa-user-plus me-2"></i>Inscribirse en esta Carrera</i></a>
@@ -203,7 +203,7 @@
             </div>
 
             <!-- Sección de Participantes (Opcional) -->
-            @if (Model?.Carrera.Inscripciones?.Any() == true && Model.Carrera.Estado != EstadoEnum.Activo)
+            @if (Model?.Carrera.Inscripciones?.Any() == true && Model.Carrera.Estado == EstadoEnum.En_espera)
             {
                 <div class="row mt-5">
                     <div class="col-12">
@@ -235,7 +235,7 @@
                                                     <td><span class="badge bg-info">General</span></td>
                                                     <td><span class="badge bg-success">Inscrito</span></td>
                                                     <td>
-                                                        <a href="#" class="btn btn-sm btn-outline-primary">Ver</a>
+                                                        <a href="/Corredors/Details/@registro.CorredorId" class="btn btn-sm btn-outline-primary">Ver</a>
                                                     </td>
                                                 </tr>
                                             }
@@ -427,7 +427,7 @@
                                                 @inicial
                                             </div>
                                             <div>
-                                                <strong>@(registro.Corredor?.NombreCompleto ?? "Corredor Desconocido")</strong>
+                                                <a href="/Corredors/Details/@registro.CorredorId" class="btn btn-sm btn-outline-primary"><strong>@(registro.Corredor?.NombreCompleto ?? "Corredor Desconocido")</strong></a>
                                             </div>
                                         </div>
                                     </td>
