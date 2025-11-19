@@ -280,10 +280,18 @@ else
                     $(this).addClass('was-validated');
                 });
 
-                // Establecer fecha mínima como hoy
                 var now = new Date();
-                var minDate = now.toISOString().slice(0, 16);
+
+                var year = now.getFullYear();
+                var month = String(now.getMonth() + 1).padStart(2, '0');
+                var day = String(now.getDate()).padStart(2, '0');
+                var hours = String(now.getHours()).padStart(2, '0');
+                var minutes = String(now.getMinutes()).padStart(2, '0');
+
+                var minDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+
                 $('#Fecha').attr('min', minDate);
+                console.log('Fecha mínima establecida:', minDate);
             });
         </script>
     }

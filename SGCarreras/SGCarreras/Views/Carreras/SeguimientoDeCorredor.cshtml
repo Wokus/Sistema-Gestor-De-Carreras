@@ -670,6 +670,8 @@
                     document.getElementById("mensajeMeta").style.display = 'block';
 
                     verificarPuntosControl
+
+                    document.getElementById("kilometro").innerHTML = `<i class="fas fa-map-pin"></i> ${kmTotalesCarrera.toFixed(1)} km`;
                     // Asegurar posición final
                     updateRunnerPosition(kmTotalesCarrera);
 
