@@ -2,6 +2,7 @@
 @using System.Threading;
 @using System.Security.Claims;
 @using static SGCarreras.Models.Estado
+@using static SGCarreras.Controllers.InscripcionController
 
 @{
     ViewData["Title"] = "Detalles de la Carrera";
@@ -193,10 +194,22 @@
                                 </a>
                             </div>
                         }
-                        else if (@Model?.Carrera.Estado == SGCarreras.Models.Estado.EstadoEnum.En_espera)
+                        else if (Model?.Carrera.Estado == SGCarreras.Models.Estado.EstadoEnum.En_espera)
                         {
-                            <a asp-action="Inscribirse" asp-route-carreraId="@carrera.Id" asp-controller="Inscripcion" class="btn btn-success btn-lg">
-                                <i><i class="fas fa-user-plus me-2"></i>Inscribirse en esta Carrera</i></a>
+                            @if (Model.YaInscrito)
+                            {
+                                <button class="btn btn-success btn-lg" disabled>
+                                    <i class="fas fa-check-circle me-2"></i>Ya estás inscrito
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-action="Inscribirse" asp-controller="Inscripcion"
+                                   asp-route-carreraId="@Model.Carrera.Id"
+                                   class="btn btn-success btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>Inscribirse en esta Carrera
+                                </a>
+                            }
                         }
                     </div>
                 </div>

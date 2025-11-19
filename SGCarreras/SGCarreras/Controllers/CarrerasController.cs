@@ -46,10 +46,9 @@ namespace SGCarreras.Controllers
                 return NotFound();
             }
 
-            // 1. Cargar la carrera sin preocuparnos por las Inscripciones/Registros por ahora
             var carrera = await _context.Carrera
                 .Include(c => c.PuntosDeControl)
-                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada)) // Mantenemos esta por si la vista la usa para seguimiento
+                .Include(c => c.Inscripciones.Where(i => i.Estado == EstadoInscripcion.Confirmada))
                     .ThenInclude(i => i.Corredor)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -58,19 +57,28 @@ namespace SGCarreras.Controllers
                 return NotFound();
             }
 
-            // 2. Cargar los Registros asociados directamente a esta carrera
-            // Asumimos que la clase Registro tiene una propiedad CarreraId
             var registros = await _context.Registro
                 .Where(r => r.CarreraId == carrera.Id)
-                .Include(r => r.Corredor) // Cargamos el Corredor asociado para obtener el NombreCorredor
+                .Include(r => r.Corredor)
                 .OrderBy(r => r.PosicionEnCarrera)
                 .ToListAsync();
 
-            // 3. Crear un ViewModel para pasar todos los datos necesarios a la vista
+            // Verificar inscripción en la tabla Inscripcion (no Registro)
+            bool yaInscrito = false;
+            if (User.Identity.IsAuthenticated)
+            {
+                var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                yaInscrito = await _context.Inscripcion
+                    .AnyAsync(i => i.CorredorId == usuarioId &&
+                                  i.CarreraId == id &&
+                                  i.Estado != EstadoInscripcion.Cancelada);
+            }
+
             var viewModel = new CarreraDetailsViewModel
             {
                 Carrera = carrera,
-                Registros = registros
+                Registros = registros,
+                YaInscrito = yaInscrito
             };
 
             return View(viewModel);
