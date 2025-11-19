@@ -5,6 +5,7 @@ Prueba de concepto hecha para la materia de Taller de .NET del Tecnólogo en Inf
 
 [Documentación oficial](https://docs.google.com/document/d/1pJRYvKORJx-PAIt4gDxRtVg4F3dO-YIm7tRdVfwRwSc/edit?usp=sharing)
 
+[Video de funcionalidad](https://drive.google.com/file/d/1ZZtyHVv0aoRsB0i6Gr2dEwn5U8-MxZfi/view?usp=sharing)
 
 ---
 # Como usar
