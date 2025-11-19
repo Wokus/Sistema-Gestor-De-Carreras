@@ -42,70 +42,137 @@
                 }
                 else
                 {
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="NombreCompleto" class="form-label">Nombre Completo *</label>
-                                <input asp-for="NombreCompleto" class="form-control" />
-                                <span asp-validation-for="NombreCompleto" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="Cedula" class="form-label">Cédula *</label>
-                                <input asp-for="Cedula" class="form-control" />
-                                <span asp-validation-for="Cedula" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="container-fluid py-5 bg-light">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-lg-6">
+                                <!-- Header -->
+                                <div class="text-center mb-5">
+                                    <h1 class="display-5 fw-bold text-primary mb-3">Únete a la Comunidad</h1>
+                                    <p class="lead text-muted">Regístrate y comienza tu journey deportivo</p>
+                                </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="Email" class="form-label">Email *</label>
-                                <input asp-for="Email" type="email" class="form-control" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="Sexo" class="form-label">Sexo *</label>
-                                <select asp-for="Sexo" class="form-control">
-                                    <option value="">Seleccionar...</option>
-                                    <option value="0">Hombre</option>
-                                    <option value="1">Mujer</option>
-                                    <option value="2">Otro</option>
-                                </select>
-                                <span asp-validation-for="Sexo" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
+                                <div class="card shadow-lg border-0 rounded-4">
+                                    <div class="card-header bg-primary text-white py-4 rounded-top-4">
+                                        <div class="text-center">
+                                            <i class="fas fa-running fa-3x mb-3"></i>
+                                            <h2 class="card-title mb-0">Crear Cuenta de Corredor</h2>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-5">
+                                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="Contra" class="form-label">Contraseña *</label>
-                                <input asp-for="Contra" type="password" class="form-control" />
-                                <span asp-validation-for="Contra" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="ConfirmarContra" class="form-label">Confirmar Contraseña *</label>
-                                <input asp-for="ConfirmarContra" type="password" class="form-control" />
-                                <span asp-validation-for="ConfirmarContra" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
+                                        @if (ViewBag.Message != null)
+                                        {
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                @ViewBag.Message
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                            </div>
+                                        }
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Nacionalidad" class="form-label">Nacionalidad *</label>
-                        <input asp-for="Nacionalidad" class="form-control" />
-                        <span asp-validation-for="Nacionalidad" class="text-danger"></span>
+                                        <!-- Información Personal -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-4">
+                                                    <label asp-for="NombreCompleto" class="form-label fw-semibold">
+                                                        <i class="fas fa-user me-2 text-primary"></i>Nombre Completo
+                                                    </label>
+                                                    <input asp-for="NombreCompleto" class="form-control form-control-lg"
+                                                           placeholder="Ej: Juan Pérez García" required />
+                                                    <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-4">
+                                                    <label asp-for="Cedula" class="form-label fw-semibold">
+                                                        <i class="fas fa-id-card me-2 text-primary"></i>Cédula
+                                                    </label>
+                                                    <input asp-for="Cedula" class="form-control form-control-lg"
+                                                           placeholder="Ej: 12345678" required />
+                                                    <span asp-validation-for="Cedula" class="text-danger small"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Nacionalidad y Sexo -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-4">
+                                                    <label asp-for="Nacionalidad" class="form-label fw-semibold">
+                                                        <i class="fas fa-flag me-2 text-primary"></i>Nacionalidad
+                                                    </label>
+                                                    <select asp-for="Nacionalidad" class="form-select form-select-lg" required>
+                                                        <option value="">-- Seleccione nacionalidad --</option>
+                                                        <option value="Uruguaya">Uruguaya</option>
+                                                        <option value="Argentina">Argentina</option>
+                                                        <option value="Brasileña">Brasileña</option>
+                                                        <option value="Chilena">Chilena</option>
+                                                        <option value="Paraguaya">Paraguaya</option>
+                                                        <option value="Otra">Otra</option>
+                                                    </select>
+                                                    <span asp-validation-for="Nacionalidad" class="text-danger small"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-4">
+                                                    <label asp-for="Sexo" class="form-label fw-semibold">
+                                                        <i class="fas fa-venus-mars me-2 text-primary"></i>Sexo
+                                                    </label>
+                                                    <select asp-for="Sexo" class="form-select form-select-lg" required>
+                                                        <option value="">-- Seleccione sexo --</option>
+                                                        <option value="Hombre">Hombre</option>
+                                                        <option value="Mujer">Mujer</option>
+                                                        <option value="Otro">Otro</option>
+                                                    </select>
+                                                    <span asp-validation-for="Sexo" class="text-danger small"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Información de Contacto -->
+                                        <div class="form-group mb-4">
+                                            <label asp-for="Email" class="form-label fw-semibold">
+                                                <i class="fas fa-envelope me-2 text-primary"></i>Email
+                                            </label>
+                                            <input asp-for="Email" type="email" class="form-control form-control-lg"
+                                                   placeholder="ejemplo@correo.com" required />
+                                            <span asp-validation-for="Email" class="text-danger small"></span>
+                                        </div>
+
+                                        <!-- Contraseñas -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-4">
+                                                    <label asp-for="Contra" class="form-label fw-semibold">
+                                                        <i class="fas fa-lock me-2 text-primary"></i>Contraseña
+                                                    </label>
+                                                    <input asp-for="Contra" type="password" class="form-control form-control-lg"
+                                                           placeholder="Ingrese su contraseña" required />
+                                                    <span asp-validation-for="Contra" class="text-danger small"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-4">
+                                                    <label asp-for="ConfirmarContra" class="form-label fw-semibold">
+                                                        <i class="fas fa-lock me-2 text-primary"></i>Confirmar Contraseña
+                                                    </label>
+                                                    <input asp-for="ConfirmarContra" type="password" class="form-control form-control-lg"
+                                                           placeholder="Repita su contraseña" required />
+                                                    <span asp-validation-for="ConfirmarContra" class="text-danger small"></span>
+                                                    <div class="form-text">
+                                                        <small id="password-match"></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 }
 
-                <div class="form-group mt-4">
+                <div class="form-group mt-4 text-center">
                     <button type="submit" class="btn btn-success btn-lg">
                         @if (Model.EsUsuarioRegistrado)
                         {
@@ -127,4 +194,33 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        // Validación de coincidencia de contraseñas
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('Contra');
+            const confirmPasswordInput = document.getElementById('ConfirmarContra');
+            const passwordMatch = document.getElementById('password-match');
+
+            if (confirmPasswordInput && passwordMatch) {
+                confirmPasswordInput.addEventListener('input', function() {
+                    const password = passwordInput.value;
+                    const confirmPassword = this.value;
+
+                    if (confirmPassword === '') {
+                        passwordMatch.textContent = '';
+                        return;
+                    }
+
+                    if (password === confirmPassword) {
+                        passwordMatch.textContent = 'Las contraseñas coinciden';
+                        passwordMatch.className = 'text-success';
+                    } else {
+                        passwordMatch.textContent = 'Las contraseñas no coinciden';
+                        passwordMatch.className = 'text-danger';
+                    }
+                });
+            }
+        });
+    </script>
 }

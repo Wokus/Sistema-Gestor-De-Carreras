@@ -451,7 +451,7 @@ namespace SGCarreras.Controllers
                 CorredorId = corredor.Id,
                 CarreraId = model.CarreraId,
                 NumeroCorredor = numeroCorredor,
-                Estado = EstadoInscripcion.Confirmada,
+                Estado = EstadoInscripcion.Pendiente,
                 FechaInscripcion = DateTime.UtcNow,
             };
 
@@ -547,11 +547,10 @@ namespace SGCarreras.Controllers
         [HttpGet]
         public async Task<IActionResult> VerificarInscripcion(int carreraId)
         {
-            /*
             if (!User.Identity.IsAuthenticated)
             {
                 return Json(new { yaInscrito = false, mensaje = "Usuario no autenticado" });
-            } */
+            } 
 
             var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
